@@ -4,7 +4,16 @@ interface
 
 uses   zgl_font, zgl_textures;
 
+type
+  zglColor = LongWord;
+
 const
+
+  White = $FFFFFF;
+  Red = $FF0000;
+  Green = $00FF00;
+  Blue = $0000FF;
+  Black = $000000;
 
 {$IFDEF CPUARM}
   SCREENX = 1280 div 2;
@@ -18,6 +27,8 @@ const
 
   MANY = 10000;
   MINDIST = 10;
+
+  GALAXY_SIZE = 500;
 
 var
   fntMain:  zglPFont;

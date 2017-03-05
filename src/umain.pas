@@ -148,9 +148,9 @@ procedure DrawFrame;
 begin
   batch2d_Begin;
   try
+    pr2d_Rect(0,0,SCREENX, SCREENY, Black, 255, PR2D_FILL);
     cam2d_Set(@Camera);
-    pr2d_Rect(0,0,SCREENX, SCREENY, $0000FF, 255, PR2D_FILL);
-    //TheMap.Draw;
+    DrawAll;
     pengine2d_Draw;
     cam2d_Set(nil);
     DrawUI;
@@ -264,7 +264,7 @@ procedure AfterLoad;
 begin
   log_Add('after load');
   ProcessLoadedTextures;
-  //TheMap := TMap.CreateLevel(1);
+  NewGame;
   log_Add('after load complete');
 end;
 

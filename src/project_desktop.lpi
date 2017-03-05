@@ -83,7 +83,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="project_desktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -102,14 +102,20 @@
         <IsPartOfProject Value="True"/>
       </Unit3>
       <Unit4>
-        <Filename Value="uUI.pas"/>
+        <Filename Value="uui.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="uUI"/>
       </Unit4>
       <Unit5>
         <Filename Value="utextures.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uTextures"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="umap.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uMap"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
