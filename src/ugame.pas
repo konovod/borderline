@@ -16,10 +16,11 @@ var
   Map: TMap;
 implementation
 
-uses Math, uMain;
+uses Math, uMain, uNameGen;
 
 procedure NewGame;
 begin
+  InitNameGen;
   Map := TMap.Create;
   Map.Generate;
 end;

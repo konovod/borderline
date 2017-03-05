@@ -12,12 +12,12 @@ procedure Generate(Map: TMap);
 const
   GALAXY_SIZE = 2000;
   ADD_LINKS = 0.2;
-  N_SYSTEMS = 500;
+  N_SYSTEMS = 200;
   CLOSE_DIST = 100;
 
 implementation
 
-uses uDelaunay, zgl_log;
+uses uDelaunay, uNameGen, zgl_log;
 
 procedure AddLink(first, second: TSystem);
 begin
@@ -191,7 +191,7 @@ begin
   SetLength(Map.Systems, n);
   //TODO: names generator
   for i := 0 to n-1 do
-    Map.Systems[I] := TSystem.Create(i, Rand(1, GALAXY_SIZE), Rand(1, GALAXY_SIZE), 'Star #'+IntToStr(I+1));
+    Map.Systems[I] := TSystem.Create(i, Rand(1, GALAXY_SIZE), Rand(1, GALAXY_SIZE), GenerateName);
   //remove too close
   for i := n-2 downto 0 do
     for j := n-1 downto i+1 do

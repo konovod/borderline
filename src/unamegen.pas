@@ -1,0 +1,260 @@
+unit uNameGen;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils;
+
+
+procedure InitNameGen;
+function GenerateName: string;
+implementation
+
+uses uglobal;
+
+
+const RAW_NAMES: array[1..210] of string = (
+'Acheron',
+'Abydos',
+'Aegis',
+'Aldebaran',
+'Altair',
+'Amel',
+'Antar',
+'Anus',
+'Arieka',
+'Athena',
+'Athos',
+'Aurelia',
+'Avalon',
+'Balaho',
+'Ballybran',
+'Belzagor',
+'Big',
+'Botany',
+'Bronson',
+'Castiana',
+'Chiron',
+'Chorus',
+'Chthon',
+'Corneria',
+'Creck',
+'Cybertron',
+'Cyteen',
+'Darkover',
+'Darwin',
+'Demeter',
+'Deucalion',
+'Dosadi',
+'Downbelow',
+'Dragon',
+'Eayn',
+'Emm',
+'Erna',
+'Erythro',
+'Eternia',
+'Etheria',
+'Far',
+'Fhloston',
+'Finisterre',
+'Fiorina',
+'Fortuna',
+'Furya',
+'G889',
+'Gaia',
+'Gallifrey',
+'Gehenna',
+'Ghibalb',
+'Gor',
+'Gorta',
+'Gurun',
+'Halvmörk',
+'He',
+'Helghan',
+'Helliconia',
+'Hesduros',
+'Hesikos',
+'Hiigara',
+'Hocotate',
+'Hydros',
+'Ireta',
+'Irk',
+'Ishtar',
+'Iszm',
+'Janjur',
+'Junk',
+'Kaelarot',
+'Karava',
+'Kerbin',
+'Kharak',
+'Kobaïa',
+'Kobol',
+'K-PAX',
+'Krankor',
+'Kregen',
+'Krull',
+'Kulthea',
+'La',
+'Lagash',
+'Lamarckia',
+'Land',
+'Leera',
+'Lithia',
+'LittleBigPlanet',
+'Lumen',
+'LV',
+'Macbeth',
+'Maethrillian',
+'Magrathea',
+'Majipoor',
+'Malurok',
+'Medea',
+'Mejare',
+'Melancholia',
+'Metaluna',
+'Midkemia',
+'Millers',
+'Minerva',
+'Miron',
+'Mobius',
+'Mongo',
+'Mor-Tax',
+'Muloqt',
+'Nacre',
+'New',
+'New',
+'New',
+'Nidor',
+'Nihil',
+'Nirn',
+'Oa',
+'Omega',
+'Omicron',
+'Omicron',
+'Optera',
+'Orthe',
+'Palamok',
+'Pandarve',
+'Pandora',
+'Peaceland',
+'Perdide',
+'Pern',
+'Petaybee',
+'Pharagos',
+'Placet',
+'Planet',
+'Planet',
+'Planet',
+'Planet',
+'Planet',
+'Planet',
+'Polyphemus',
+'Prysmos',
+'Pyrrus',
+'Ragnarok',
+'Reach',
+'Rebirth',
+'Regis',
+'Remulak',
+'Requiem',
+'Reverie',
+'Riverworld',
+'Rocheworld',
+'Rosetta',
+'Rubanis',
+'Rylos',
+'Ryn',
+'Saeponkal',
+'Sanghelios',
+'Sangre',
+'Sartorias-deles',
+'Sauria',
+'Secilia',
+'Seiren',
+'Sera',
+'Shikasta',
+'Shora',
+'Skaro',
+'Smoke',
+'Solaris',
+'Soror',
+'Space',
+'Stroggos',
+'Takis',
+'Tallon',
+'Tanis',
+'Targ',
+'Te',
+'Tencton',
+'Terminus',
+'Thalassa',
+'The',
+'This',
+'Thra',
+'Thundera',
+'Tiamat',
+'Tirol',
+'Titan',
+'Tormance',
+'Tralfamadore',
+'Tran',
+'Tranai',
+'Trantor',
+'Troas',
+'Tschai',
+'T''vao',
+'Twinsun',
+'Ulgethon',
+'Valyanop',
+'Vegeta',
+'Vekta',
+'Venom',
+'Vhilinyar',
+'Vinea',
+'Wait-Your-Turn',
+'Water-O',
+'Worlorn',
+'Wormwood',
+'Zahir',
+'Zarathustra',
+'Zarkon',
+'Zavron',
+'Zebes',
+'Zeelich',
+'Zeist',
+'Zillikian',
+'Zyrgon'
+);
+
+MARK_ORDER = 2;
+
+var
+  already: TStringList;
+  MarkData: TStringList;
+
+  //stub version: just to test
+procedure InitNameGen;
+begin
+  already := TStringList.Create;
+  already.Sorted := True;
+  MarkData := TStringList.Create;
+  MarkData.Sorted := True;
+end;
+
+function GenerateName: string;
+var
+  s: string;
+  i: integer;
+begin
+  assert(already.Count < length(RAW_NAMES));
+  repeat
+    s := RAW_NAMES[Rand(1, Length(RAW_NAMES))];
+  until not already.Find(s, i);
+  Result := s;
+  already.Add(s);
+end;
+
+end.
+

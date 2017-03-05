@@ -128,8 +128,8 @@ var
   i: integer;
 begin
   randomize;
-//  log_add('Seed: '+u_IntToStr(RandSeed));
-  RandSeed := 42957277;
+  log_add('Seed: '+u_IntToStr(RandSeed));
+  //RandSeed := 42957277;
 
   fntSecond := font_LoadFromFile(datadir + 'font2.zfi');
 
