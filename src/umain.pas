@@ -192,6 +192,8 @@ begin
   //if Modal <> show_None then
 
   if ClickUI(ax,ay,LeftUp) then exit;
+
+  OnClick(ax+Camera.X, aY+Camera.Y);
   //TheMap.Player.Navigate(Trunc(ax + Camera.X), Trunc(ay + Camera.Y - CONTROL_MARGIN) div ROOM_HEIGHT)
 end;
 

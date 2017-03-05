@@ -33,8 +33,8 @@ var
   fntSecond:  zglPFont;
   Quitting: Boolean;
 
-function Distance(X1, Y1, X2, Y2: integer): integer;
-function RealDistance(X1, Y1, X2, Y2: Single): Single;
+//function Distance(X1, Y1, X2, Y2: integer): integer;
+function Distance(X1, Y1, X2, Y2: Single): Single;
 
 function Rand(afrom, ato :integer) :integer; overload;
 function Randf(afrom, ato :single) :single; overload;
@@ -44,14 +44,7 @@ procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
 implementation
 uses Math, zgl_primitives_2d;
 
-function Distance(X1, Y1, X2, Y2: integer): integer;
-begin
-    //Result := Abs(X1 - X2) + Abs(Y1 - Y2);
-  Result := Max(Abs(X1 - X2), Abs(Y1 - Y2));
-//  Result := Max(Abs(X1 - X2), Abs(Y1 - Y2)) + Min(Abs(X1 - X2), Abs(Y1 - Y2)) div 2;
-end;
-
-function RealDistance(X1, Y1, X2, Y2: Single): Single;
+function Distance(X1, Y1, X2, Y2: Single): Single;
 begin
   Result := sqrt(sqr(x1-x2)+sqr(y1-y2));
 end;
