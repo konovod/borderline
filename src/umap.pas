@@ -18,6 +18,7 @@ type
     Links: array of TSystem;
     function Color: zglColor;
     procedure Draw;
+    procedure DrawLinks;
     constructor Create(aid, ax, ay: integer; aname: string);
   end;
 
@@ -51,6 +52,8 @@ var
   sys: TSystem;
 begin
   for sys in Systems do
+    sys.DrawLinks;
+  for sys in Systems do
     sys.Draw;
 end;
 
@@ -62,11 +65,15 @@ begin
 end;
 
 procedure TSystem.Draw;
-var
-  other: TSystem;
 begin
   pr2d_Circle(X, Y, 10, Color, 255, 32, PR2D_FILL);
   text_Draw(fntMain, X, Y, Name);
+end;
+
+procedure TSystem.DrawLinks;
+var
+  other: TSystem;
+begin
   for other in links do
     if other.id > id then
       BoldLine(X,Y,other.X, other.Y, White);

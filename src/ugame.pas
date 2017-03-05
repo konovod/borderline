@@ -9,8 +9,6 @@ uses
   zgl_sprite_2d, zgl_textures, zgl_fx, zgl_particles_2d;
 
 
-
-
 procedure NewGame;
 procedure DrawAll;
 

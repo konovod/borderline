@@ -28,8 +28,6 @@ const
   MANY = 10000;
   MINDIST = 10;
 
-  GALAXY_SIZE = 500;
-
 var
   fntMain:  zglPFont;
   fntSecond:  zglPFont;

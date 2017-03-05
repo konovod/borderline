@@ -9,6 +9,12 @@ uses
 
 procedure Generate(Map: TMap);
 
+const
+  GALAXY_SIZE = 2000;
+  ADD_LINKS = 0.2;
+  N_SYSTEMS = 500;
+  CLOSE_DIST = 100;
+
 implementation
 
 uses uDelaunay, zgl_log;
@@ -30,7 +36,7 @@ end;
 
 
 
-procedure MinimalTree(Map: TMap; AdditionalLinks: Single);
+procedure MinimalTree(Map: TMap);
 //using https://ru.wikipedia.org/wiki/Алгоритм_Крускала
 //and https://ru.wikipedia.org/wiki/Система_непересекающихся_множеств
 
@@ -143,7 +149,7 @@ begin
   begin
     if (I < MaxLine) and Lines[I].Active then continue;
     //also, add some more links
-    if random < AdditionalLinks then continue;
+    if random < ADD_LINKS then continue;
 
     A := Lines[I].A;
     B := Lines[I].B;
@@ -180,15 +186,27 @@ begin
 end;
 
 begin
-  //test version
-  n := 40;
+  //use poisson-smth?
+  n := N_SYSTEMS;
   SetLength(Map.Systems, n);
   //TODO: names generator
   for i := 0 to n-1 do
     Map.Systems[I] := TSystem.Create(i, Rand(1, GALAXY_SIZE), Rand(1, GALAXY_SIZE), 'Star #'+IntToStr(I+1));
-  //TODO: remove too close
-
-  n := length(Map.Systems);
+  //remove too close
+  for i := n-2 downto 0 do
+    for j := n-1 downto i+1 do
+      if Distance(Map.Systems[i].X, Map.Systems[i].Y, Map.Systems[j].X, Map.Systems[j].Y) < CLOSE_DIST then
+      begin
+        Map.Systems[j].Free;
+        if j <> n-1 then
+        begin
+          Map.Systems[j] := Map.Systems[n-1];
+          Map.Systems[j].id := j;
+        end;
+        SetLength(Map.Systems, n-1);
+        dec(n);
+      end;
+//  n := length(Map.Systems);
   //delaunay triangulation
   TRI := TDelaunay.Create;
   for I := 0 to n - 1 do
@@ -205,7 +223,7 @@ begin
       AddLink1(n3, n1);
     end;
   TRI.Free;
-  MinimalTree(Map, 0.2);
+  MinimalTree(Map);
 end;
 
 end.

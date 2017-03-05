@@ -25,7 +25,6 @@ uses
 var
   DirApp: UTF8String;
   DirHome: UTF8String;
-  NowDir: Byte;
 
 procedure Init;
 const
@@ -86,7 +85,6 @@ end;
 
 procedure Timer;
 begin
-  DoKeyPass(NowDir);
   if Ready then
   begin
     if mouse_Down(0) then
