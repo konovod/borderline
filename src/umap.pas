@@ -33,7 +33,7 @@ type
 
 implementation
 
-uses zgl_primitives_2d, zgl_text, ugame;
+uses zgl_primitives_2d, zgl_text, ugame, umapgen;
 
 { TMap }
 
@@ -43,23 +43,8 @@ begin
 end;
 
 procedure TMap.Generate;
-var
-  i, j,t, n: integer;
 begin
-  //test version
-  n := 10;
-  SetLength(Systems, n);
-  for i := 0 to n-1 do
-    Systems[I] := TSystem.Create(i, Rand(1, GALAXY_SIZE), Rand(1, GALAXY_SIZE), 'Star #'+IntToStr(I+1));
-  for i := 0 to n-1 do
-    for j := 0 to 1 do
-    begin
-      repeat
-        t := Random(n);
-      until t <> i;
-      Systems[i].AddLink(Systems[t]);
-      Systems[t].AddLink(Systems[i]);
-    end;
+  uMapGen.Generate(Self);
 end;
 
 procedure TMap.Draw;

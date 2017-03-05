@@ -20,7 +20,7 @@ uses
   zgl_text,
   zgl_Log,
   zgl_keyboard,
-  umain, ugame, uglobal, uUI, uTextures, uMap;
+  umain, ugame, uglobal, uUI, uTextures, uMap, uDelaunay, umapgen;
 
 var
   DirApp: UTF8String;
