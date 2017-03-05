@@ -19,7 +19,6 @@ type
     function Color: zglColor;
     procedure Draw;
     constructor Create(aid, ax, ay: integer; aname: string);
-    procedure AddLink(sys: TSystem);
   end;
 
   { TMap }
@@ -79,12 +78,6 @@ begin
   x := ax;
   y := ay;
   name := aname;
-end;
-
-procedure TSystem.AddLink(sys: TSystem);
-begin
-  SetLength(Links, Length(Links)+1);
-  Links[Length(Links)-1] := sys;
 end;
 
 end.
