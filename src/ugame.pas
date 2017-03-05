@@ -23,6 +23,7 @@ begin
   InitNameGen;
   Map := TMap.Create;
   Map.Generate;
+  ScrollToCenter(Map.Systems[0].X, Map.Systems[0].Y);
 end;
 
 procedure DrawAll;

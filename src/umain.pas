@@ -64,6 +64,8 @@ function emit(x, y, r: single): zglPEmitter2D;
 procedure noemit(item: zglPEmitter2D);overload;
 procedure noemit;overload;
 
+procedure ScrollToCenter(x, y: single);
+
 var
   Camera: zglTCamera2D;
 
@@ -120,6 +122,12 @@ procedure noemit;
 begin
   pengine2d_ClearAll;
 //  pengine2d_AddEmitter(emitterRain, nil, 0, 0);
+end;
+
+procedure ScrollToCenter(x, y: single);
+begin
+  Camera.X := x - SCREENX/2;
+  Camera.Y := y - SCREENY/2;
 end;
 
 
