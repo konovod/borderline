@@ -27,13 +27,13 @@ const
 
   MANY = 10000;
   MINDIST = 10;
+  CLICKDIST = 50;
 
 var
   fntMain:  zglPFont;
   fntSecond:  zglPFont;
   Quitting: Boolean;
 
-//function Distance(X1, Y1, X2, Y2: integer): integer;
 function Distance(X1, Y1, X2, Y2: Single): Single;
 
 function Rand(afrom, ato :integer) :integer; overload;

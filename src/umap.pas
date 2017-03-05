@@ -67,7 +67,7 @@ var
   sys: TSystem;
 begin
   for sys in Systems do
-    if Distance(x, y, sys.x, sys.y) < MINDIST then
+    if Distance(x, y, sys.x, sys.y) < CLICKDIST then
     begin
       Result := sys;
       exit;
