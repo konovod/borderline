@@ -137,7 +137,7 @@ var
 begin
   randomize;
   log_add('Seed: '+u_IntToStr(RandSeed));
-  //RandSeed := 42957277;
+  //RandSeed := 20118419;
 
   fntSecond := font_LoadFromFile(datadir + 'font2.zfi');
 

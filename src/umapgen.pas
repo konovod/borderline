@@ -15,6 +15,9 @@ const
   N_SYSTEMS = 500;
   CLOSE_DIST = 100;
 
+  N_ALIENS = 10;
+  INDEPENDENT = 0.1;
+
 implementation
 
 uses uDelaunay, uNameGen, zgl_log;
@@ -171,6 +174,80 @@ begin
 end;
 
 
+procedure Populate(Map: TMap);
+var
+  i: integer;
+  remains: integer;
+  sys: TSystem;
+  ants: array[1..N_ALIENS] of TSystem;
+  nsteps, ntries: integer;
+
+function RandomSys: TSystem;
+begin
+  Result := Map.Systems[Random(Length(Map.Systems))];
+end;
+
+function RandomNeighbour(asys: TSystem): TSystem;
+begin
+  Result := asys.Links[Random(Length(asys.Links))];
+end;
+
+function step(asys: TSystem; index: integer): Boolean;
+begin
+  Result := asys.AlienId in [0, index];
+  if asys.PopStatus = WipedOut then
+  begin
+    asys.PopStatus := Alien;
+    asys.AlienId := index;
+    //asys.Name := IntToStr(index);//for debug
+    dec(remains);
+  end;
+  if result then
+    ants[index] := asys;
+end;
+
+begin
+  //"empty" systems
+  remains := 0;
+  for sys in Map.Systems do
+    if random < INDEPENDENT then
+      sys.PopStatus := Colonizable
+    else
+    begin
+      sys.PopStatus := WipedOut;
+      inc(remains);
+    end;
+  //spawn civilizations
+  for i := 1 to N_ALIENS do
+  begin
+    repeat
+      ants[i] := RandomSys;
+    until ants[i].PopStatus = WipedOut;
+    step(ants[i], i);
+  end;
+  nsteps := GALAXY_SIZE;
+  //expand them
+  while (remains > 0) and (nsteps > 0) do
+  begin
+    dec(nsteps);
+    for i := 1 to N_ALIENS do
+    begin
+      ntries := 1000;
+      while (ntries > 0) and not step(RandomNeighbour(ants[i]), i) do dec(ntries);
+    end;
+  end;
+  nsteps := 0;
+  for sys in Map.Systems do
+    if sys.PopStatus = WipedOut then
+      inc(nsteps);
+  if nsteps > 0 then
+    log_Add('***********Failed planets: '+IntToStr(nsteps));
+  //earth
+  map.Systems[0].AlienId := 0;
+  map.Systems[0].PopStatus := Own;
+end;
+
+
 
 procedure Generate(Map: TMap);
 var
@@ -227,7 +304,9 @@ begin
     end;
   TRI.Free;
   MinimalTree(Map);
+  Populate(Map);
 end;
+
 
 end.
 

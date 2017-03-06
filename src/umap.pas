@@ -7,9 +7,12 @@ interface
 uses
   Classes, SysUtils, uglobal;
 
+{.$DEFINE DEBUGDRAW}
+
 type
 
   TSystemState = (Hidden, Found, Visited, Current);
+  TPopulationState = (Own, Colonizable, Alien, WipedOut);
 
   { TSystem }
 
@@ -19,6 +22,8 @@ type
     Name: string;
     Links: array of TSystem;
     State: TSystemState;
+    PopStatus: TPopulationState;
+    AlienId: Integer;
     function Color: zglColor;
     procedure Draw;
     procedure DrawLinks;
@@ -80,17 +85,20 @@ end;
 
 function TSystem.Color: zglColor;
 begin
-  case State of
-    Hidden: Result := Blue;
-    Found: Result := Red;
-    Visited: Result := Green;
-    Current: Result := White;
+
+  case PopStatus of
+    Own: Result := Green;
+    Colonizable: Result := Blue;
+    Alien: Result := Red;
+    WipedOut: Result := Dark;
   end;
 end;
 
 procedure TSystem.Draw;
 begin
+  {$IFNDEF DEBUGDRAW}
   if State = Hidden then exit;
+  {$ENDIF}
   pr2d_Circle(X, Y, 10, Color, 255, 32, PR2D_FILL);
   text_Draw(fntMain, X, Y, Name);
   if Self = Cursor then
@@ -104,7 +112,9 @@ procedure TSystem.DrawLinks;
 var
   other: TSystem;
 begin
+  {$IFNDEF DEBUGDRAW}
   if State <= Found then exit;
+  {$ENDIF}
   for other in links do
 //    if other.id > id then
       BoldLine(X,Y,other.X, other.Y, White);
