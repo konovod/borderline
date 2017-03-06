@@ -88,8 +88,6 @@ begin
   end;
 end;
 
-var
-  curr: integer = 0;
 procedure TSystem.Draw;
 begin
   if State = Hidden then exit;
@@ -97,8 +95,8 @@ begin
   text_Draw(fntMain, X, Y, Name);
   if Self = Cursor then
   begin
-    curr := (curr + 1) mod (15*4);
-    pr2d_Circle(X, Y, 15+15-curr div 4, Color);
+    CursorSize := (CursorSize + 1) mod (15*4);
+    pr2d_Circle(X, Y, 15+15-CursorSize div 4, IntfDark);
   end;
 end;
 

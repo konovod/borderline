@@ -18,6 +18,7 @@ procedure OnClick(ax, ay: single);
 var
   Map: TMap;
   PlayerSys, Cursor: TSystem;
+  CursorSize: Integer;
   Turn: integer;
   StarDate: TDate;
 
@@ -52,6 +53,9 @@ var
   sys: TSystem;
 begin
   sys := Map.FindSys(ax, ay);
+  if sys <> cursor then
+    CursorSize := 0;
+
   if sys <> nil then
     Cursor := sys
   else

@@ -71,7 +71,7 @@ begin
   end;
 
   pr2d_Rect( X, Y, W, H, Col, 255, PR2D_SMOOTH );
-  text_DrawInRectEx(fntSecond, R, 1, 0, Text, 255, Col, TEXT_VALIGN_CENTER + TEXT_HALIGN_CENTER);
+  text_DrawInRectEx(fntMain, R, 1, 0, Text, 255, Col, TEXT_VALIGN_BOTTOM + TEXT_HALIGN_CENTER);
 end;
 
 procedure StdCross(X,Y,W,H: Single);
