@@ -36,6 +36,7 @@ begin
   PlayerSys := Map.Systems[0];
   Cursor := Map.Systems[0];
   PlayerSys.Enter;
+  ScrollToCenter(PlayerSys.x, PlayerSys.y);
 end;
 
 procedure DrawAll;
@@ -44,8 +45,14 @@ begin
 end;
 
 procedure DrawGameUI;
+  procedure DrawPanel(X,Y,W,H: Single);
+  begin
+    pr2d_Rect(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, Black, 255, PR2D_FILL);
+    pr2d_Rect(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, IntfText);
+  end;
+
 begin
-//  text_Draw(fntMain, SCREENX/2,50, DateToStr(StarDate), TEXT_VALIGN_CENTER + TEXT_HALIGN_CENTER);
+  DrawPanel(TOPPANEL_LEFT-0.005, 0, TOPPANEL_WIDTH+0.01, 0.26);
 end;
 
 procedure OnClick(ax, ay: single);

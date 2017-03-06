@@ -5,7 +5,7 @@ unit uGameUI;
 interface
 
 uses
-  Classes, SysUtils, uUI, ugameactions;
+  Classes, SysUtils, uUI, ugameactions, uglobal;
 
 type
 
@@ -88,10 +88,21 @@ end;
 
 var
   i, j: integer;
+  cx, cy: single;
 begin
   add(TDateButton.Create(0.40,0.01,0.2,0.06));
-  for i := 1 to 7 do
-    add(TActionButton.Create(0.1+0.1*i, 0.2, 0.08, 0.05, i-1));
+  cy := 0.1;
+  cx := 0;
+  for i := 1 to 15 do
+  begin
+    add(TActionButton.Create(TOPPANEL_LEFT+cx, cy, ACTIONBTN_WIDTH-0.02, 0.05, i-1));
+    cx := cx+ACTIONBTN_WIDTH;
+    if cx > TOPPANEL_WIDTH - ACTIONBTN_WIDTH then
+    begin
+      cx := 0;
+      cy := cy+0.07;
+    end;
+  end;
 end;
 
 
