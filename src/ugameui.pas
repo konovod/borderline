@@ -33,7 +33,7 @@ type
 procedure InitUI;
 implementation
 
-uses ugame;
+uses ugame, zgl_mouse, math;
 
 { TActionButton }
 
@@ -45,7 +45,12 @@ end;
 procedure TActionButton.Draw;
 begin
   if MyAction.Allowed then
-    StdButton(MyAction.Text, X, Y, W, H, Normal)
+  begin
+    if InRange(mouseX, X, X+W) and InRange(mouseY, Y, Y+H) then
+      StdButton(MyAction.Text, X, Y, W, H, Active)
+    else
+      StdButton(MyAction.Text, X, Y, W, H, Normal)
+  end
   else
     StdButton(MyAction.Text, X, Y, W, H, Inactive);
 end;
