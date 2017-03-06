@@ -5,7 +5,6 @@ interface
 uses SysUtils, Math, zgl_primitives_2d, zgl_text, zgl_math_2d, zgl_sprite_2d;
 
 
-procedure InitUI;
 procedure DrawUI;
 
 type
@@ -27,12 +26,6 @@ type
     constructor Create(aX,aY,aW,aH: Single);
   end;
 
-  { TRestartButton }
-
-  TRestartButton = class(TButton)
-    procedure Draw; override;
-    procedure Click(event: TMouseEvent); override;
-  end;
 
   TInvertState = (Normal, Inactive, Active);
   TButtonsArray = array of TButton;
@@ -44,7 +37,7 @@ var
 procedure StdButton(Text: string; X,Y,W,H: Single; State: TInvertState = Normal);
 implementation
 
-uses umain, uglobal, ugame;
+uses umain, uglobal, ugame, uGameUI;
 
 
 function Buttons: TButtonsArray;
@@ -59,9 +52,9 @@ var
   Col: Cardinal;
 begin
   case State of
-    Normal: Col := $FF109F10;// $FF5F5F5F;
-    Inactive: Col := $FF5F5F5F;
-    Active: Col := $FFFFFFFF;
+    Normal: Col := $109F10;// $FF5F5F5F;
+    Inactive: Col := $5F5F5F;
+    Active: Col := $FFFFFF;
   end;
 
 //  pr2d_Ellipse( X+W/2, Y+H/2, W/2, H/2, Col, 255, 32, PR2D_FILL or PR2D_SMOOTH );
@@ -73,7 +66,7 @@ begin
 
   case State of
     Normal: Col := 0;
-    Inactive: Col := $FA1A1A1;
+    Inactive: Col := $FA1A1A;
     Active: Col := 0;
   end;
 
@@ -114,33 +107,6 @@ begin
       exit;
     end;
   Result := false;
-end;
-
-procedure InitUI;
-
-procedure add(bt: TButton);
-begin
-  SetLength(IngameButtons, Length(IngameButtons)+1);
-  IngameButtons[High(IngameButtons)] := bt;
-end;
-
-var
-  i: integer;
-begin
-  add(TRestartButton.Create(0.6,0,0.08,0.08));
-end;
-
-{ TRestartButton }
-
-procedure TRestartButton.Draw;
-begin
-  //StdButton('Restart', X,Y,W,H);
-
-end;
-
-procedure TRestartButton.Click(event: TMouseEvent);
-begin
-
 end;
 
 { TButton }

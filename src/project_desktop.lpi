@@ -44,7 +44,6 @@
             <Checks>
               <IOChecks Value="True"/>
               <RangeChecks Value="True"/>
-              <OverflowChecks Value="True"/>
               <StackChecks Value="True"/>
             </Checks>
             <Optimizations>
@@ -83,7 +82,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="project_desktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -129,6 +128,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uNameGen"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="ugameui.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uGameUI"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

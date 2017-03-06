@@ -79,7 +79,7 @@ var
 
 implementation
 
-uses uglobal, uUI, math;
+uses uglobal, uUI, uGameUI, math;
 
 procedure DoKeyUp(key: Byte);
 begin
@@ -162,6 +162,7 @@ begin
     DrawAll;
     pengine2d_Draw;
     cam2d_Set(nil);
+    DrawGameUI;
     DrawUI;
   finally
     batch2d_End;
