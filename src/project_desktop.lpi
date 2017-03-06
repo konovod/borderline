@@ -82,7 +82,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="project_desktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -133,6 +133,10 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGameUI"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="ugameactions.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

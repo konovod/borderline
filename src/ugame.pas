@@ -17,7 +17,7 @@ procedure OnClick(ax, ay: single);
 
 var
   Map: TMap;
-  CurSys: TSystem;
+  PlayerSys, Cursor: TSystem;
   Turn: integer;
   StarDate: TDate;
 
@@ -26,23 +26,15 @@ implementation
 
 uses Math, uMain, uNameGen, zgl_text;
 
-procedure DoJump(sys: TSystem);
-begin
-  NextTurn;
-  if Assigned(CurSys) then
-    CurSys.State := Visited;
-  CurSys := sys;
-  CurSys.JumpTo;
-  ScrollToCenter(CurSys.X, CurSys.Y);
-end;
-
 procedure NewGame;
 begin
   InitNameGen;
   StarDate := EncodeDate(2212, 3, 12);
   Map := TMap.Create;
   Map.Generate;
-  DoJump(Map.Systems[0]);
+  PlayerSys := Map.Systems[0];
+  Cursor := Map.Systems[0];
+  PlayerSys.Enter;
 end;
 
 procedure DrawAll;
@@ -61,7 +53,9 @@ var
 begin
   sys := Map.FindSys(ax, ay);
   if sys <> nil then
-    DoJump(sys);
+    Cursor := sys
+  else
+    Cursor := nil;
 end;
 
 procedure NextTurn;

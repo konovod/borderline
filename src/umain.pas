@@ -79,7 +79,7 @@ var
 
 implementation
 
-uses uglobal, uUI, uGameUI, math;
+uses uglobal, uUI, uGameUI, ugameactions, math;
 
 procedure DoKeyUp(key: Byte);
 begin
@@ -274,6 +274,7 @@ procedure AfterLoad;
 begin
   log_Add('after load');
   ProcessLoadedTextures;
+  InitActions;
   NewGame;
   log_Add('after load complete');
 end;

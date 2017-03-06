@@ -52,9 +52,9 @@ var
   Col: Cardinal;
 begin
   case State of
-    Normal: Col := $109F10;// $FF5F5F5F;
-    Inactive: Col := $5F5F5F;
-    Active: Col := $FFFFFF;
+    Normal: Col := IntfBack;
+    Inactive: Col := IntfBack;
+    Active: Col := IntfText;
   end;
 
 //  pr2d_Ellipse( X+W/2, Y+H/2, W/2, H/2, Col, 255, 32, PR2D_FILL or PR2D_SMOOTH );
@@ -65,9 +65,9 @@ begin
   R.H := H;
 
   case State of
-    Normal: Col := 0;
-    Inactive: Col := $FA1A1A;
-    Active: Col := 0;
+    Normal: Col := IntfText;
+    Inactive: Col := IntfDark;
+    Active: Col := IntfBack;
   end;
 
   pr2d_Rect( X, Y, W, H, Col, 255, PR2D_SMOOTH );

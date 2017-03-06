@@ -23,7 +23,8 @@ type
     procedure Draw;
     procedure DrawLinks;
     constructor Create(aid, ax, ay: integer; aname: string);
-    procedure JumpTo;
+    procedure Enter;
+    function Linked(asys: TSystem): boolean;
   end;
 
   { TMap }
@@ -113,7 +114,7 @@ begin
   State := Hidden;
 end;
 
-procedure TSystem.JumpTo;
+procedure TSystem.Enter;
 var
   sys: TSystem;
 begin
@@ -121,6 +122,16 @@ begin
   for sys in Links do
     if sys.State < Found then
       sys.State := Found;
+end;
+
+function TSystem.Linked(asys: TSystem): boolean;
+var
+  sys: TSystem;
+begin
+  Result := True;
+  for sys in Links do
+    if sys = asys then exit;
+  Result := False;
 end;
 
 

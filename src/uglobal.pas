@@ -14,6 +14,9 @@ const
   Green = $00FF00;
   Blue = $0000FF;
   Black = $000000;
+  IntfText = $00FF80;
+  IntfDark = $005020;
+  IntfBack = Black;
 
 {$IFDEF CPUARM}
   SCREENX = 1280 div 2;
