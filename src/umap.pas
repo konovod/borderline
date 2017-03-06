@@ -39,7 +39,7 @@ type
 
 implementation
 
-uses zgl_primitives_2d, zgl_text, ugame, umapgen;
+uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen;
 
 { TMap }
 
@@ -88,11 +88,18 @@ begin
   end;
 end;
 
+var
+  curr: integer = 0;
 procedure TSystem.Draw;
 begin
   if State = Hidden then exit;
   pr2d_Circle(X, Y, 10, Color, 255, 32, PR2D_FILL);
   text_Draw(fntMain, X, Y, Name);
+  if Self = Cursor then
+  begin
+    curr := (curr + 1) mod (15*4);
+    pr2d_Circle(X, Y, 15+15-curr div 4, Color);
+  end;
 end;
 
 procedure TSystem.DrawLinks;

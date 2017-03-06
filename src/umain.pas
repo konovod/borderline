@@ -99,7 +99,7 @@ end;
 procedure LoadSplash(datadir: string);
 begin
   fntMain := font_LoadFromFile(datadir + 'font.zfi');
-  scr_SetOptions(SCREENX, SCREENY, REFRESH_DEFAULT, false, false);
+  scr_SetOptions(SCREENX, SCREENY, REFRESH_DEFAULT, false, True);
 end;
 
 function emit(x, y, r: single): zglPEmitter2D;
