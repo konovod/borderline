@@ -691,6 +691,8 @@ begin
     Starts.Add(STARTERS[i]);
   for i := 1 to Length(MARK_DATA) do
     MarkData.Add(MARK_DATA[i]);
+  for i := 1 to Length(RAW_NAMES) do
+    already.Add(LowerCase(RAW_NAMES[i]));
 end;
 
 //stub version: just to test
