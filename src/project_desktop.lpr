@@ -9,7 +9,7 @@ uses
   SysUtils, zgl_application, zgl_main, zgl_resources, zgl_screen, zgl_window,
   zgl_timers, zgl_font, zgl_utils, zgl_mouse, zgl_file, zgl_text, zgl_Log,
   zgl_keyboard, umain, ugame, uglobal, uUI, uTextures, uMap, uDelaunay, umapgen,
-  uNameGen, uGameUI, ugameactions;
+  uNameGen, uGameUI, ugameactions, uStaticData, uGameTypes;
 
 var
   DirApp: UTF8String;

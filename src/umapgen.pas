@@ -245,6 +245,8 @@ begin
   //earth
   map.Systems[0].AlienId := 0;
   map.Systems[0].PopStatus := Own;
+  for sys in Map.Systems do
+    sys.InitGameStats;
 end;
 
 

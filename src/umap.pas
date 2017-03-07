@@ -5,7 +5,7 @@ unit uMap;
 interface
 
 uses
-  Classes, SysUtils, uglobal;
+  Classes, SysUtils, uglobal, uGameTypes;
 
 {.$DEFINE DEBUGDRAW}
 
@@ -24,6 +24,12 @@ type
     State: TSystemState;
     PopStatus: TPopulationState;
     AlienId: Integer;
+    AlienResearch: TAlienResearchLevel;
+    HumanResearch: THumanResearchLevel;
+    Ships: TFleetData;
+    Mines: array of TSquadron;
+    procedure InitGameStats;
+    procedure ShowInfo(aX, aY: single);
     function Color: zglColor;
     procedure Draw;
     procedure DrawLinks;
@@ -83,6 +89,19 @@ end;
 
 { TSystem }
 
+procedure TSystem.InitGameStats;
+begin
+  SetLength(Mines, Length(Links));
+  //TODO: research levels?
+
+end;
+
+procedure TSystem.ShowInfo(aX, aY: single);
+begin
+  DrawPanel(aX,aY,SYSTEMINFO_WIDTH*SCREENX,SYSTEMINFO_HEIGHT*SCREENY);
+  text_Draw(fntMain, aX+10, aY+10, Name);
+end;
+
 function TSystem.Color: zglColor;
 begin
 
@@ -100,12 +119,13 @@ begin
   if State = Hidden then exit;
   {$ENDIF}
   pr2d_Circle(X, Y, 10, Color, 255, 32, PR2D_FILL);
-  text_Draw(fntMain, X, Y, Name);
   if Self = Cursor then
   begin
     CursorSize := (CursorSize + 1) mod (15*4);
     pr2d_Circle(X, Y, 15+15-CursorSize div 4, IntfDark);
-  end;
+  end
+  else
+    text_Draw(fntMain, X, Y, Name);
 end;
 
 procedure TSystem.DrawLinks;

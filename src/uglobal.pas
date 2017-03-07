@@ -54,6 +54,8 @@ function Distance(X1, Y1, X2, Y2: Single): Single;
 function Rand(afrom, ato :integer) :integer; overload;
 function Randf(afrom, ato :single) :single; overload;
 procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
+procedure DrawPanelUI(X,Y,W,H: Single);
+procedure DrawPanel(X,Y,W,H: Single);
 
 
 implementation
@@ -93,6 +95,17 @@ begin
     pr2d_Line(X1 - delta, Y1, X2 - delta, Y2, c, 255, PR2D_SMOOTH);
     pr2d_Line(X1 + delta, Y1, X2 + delta, Y2, c, 255, PR2D_SMOOTH);
   end;
+end;
+
+procedure DrawPanel(X,Y,W,H: Single);
+begin
+  pr2d_Rect(X, Y, W, H, Black, 255, PR2D_FILL);
+  pr2d_Rect(X, Y, W, H, IntfText);
+end;
+
+procedure DrawPanelUI(X,Y,W,H: Single);
+begin
+  DrawPanel(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H);
 end;
 
 

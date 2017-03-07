@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, uglobal, uTextures, uMap, zgl_tiles_2d, zgl_primitives_2d,
-  zgl_sprite_2d, zgl_textures, zgl_fx, zgl_particles_2d;
+  zgl_sprite_2d, zgl_textures, zgl_fx, zgl_particles_2d, uGameTypes;
 
 
 procedure NewGame;
@@ -42,19 +42,19 @@ end;
 procedure DrawAll;
 begin
   Map.Draw;
+  if Cursor <> nil then
+    Cursor.ShowInfo(Cursor.X, Cursor.Y);
 end;
 
 procedure DrawGameUI;
-  procedure DrawPanel(X,Y,W,H: Single);
-  begin
-    pr2d_Rect(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, Black, 255, PR2D_FILL);
-    pr2d_Rect(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, IntfText);
-  end;
-
 begin
-  DrawPanel(TOPPANEL_LEFT-0.005, 0, TOPPANEL_WIDTH+0.01, 0.26);
-  DrawPanel(0, 1-SYSTEMINFO_HEIGHT, SYSTEMINFO_WIDTH, SYSTEMINFO_HEIGHT);
-  DrawPanel(1-PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
+  DrawPanelUI(TOPPANEL_LEFT-0.005, 0, TOPPANEL_WIDTH+0.01, 0.26);
+  //if Cursor <> nil then
+  //begin
+  //  DrawPanelUI(0, 1-SYSTEMINFO_HEIGHT, SYSTEMINFO_WIDTH, SYSTEMINFO_HEIGHT);
+  //  Cursor.ShowInfo(0, SCREENY*(1-SYSTEMINFO_HEIGHT));
+  //end;
+  DrawPanelUI(1-PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
 end;
 
 procedure OnClick(ax, ay: single);

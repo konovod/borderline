@@ -82,7 +82,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="12">
+    <Units Count="14">
       <Unit0>
         <Filename Value="project_desktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -137,6 +137,16 @@
         <Filename Value="ugameactions.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="ustaticdata.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uStaticData"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="ugametypes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uGameTypes"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
