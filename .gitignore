@@ -94,4 +94,5 @@ keystore
 *.so
 zengl/*
 android/gen/*
+android/classes/*
 *.keystore
