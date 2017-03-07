@@ -30,7 +30,7 @@ uses Math, uMain, uNameGen, zgl_text;
 procedure NewGame;
 begin
   InitNameGen;
-  StarDate := EncodeDate(2212, 3, 12);
+  StarDate := EncodeDate(2114, 3, 12);
   Map := TMap.Create;
   Map.Generate;
   PlayerSys := Map.Systems[0];
@@ -75,7 +75,7 @@ procedure NextTurn;
 begin
   inc(Turn);
   //TODO - all processing
-  StarDate := IncMonth(StarDate, 4+random(3));
+  StarDate := StarDate + 25+random(10);
 end;
 
 

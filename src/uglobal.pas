@@ -2,7 +2,7 @@ unit uglobal;
 
 interface
 
-uses   zgl_font, zgl_textures, zgl_math_2d;
+uses   zgl_font, zgl_textures, zgl_math_2d, SysUtils;
 
 type
   zglColor = LongWord;
@@ -57,6 +57,8 @@ procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
 procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawSomeText(X,Y,W,H: Single; text: string);
+
+function MyDateToStr(adate: TDateTime): string;
 
 implementation
 uses Math, zgl_primitives_2d, zgl_text;
@@ -114,7 +116,7 @@ begin
   R.Y := Y;
   R.W := W;
   R.H := H;
-  text_DrawInRectEx(fntMain, R, 1, 0, Text,  255, White, TEXT_CLIP_RECT+TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
+  text_DrawInRectEx(fntMain, R, 0.5, 0, Text,  255, White, TEXT_CLIP_RECT+TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
   //ExtractSubstr();
 end;
 
@@ -123,6 +125,9 @@ begin
   DrawPanel(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, alpha);
 end;
 
-
+function MyDateToStr(adate: TDateTime): string;
+begin
+  DateTimeToString(Result, 'yyyy-mm-dd', adate)
+end;
 
 end.

@@ -75,7 +75,7 @@ end;
 
 procedure TDateButton.Draw;
 begin
-  StdButton(DateToStr(StarDate), X,Y,W,H,Inactive);
+  StdButton(MyDateToStr(StarDate), X,Y,W,H,Inactive);
 end;
 
 procedure TDateButton.Click(event: TMouseEvent);

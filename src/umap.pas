@@ -137,11 +137,11 @@ begin
   end
   else
   begin
-    text := Name+#10+'visited at '+DateToStr(VisitTime)+#10+POP_STATUS_NAMES[SeenPopStatus];
+    text := Name+#10+'visited at '+MyDateToStr(VisitTime)+#10+POP_STATUS_NAMES[SeenPopStatus];
     if SeenPopStatus = Own then
     begin
       text := text+#10+'Research: '+ShortResearchList(SeenHumanResearch);
-      text := text+#10+'Mines: '+ShortMinesList(Self, SeenMines);
+      text := text+#10+'Mines '+ShortMinesList(Self, SeenMines);
     end;
   end;
   DrawSomeText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, text);
