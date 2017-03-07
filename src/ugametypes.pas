@@ -22,6 +22,7 @@ type
   TSquadron = array[TLevel] of Integer;
   TFleetData = array[THumanShips] of TSquadron;
 
+  TMinesData = array of TSquadron;
 
 implementation
 

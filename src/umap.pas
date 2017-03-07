@@ -28,7 +28,7 @@ type
     AlienResearch: TAlienResearchLevel;
     SeenHumanResearch, HumanResearch: THumanResearchLevel;
     Ships: TFleetData;
-    SeenMines, Mines: array of TSquadron;
+    SeenMines, Mines: TMinesData;
     procedure InitGameStats;
     procedure ShowInfo(aX, aY: single);
     function Color: zglColor;
@@ -49,9 +49,36 @@ type
     function FindSys(x, y: single): TSystem;
   end;
 
+
+function ShortResearchList(res: THumanResearchLevel): string;
+function ShortMinesList(sys: TSystem; mines: TMinesData): string;
+
 implementation
 
-uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen;
+uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData;
+
+function ShortResearchList(res: THumanResearchLevel): string;
+var
+  it: THumanResearch;
+begin
+  Result := '';
+  for it in THumanResearchLevel do
+    Result := Result+RESEARCH_NAMES[it][1]+IntToStr(res[it])+',';
+  SetLength(Result, Length(Result)-1);
+end;
+
+function ShortMinesList(sys: TSystem; mines: TMinesData): string;
+var
+  i, n: integer;
+  lv: TLevel;
+begin
+  //TODO: change?
+  n := 0;
+  for i := 0 to length(mines)-1 do
+    for lv in TLevel do
+      n := n+mines[i][lv]*lv;
+  Result := 'total power: '+IntToStr(n);
+end;
 
 { TMap }
 
@@ -99,14 +126,25 @@ begin
 end;
 
 procedure TSystem.ShowInfo(aX, aY: single);
+var
+  text: string;
+
 begin
   DrawPanel(aX,aY,SYSTEMINFO_WIDTH*SCREENX,SYSTEMINFO_HEIGHT*SCREENY, 0.9);
   if VisitTime = 0 then
   begin
-    text_Draw(fntMain, aX+10, aY+10, 'Unknown system');
-    exit;
+    text := 'Unknown system';
+  end
+  else
+  begin
+    text := Name+#10+'visited at '+DateToStr(VisitTime)+#10+POP_STATUS_NAMES[SeenPopStatus];
+    if SeenPopStatus = Own then
+    begin
+      text := text+#10+'Research: '+ShortResearchList(SeenHumanResearch);
+      text := text+#10+'Mines: '+ShortMinesList(Self, SeenMines);
+    end;
   end;
-  text_Draw(fntMain, aX+10, aY+10, Name);
+  DrawSomeText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, text);
 end;
 
 function TSystem.Color: zglColor;

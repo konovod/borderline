@@ -2,7 +2,7 @@ unit uglobal;
 
 interface
 
-uses   zgl_font, zgl_textures;
+uses   zgl_font, zgl_textures, zgl_math_2d;
 
 type
   zglColor = LongWord;
@@ -56,10 +56,10 @@ function Randf(afrom, ato :single) :single; overload;
 procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
 procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
-
+procedure DrawSomeText(X,Y,W,H: Single; text: string);
 
 implementation
-uses Math, zgl_primitives_2d;
+uses Math, zgl_primitives_2d, zgl_text;
 
 function Distance(X1, Y1, X2, Y2: Single): Single;
 begin
@@ -104,6 +104,18 @@ begin
   a := EnsureRange(Trunc(alpha*256), 0, 255);
   pr2d_Rect(X, Y, W, H, Black, a, PR2D_FILL);
   pr2d_Rect(X, Y, W, H, IntfText);
+end;
+
+procedure DrawSomeText(X, Y, W, H: Single; text: string);
+var
+  R: zglTRect;
+begin
+  R.X := X;
+  R.Y := Y;
+  R.W := W;
+  R.H := H;
+  text_DrawInRectEx(fntMain, R, 1, 0, Text,  255, White, TEXT_CLIP_RECT+TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
+  //ExtractSubstr();
 end;
 
 procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
