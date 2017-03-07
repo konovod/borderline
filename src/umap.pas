@@ -22,12 +22,13 @@ type
     Name: string;
     Links: array of TSystem;
     State: TSystemState;
-    PopStatus: TPopulationState;
+    SeenPopStatus, PopStatus: TPopulationState;
+    VisitTime: TDateTime;
     AlienId: Integer;
     AlienResearch: TAlienResearchLevel;
-    HumanResearch: THumanResearchLevel;
+    SeenHumanResearch, HumanResearch: THumanResearchLevel;
     Ships: TFleetData;
-    Mines: array of TSquadron;
+    SeenMines, Mines: array of TSquadron;
     procedure InitGameStats;
     procedure ShowInfo(aX, aY: single);
     function Color: zglColor;
@@ -92,20 +93,28 @@ end;
 procedure TSystem.InitGameStats;
 begin
   SetLength(Mines, Length(Links));
+  SetLength(SeenMines, Length(Links));
   //TODO: research levels?
 
 end;
 
 procedure TSystem.ShowInfo(aX, aY: single);
 begin
-  DrawPanel(aX,aY,SYSTEMINFO_WIDTH*SCREENX,SYSTEMINFO_HEIGHT*SCREENY);
+  DrawPanel(aX,aY,SYSTEMINFO_WIDTH*SCREENX,SYSTEMINFO_HEIGHT*SCREENY, 0.9);
+  if VisitTime = 0 then
+  begin
+    text_Draw(fntMain, aX+10, aY+10, 'Unknown system');
+    exit;
+  end;
   text_Draw(fntMain, aX+10, aY+10, Name);
 end;
 
 function TSystem.Color: zglColor;
 begin
-
-  case PopStatus of
+  if VisitTime = 0 then
+    Result := Black
+  else
+  case SeenPopStatus of
     Own: Result := Green;
     Colonizable: Result := Blue;
     Alien: Result := Red;
@@ -119,12 +128,14 @@ begin
   if State = Hidden then exit;
   {$ENDIF}
   pr2d_Circle(X, Y, 10, Color, 255, 32, PR2D_FILL);
+  if VisitTime = 0 then
+    pr2d_Circle(X, Y, 10, White);
   if Self = Cursor then
   begin
     CursorSize := (CursorSize + 1) mod (15*4);
     pr2d_Circle(X, Y, 15+15-CursorSize div 4, IntfDark);
   end
-  else
+  else if VisitTime <> 0 then
     text_Draw(fntMain, X, Y, Name);
 end;
 
@@ -157,6 +168,11 @@ begin
   for sys in Links do
     if sys.State < Found then
       sys.State := Found;
+  //now make visit
+  VisitTime := StarDate;
+  SeenMines := Mines;
+  SeenHumanResearch := HumanResearch;
+  SeenPopStatus := PopStatus;
 end;
 
 function TSystem.Linked(asys: TSystem): boolean;

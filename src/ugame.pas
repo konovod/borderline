@@ -34,7 +34,7 @@ begin
   Map := TMap.Create;
   Map.Generate;
   PlayerSys := Map.Systems[0];
-  Cursor := Map.Systems[0];
+  Cursor := nil;
   PlayerSys.Enter;
   ScrollToCenter(PlayerSys.x, PlayerSys.y);
 end;

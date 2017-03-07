@@ -33,7 +33,7 @@ const
   TOPPANEL_WIDTH = 1-TOPPANEL_LEFT*2;
   ACTIONBTN_WIDTH = 0.2;
 
-  SYSTEMINFO_WIDTH = 0.25;
+  SYSTEMINFO_WIDTH = 0.3;
   SYSTEMINFO_HEIGHT = 0.3;
 
   PLAYERINFO_WIDTH = 0.2;
@@ -54,8 +54,8 @@ function Distance(X1, Y1, X2, Y2: Single): Single;
 function Rand(afrom, ato :integer) :integer; overload;
 function Randf(afrom, ato :single) :single; overload;
 procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
-procedure DrawPanelUI(X,Y,W,H: Single);
-procedure DrawPanel(X,Y,W,H: Single);
+procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
+procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
 
 
 implementation
@@ -97,15 +97,18 @@ begin
   end;
 end;
 
-procedure DrawPanel(X,Y,W,H: Single);
+procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
+var
+  a: byte;
 begin
-  pr2d_Rect(X, Y, W, H, Black, 255, PR2D_FILL);
+  a := EnsureRange(Trunc(alpha*256), 0, 255);
+  pr2d_Rect(X, Y, W, H, Black, a, PR2D_FILL);
   pr2d_Rect(X, Y, W, H, IntfText);
 end;
 
-procedure DrawPanelUI(X,Y,W,H: Single);
+procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
 begin
-  DrawPanel(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H);
+  DrawPanel(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, alpha);
 end;
 
 
