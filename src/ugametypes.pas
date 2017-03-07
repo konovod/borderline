@@ -24,6 +24,13 @@ type
 
   TMinesData = array of TSquadron;
 
+  TPriorities = record
+    Ships: array[THumanShips] of Single;
+    Research: single;
+    Mines: array of Single;
+  end;
+
+
 implementation
 
 end.

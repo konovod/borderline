@@ -28,6 +28,7 @@ type
     AlienResearch: TAlienResearchLevel;
     SeenHumanResearch, HumanResearch: THumanResearchLevel;
     Ships: TFleetData;
+    Priorities: TPriorities;
     SeenMines, Mines: TMinesData;
     procedure InitGameStats;
     procedure ShowInfo(aX, aY: single);
@@ -36,6 +37,7 @@ type
     procedure DrawLinks;
     constructor Create(aid, ax, ay: integer; aname: string);
     procedure Enter;
+    procedure PassTime;
     function Linked(asys: TSystem): boolean;
   end;
 
@@ -211,6 +213,20 @@ begin
   SeenMines := Mines;
   SeenHumanResearch := HumanResearch;
   SeenPopStatus := PopStatus;
+end;
+
+procedure TSystem.PassTime;
+begin
+  case PopStatus of
+    Own:
+  //1. build ships
+  //2. do research
+  //3. build mines
+  //4. drift priorities
+    ;
+    Alien: ;//TODO
+    Colonizable, WipedOut: ;
+  end;
 end;
 
 function TSystem.Linked(asys: TSystem): boolean;
