@@ -8,6 +8,8 @@ interface
 const
   MAX_LEVEL = 20;
 
+  K_LVL = 1.5;
+
 type
 
   TLevel = 0..MAX_LEVEL;

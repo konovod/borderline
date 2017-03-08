@@ -24,6 +24,7 @@ uses uDelaunay, uNameGen, zgl_log;
 
 procedure AddLink(first, second: TSystem);
 begin
+  if first.Linked(second) then exit;
   SetLength(first.Links, Length(first.Links)+1);
   first.Links[Length(first.Links)-1] := second;
   SetLength(second.Links, Length(second.Links)+1);

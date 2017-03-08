@@ -56,7 +56,7 @@ function Randf(afrom, ato :single) :single; overload;
 procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
 procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
-procedure DrawSomeText(X,Y,W,H: Single; text: string);
+procedure DrawSomeText(X,Y,W,H: Single; caption, text: string);
 
 function MyDateToStr(adate: TDateTime): string;
 
@@ -108,15 +108,16 @@ begin
   pr2d_Rect(X, Y, W, H, IntfText);
 end;
 
-procedure DrawSomeText(X, Y, W, H: Single; text: string);
+procedure DrawSomeText(X, Y, W, H: Single; caption, text: string);
 var
   R: zglTRect;
 begin
   R.X := X;
-  R.Y := Y;
+  R.Y := Y + 25;
   R.W := W;
   R.H := H;
-  text_DrawInRectEx(fntMain, R, 0.5, 0, Text,  255, White, TEXT_CLIP_RECT+TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
+  text_DrawEx(fntMain, X, Y, 0.6, 0, caption,  255, White, TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
+  text_DrawInRectEx(fntMain, R, 0.5, 0, Text,  255, IntfText, {TEXT_CLIP_RECT+}TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
   //ExtractSubstr();
 end;
 
