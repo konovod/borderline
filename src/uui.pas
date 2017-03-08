@@ -30,9 +30,18 @@ type
   TInvertState = (Normal, Inactive, Active);
   TButtonsArray = array of TButton;
 
+  { TModalWindow }
+
+  TModalWindow = class
+    buttons: TButtonsArray;
+    procedure Draw; virtual; abstract;
+    function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;virtual;
+  end;
+
 var
   IngameButtons: TButtonsArray;
   __ax, __ay: integer;
+  ModalWindow: TModalWindow;
 
 procedure StdButton(Text: string; X,Y,W,H: Single; State: TInvertState = Normal);
 implementation
@@ -42,7 +51,10 @@ uses umain, uglobal, ugame, uGameUI;
 
 function Buttons: TButtonsArray;
 begin
-  Result := IngameButtons
+  if ModalWindow <> nil then
+    Result := ModalWindow.buttons
+  else
+    Result := IngameButtons
 end;
 
 
@@ -88,6 +100,13 @@ procedure DrawUI;
 var
   B: TButton;
 begin
+  if ModalWindow <> nil then
+  begin
+    for B in IngameButtons do
+      if B.Visible then
+        B.Draw;
+    ModalWindow.Draw;
+  end;
   for B in Buttons do
     if B.Visible then
       B.Draw;
@@ -106,7 +125,17 @@ begin
       Result := true;
       exit;
     end;
-  Result := false;
+  if ModalWindow <> nil then
+    Result := ModalWindow.ProcessClick(x,y,event)
+  else
+    Result := false;
+end;
+
+{ TModalWindow }
+
+function TModalWindow.ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;
+begin
+  Result := False;
 end;
 
 { TButton }

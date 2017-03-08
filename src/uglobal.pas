@@ -44,6 +44,10 @@ const
   MINDIST = 10;
   CLICKDIST = 50;
 
+  MODAL_WIDTH = 0.9;
+  MODAL_HEIGHT = 0.8;
+
+
 var
   fntMain:  zglPFont;
   fntSecond:  zglPFont;

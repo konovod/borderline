@@ -60,7 +60,7 @@ var
   ActiveActions, AllActions: array of TAction;
 implementation
 
-uses ugame, uMap, uMain;
+uses ugame, uMap, uMain, uGameUI, uUI;
 
 procedure InitActions;
   procedure adda(act: TAction);
@@ -91,6 +91,7 @@ end;
 procedure TCheckLogAction.Execute;
 begin
   //TODO
+  ModalWindow := LogWindow;
 end;
 
 function TCheckLogAction.Text: String;
@@ -102,7 +103,7 @@ end;
 
 procedure TResearchAction.Execute;
 begin
-  //TODO
+  ModalWindow := ResearchWindow;
 end;
 
 function TResearchAction.Text: String;
@@ -114,7 +115,7 @@ end;
 
 procedure TPrioritiesAction.Execute;
 begin
-  //TODO
+  ModalWindow := PrioritiesWindow;
 end;
 
 function TPrioritiesAction.Text: String;
