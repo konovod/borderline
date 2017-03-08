@@ -54,10 +54,14 @@ type
 
 function ShortResearchList(res: THumanResearchLevel): string;
 function ShortMinesList(sys: TSystem; mines: TMinesData): string;
+function LongMinesList(sys: TSystem; mines: TMinesData): string;
+function CalcPower(sqd: TSquadron): Single;
+function AvgLevel(sqd: TSquadron): Single;
+function TotalCount(sqd: TSquadron): Integer;
 
 implementation
 
-uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData;
+uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, math;
 
 function ShortResearchList(res: THumanResearchLevel): string;
 var
@@ -72,14 +76,57 @@ end;
 function ShortMinesList(sys: TSystem; mines: TMinesData): string;
 var
   i, n: integer;
-  lv: TLevel;
 begin
-  //TODO: change?
   n := 0;
   for i := 0 to length(mines)-1 do
-    for lv in TLevel do
-      n := n+mines[i][lv]*lv;
-  Result := 'total power: '+IntToStr(n);
+    n := n+TotalCount(mines[i]);
+  Result := 'total: '+IntToStr(n);
+end;
+
+function LongMinesList(sys: TSystem; mines: TMinesData): string;
+var
+  i, n: integer;
+begin
+  for i := 0 to length(sys.Links)-1 do
+  begin
+    Result := Result + '  to '+sys.Links[i].Name+': '+IntToStr(trunc(CalcPower(mines[i])));
+    if i < length(sys.Links)-1 then
+      Result := Result+#10;
+  end;
+end;
+
+function CalcPower(sqd: TSquadron): Single;
+var
+  lv: TLevel;
+  n: integer;
+begin
+  Result := 0;
+  for lv in TLevel do
+    Result := Result + sqd[lv]*power(lv, K_LVL);
+end;
+
+function AvgLevel(sqd: TSquadron): Single;
+var
+  lv: TLevel;
+  n: integer;
+begin
+  Result := 0;
+  for lv in TLevel do
+    Result := Result+lv*sqd[lv];
+  n := TotalCount(sqd);
+  if n = 0 then
+    Result := 0
+  else
+    Result := Result / n;
+end;
+
+function TotalCount(sqd: TSquadron): Integer;
+var
+  lv: TLevel;
+begin
+  Result := 0;
+  for lv in TLevel do
+    Inc(Result, sqd[lv]);
 end;
 
 { TMap }
@@ -129,24 +176,21 @@ end;
 
 procedure TSystem.ShowInfo(aX, aY: single);
 var
-  text: string;
-
+  caption, text: string;
 begin
   DrawPanel(aX,aY,SYSTEMINFO_WIDTH*SCREENX,SYSTEMINFO_HEIGHT*SCREENY, 0.9);
-  if VisitTime = 0 then
+  caption := Name;
+  text := '';
+  if VisitTime <> 0 then
   begin
-    text := 'Unknown system';
-  end
-  else
-  begin
-    text := Name+#10+'visited at '+MyDateToStr(VisitTime)+#10+POP_STATUS_NAMES[SeenPopStatus];
+    text := 'visited '+MyDateToStr(VisitTime)+#10+POP_STATUS_NAMES[SeenPopStatus];
     if SeenPopStatus = Own then
     begin
       text := text+#10+'Research: '+ShortResearchList(SeenHumanResearch);
-      text := text+#10+'Mines '+ShortMinesList(Self, SeenMines);
+      text := text+#10+'Minefields power:'#10+LongMinesList(Self, SeenMines);
     end;
   end;
-  DrawSomeText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, text);
+  DrawSomeText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, caption, text);
 end;
 
 function TSystem.Color: zglColor;
@@ -175,7 +219,7 @@ begin
     CursorSize := (CursorSize + 1) mod (15*4);
     pr2d_Circle(X, Y, 15+15-CursorSize div 4, IntfDark);
   end
-  else if VisitTime <> 0 then
+  else //if VisitTime <> 0 then
     text_Draw(fntMain, X, Y, Name);
 end;
 
