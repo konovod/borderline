@@ -194,7 +194,7 @@ begin
       text := text+#10+'Minefields power:'#10+LongMinesList(Self, SeenMines);
     end;
   end;
-  DrawSomeText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, caption, text);
+  DrawFormattedText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, caption, text);
 end;
 
 function TSystem.Color: zglColor;

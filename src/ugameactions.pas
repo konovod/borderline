@@ -40,8 +40,10 @@ type
 
   { TResearchAction }
 
-  TResearchAction = class(TOwnSystemAction)
+  TResearchAction = class(TAction)
     procedure Execute; override;
+    function Allowed: Boolean; override;
+    function Visible: Boolean; override;
     function Text: String; override;
   end;
 
@@ -104,6 +106,16 @@ end;
 procedure TResearchAction.Execute;
 begin
   ModalWindow := ResearchWindow;
+end;
+
+function TResearchAction.Allowed: Boolean;
+begin
+  Result := True;
+end;
+
+function TResearchAction.Visible: Boolean;
+begin
+  Result := True;
 end;
 
 function TResearchAction.Text: String;

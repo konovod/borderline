@@ -167,7 +167,7 @@ begin
   finally
     batch2d_End;
   end;
-  text_Draw(fntSecond, 0, 0, 'FPS: ' + u_IntToStr(zgl_Get(RENDER_FPS))+', VRAM: ' + u_IntToStr(zgl_Get(RENDER_VRAM_USED) div 1024 div 1024)+' Mb, Batches: '+u_IntToStr(zgl_Get(RENDER_BATCHES_2D)));
+  text_Draw(fntSecond, 0, 0, 'FPS: ' + u_IntToStr(zgl_Get(RENDER_FPS)));
   if debug <> '' then text_Draw(fntSecond, 0, 100, 'DEBUG: '+debug);
 end;
 

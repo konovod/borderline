@@ -5,7 +5,7 @@ unit uGameUI;
 interface
 
 uses
-  Classes, SysUtils, uUI, ugameactions, uglobal;
+  Classes, SysUtils, uUI, ugameactions, uglobal, uGameTypes;
 
 type
 
@@ -32,12 +32,28 @@ type
   TGameWindow = class(TModalWindow)
     function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;override;
     procedure Draw; override;
+  private
+    procedure addbutton(bt: TButton);
+  end;
+
+  TResearchWindow = class;
+
+  { TSelectResearchButton }
+
+  TSelectResearchButton = class(TButton)
+    owner: TResearchWindow;
+    res: THumanResearch;
+    procedure Draw; override;
+    procedure Click(event: TMouseEvent); override;
+    constructor Create(aX, aY, aW, aH: Single; aowner: TResearchWindow; ares: THumanResearch);
   end;
 
   { TResearchWindow }
 
   TResearchWindow = class(TGameWindow)
+    cursor: THumanResearch;
     procedure Draw; override;
+    constructor Create;
   end;
 
   { TPrioritiesWindow }
@@ -69,7 +85,36 @@ procedure InitUI;
 
 implementation
 
-uses ugame, zgl_mouse, math;
+uses ugame, uStaticData, zgl_mouse, math;
+
+{ TSelectResearchButton }
+
+procedure TSelectResearchButton.Draw;
+var
+  st: TInvertState;
+begin
+  if res = ResearchPriority then
+    st := Active
+  else if res = owner.cursor then
+    st := Normal
+  else
+    st := Inactive;
+  StdButton(RESEARCH_NAMES[res], X,Y,W,H,st);
+end;
+
+procedure TSelectResearchButton.Click(event: TMouseEvent);
+begin
+  owner.cursor := res;
+  ResearchPriority := res;
+end;
+
+constructor TSelectResearchButton.Create(aX, aY, aW, aH: Single;
+  aowner: TResearchWindow; ares: THumanResearch);
+begin
+  inherited Create(ax,ay,aw,ah);
+  owner := aowner;
+  res := ares;
+end;
 
 { TBattleWindow }
 
@@ -95,8 +140,37 @@ end;
 { TResearchWindow }
 
 procedure TResearchWindow.Draw;
+var
+  bt: TButton;
+  descx, descy, wd, hg: single;
 begin
   inherited Draw;
+  for bt in buttons do
+    if InRect(mouseX, mouseY, bt.X, bt.Y,bt.W,bt.H) then
+      cursor := TSelectResearchButton(bt).res;
+
+  descx := 0.4;
+  descy := 0.3;
+  wd := 0.5+MODAL_WIDTH/2 - descx;
+  hg := 0.5+MODAL_HEIGHT/2 - descy;
+  DrawPanelUI(descx, descy, wd,hg, 1);
+  DrawSomeText(SCREENX*descx, SCREENY*descy, SCREENX*wd,SCREENY*hg,RESEARCH_NAMES[cursor],RESEARCH_DESC[cursor]);
+end;
+
+constructor TResearchWindow.Create;
+var
+  res: THumanResearch;
+  cx, cy, hg, wd: single;
+begin
+  cy := 0.5-MODAL_HEIGHT/2 + 0.02;
+  cx := 0.5-MODAL_WIDTH/2 + 0.02;
+  wd := 0.25;
+  hg := 0.07;
+  for res in THumanResearch do
+  begin
+    addbutton(TSelectResearchButton.Create(cx, cy, wd, hg, self, res));
+    cy := cy+hg+0.01;
+  end;
 end;
 
 { TGameWindow }
@@ -130,6 +204,12 @@ begin
         SCREENX*CLOSE_WIDTH);
 end;
 
+procedure TGameWindow.addbutton(bt: TButton);
+begin
+  SetLength(buttons, Length(buttons)+1);
+  buttons[High(buttons)] := bt;
+end;
+
 { TActionButton }
 
 function TActionButton.Visible: Boolean;
@@ -141,7 +221,7 @@ procedure TActionButton.Draw;
 begin
   if MyAction.Allowed then
   begin
-    if InRange(mouseX, X, X+W) and InRange(mouseY, Y, Y+H) then
+    if (ModalWindow = nil) and InRect(mouseX, mouseY, X, Y, W, H) then
       StdButton(MyAction.Text, X, Y, W, H, Active)
     else
       StdButton(MyAction.Text, X, Y, W, H, Normal)
@@ -184,12 +264,6 @@ procedure add(bt: TButton);
 begin
   SetLength(IngameButtons, Length(IngameButtons)+1);
   IngameButtons[High(IngameButtons)] := bt;
-end;
-
-procedure addmodal(win: TModalWindow; bt: TButton);
-begin
-  SetLength(win.buttons, Length(win.buttons)+1);
-  win.buttons[High(win.buttons)] := bt;
 end;
 
 var
