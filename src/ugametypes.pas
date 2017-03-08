@@ -8,7 +8,9 @@ interface
 const
   MAX_LEVEL = 20;
 
+  //balance koeffs
   K_LVL = 1.5;
+  MINE_MULTIPLIER = 10;
 
 type
 

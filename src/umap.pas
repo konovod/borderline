@@ -39,6 +39,7 @@ type
     procedure Enter;
     procedure PassTime;
     function Linked(asys: TSystem): boolean;
+    procedure LogEvent(s: string);
   end;
 
   { TMap }
@@ -59,6 +60,11 @@ function CalcPower(sqd: TSquadron): Single;
 function AvgLevel(sqd: TSquadron): Single;
 function TotalCount(sqd: TSquadron): Integer;
 
+//TODO - colony sizes
+function PrioToEffect(prio: single; max: integer): integer;
+function GenResLevel(res:THumanResearchLevel; first, second: THumanResearch): TLevel;
+function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TLevel;
+function ChooseArea(res: THumanResearchLevel): THumanResearch;
 implementation
 
 uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, math;
@@ -129,6 +135,42 @@ begin
     Inc(Result, sqd[lv]);
 end;
 
+function PrioToEffect(prio: single; max: integer): integer;
+var
+  fract: single;
+begin
+  Result := Trunc(prio*max);
+  if random < frac(prio*max) then
+    inc(Result)
+end;
+
+function GenResLevel(res: THumanResearchLevel; first, second: THumanResearch
+  ): TLevel;
+begin
+  Result := res[first] + res[second] + min(res[first], res[second]);
+end;
+
+function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TLevel;
+begin
+  case ship of
+    Brander: Result := GenResLevel(res, Explosives, Engines);
+    Cruiser: Result := GenResLevel(res, Weapons, Armor);
+    Minesweeper: Result := GenResLevel(res, Weapons, Sensors);
+    Colonizer: Result := 1;//TODO: cryionics\STC?
+    TroopTransport: Result := GenResLevel(res, Armor, Engines);
+    Scout: Result := GenResLevel(res, Sensors, Engines);
+  end;
+end;
+
+function ChooseArea(res: THumanResearchLevel): THumanResearch;
+begin
+  //TODO: consider level?
+  if random < 0.75{0.8 actually :) } then
+    Result := ResearchPriority
+  else
+    Result := THumanResearch(Random(ord(high(THumanResearch))+1));
+end;
+
 { TMap }
 
 constructor TMap.Create;
@@ -167,11 +209,16 @@ end;
 { TSystem }
 
 procedure TSystem.InitGameStats;
+var
+  res: THumanResearch;
 begin
   SetLength(Mines, Length(Links));
   SetLength(SeenMines, Length(Links));
-  //TODO: research levels?
-
+  SetLength(Priorities.Mines, Length(Links));
+  for res in THumanResearch do
+    HumanResearch[res] := 1;
+  AlienResearch[AlienBattleship] := 5;
+  AlienResearch[AlienCruiser] := 5;
 end;
 
 procedure TSystem.ShowInfo(aX, aY: single);
@@ -264,14 +311,32 @@ begin
 end;
 
 procedure TSystem.PassTime;
+var
+  ship: THumanShips;
+  area: THumanResearch;
+  lv, i: integer;
 begin
   case PopStatus of
     Own:
+  begin
   //1. build ships
+    for ship in THumanShips do
+    begin
+      Inc(Ships[ship][ShipLevel(ship, HumanResearch)], PrioToEffect(Priorities.Ships[ship], 10));
+    end;
   //2. do research
+    area := ChooseArea(HumanResearch);
+    if (PrioToEffect(Priorities.Research / max(1, HumanResearch[area]), 1) > 0) and
+       (HumanResearch[area] < MAX_LEVEL) then
+    begin
+      inc(HumanResearch[area]);
+    end;
   //3. build mines
-  //4. drift priorities
-    ;
+    lv := HumanResearch[Explosives];
+    for i := 0 to length(Mines)-1 do
+      Inc(Mines[i][lv], PrioToEffect(Priorities.Mines[i], 10*MINE_MULTIPLIER));
+  //4. TODO: drift priorities
+  end;
     Alien: ;//TODO
     Colonizable, WipedOut: ;
   end;
@@ -285,6 +350,11 @@ begin
   for sys in Links do
     if sys = asys then exit;
   Result := False;
+end;
+
+procedure TSystem.LogEvent(s: string);
+begin
+  //TODO
 end;
 
 

@@ -157,8 +157,8 @@ begin
     if Assigned(PlayerSys) then
       PlayerSys.State := Visited;
     PlayerSys := Cursor;
-    PlayerSys.Enter;
   end;
+  PlayerSys.Enter;
   ScrollToCenter(PlayerSys.X, PlayerSys.Y);
 end;
 
