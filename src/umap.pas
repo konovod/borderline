@@ -23,7 +23,7 @@ type
     Links: array of TSystem;
     State: TSystemState;
     SeenPopStatus, PopStatus: TPopulationState;
-    VisitTime: TDateTime;
+    VisitTime: TStarDate;
     AlienId: Integer;
     AlienResearch: TAlienResearchLevel;
     SeenHumanResearch, HumanResearch: THumanResearchLevel;

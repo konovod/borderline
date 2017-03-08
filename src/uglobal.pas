@@ -2,7 +2,7 @@ unit uglobal;
 
 interface
 
-uses   zgl_font, zgl_textures, zgl_math_2d, SysUtils;
+uses   zgl_font, zgl_textures, zgl_math_2d, SysUtils, uGameTypes;
 
 type
   zglColor = LongWord;
@@ -58,7 +58,7 @@ procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawSomeText(X,Y,W,H: Single; caption, text: string);
 
-function MyDateToStr(adate: TDateTime): string;
+function MyDateToStr(adate: TStarDate): string;
 
 implementation
 uses Math, zgl_primitives_2d, zgl_text;
@@ -126,9 +126,10 @@ begin
   DrawPanel(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, alpha);
 end;
 
-function MyDateToStr(adate: TDateTime): string;
+function MyDateToStr(adate: TStarDate): string;
 begin
-  DateTimeToString(Result, 'yyyy-mm-dd', adate)
+  Result := IntToStr(2113+adate);
+  //DateTimeToString(Result, 'yyyy-mm-dd', adate)
 end;
 
 end.

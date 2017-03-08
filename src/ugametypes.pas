@@ -12,6 +12,8 @@ const
 
 type
 
+  TStarDate = Integer;
+
   TLevel = 0..MAX_LEVEL;
 
   THumanResearch = (Explosives, Sensors, Engines, Armor, Weapons);
