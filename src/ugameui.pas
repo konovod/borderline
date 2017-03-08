@@ -102,9 +102,16 @@ end;
 { TGameWindow }
 
 function TGameWindow.ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;
+var
+  inner, closebt: boolean;
 begin
-  if not InRange(x/SCREENX, 0.5-MODAL_WIDTH/2, 0.5+MODAL_WIDTH/2) or
-     not InRange(y/SCREENY, 0.5-MODAL_HEIGHT/2, 0.5+MODAL_HEIGHT/2) then
+  inner := InRect(x/SCREENX, y/SCREENY, 0.5-MODAL_WIDTH/2, 0.5-MODAL_HEIGHT/2, MODAL_WIDTH, MODAL_HEIGHT);
+  closebt := InRect(x/SCREENX, y/SCREENY,
+                 0.5+MODAL_WIDTH/2-CLOSE_WIDTH,
+                 0.5-MODAL_HEIGHT/2,
+                 CLOSE_WIDTH,
+                 CLOSE_WIDTH);
+  if closebt or not inner then
   begin
     Result := True;
     ModalWindow := nil;
@@ -116,6 +123,11 @@ end;
 procedure TGameWindow.Draw;
 begin
   DrawPanelUI(0.5-MODAL_WIDTH/2, 0.5-MODAL_HEIGHT/2, MODAL_WIDTH, MODAL_HEIGHT, 0.9);
+  StdButton('X',
+        SCREENX*(0.5+MODAL_WIDTH/2-CLOSE_WIDTH),
+        SCREENY*(0.5-MODAL_HEIGHT/2),
+        SCREENX*CLOSE_WIDTH,
+        SCREENX*CLOSE_WIDTH);
 end;
 
 { TActionButton }

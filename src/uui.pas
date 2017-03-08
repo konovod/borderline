@@ -119,7 +119,7 @@ begin
   __ax := x;
   __ay := y;
   for B in Buttons do
-    if B.Visible and InRange(x, B.X, B.X+B.W) and InRange(y, B.Y, B.Y+B.H) and (event in B.CatchEvents) then
+    if B.Visible and InRect(x, y, B.X, B.Y, B.W, B.H) and (event in B.CatchEvents) then
     begin
       B.Click(event);
       Result := true;

@@ -46,6 +46,7 @@ const
 
   MODAL_WIDTH = 0.9;
   MODAL_HEIGHT = 0.8;
+  CLOSE_WIDTH = 0.05;
 
 
 var
@@ -63,6 +64,8 @@ procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawSomeText(X,Y,W,H: Single; caption, text: string);
 
 function MyDateToStr(adate: TStarDate): string;
+
+function InRect(x,y: single; x0,y0,w,h: single): boolean;
 
 implementation
 uses Math, zgl_primitives_2d, zgl_text;
@@ -134,6 +137,11 @@ function MyDateToStr(adate: TStarDate): string;
 begin
   Result := IntToStr(2113+adate);
   //DateTimeToString(Result, 'yyyy-mm-dd', adate)
+end;
+
+function InRect(x, y: single; x0, y0, w, h: single): boolean;
+begin
+  Result := InRange(x, x0, x0+w) and InRange(y, y0, y0+h);
 end;
 
 end.
