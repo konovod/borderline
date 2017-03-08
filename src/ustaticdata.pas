@@ -18,7 +18,7 @@ const
   RESEARCH_DESC: array[THumanResearch] of string = (
     'Research subatomic physics to find most potentially destructive reactions. Allows to build better mines and branders',
     'Research statistical methods to discover alien signatures and counter their stealth systems. Allows to build better scouts and minesweepers',
-    'Better engines can help us to outmaneuver alien ships. Allows to build better branders and scouts',
+    'Better engines can help us to outmaneuver alien ships. Allows to build better branders, scouts and marine bots',
     'Research fields and material that can withstand alien weapons. Allows to build better cruisers and marine bots',
     'Long-range weapon technologies - from missiles to gravitational disruptors and beyound. Allows to build better cruisers and orbital defenses');
 
