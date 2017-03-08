@@ -20,6 +20,7 @@ var
   CursorSize: Integer;
   Turn: integer;
   StarDate: TStarDate;
+  ResearchPriority: THumanResearch = Engines;
 
 procedure NextTurn;
 implementation
