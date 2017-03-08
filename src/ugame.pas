@@ -12,7 +12,6 @@ uses
 procedure NewGame;
 procedure DrawAll;
 procedure DrawGameUI;
-//just for a test
 procedure OnClick(ax, ay: single);
 
 var
@@ -64,7 +63,6 @@ begin
   sys := Map.FindSys(ax, ay);
   if sys <> cursor then
     CursorSize := 0;
-
   if sys <> nil then
     Cursor := sys
   else
@@ -72,9 +70,13 @@ begin
 end;
 
 procedure NextTurn;
+var
+  sys: TSystem;
 begin
   inc(Turn);
   //TODO - all processing
+  for sys in Map.Systems do
+    sys.PassTime;
   StarDate := StarDate + 1;
 end;
 

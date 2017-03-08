@@ -156,7 +156,7 @@ var
   sys: TSystem;
 begin
   for sys in Systems do
-    if Distance(x, y, sys.x, sys.y) < CLICKDIST then
+    if (sys.State <> Hidden) and (Distance(x, y, sys.x, sys.y) < CLICKDIST) then
     begin
       Result := sys;
       exit;
@@ -183,7 +183,11 @@ begin
   text := '';
   if VisitTime <> 0 then
   begin
-    text := 'visited '+MyDateToStr(VisitTime)+#10+POP_STATUS_NAMES[SeenPopStatus];
+    if VisitTime = StarDate then
+      text := #255
+    else
+      text := 'visited at '+MyDateToStr(VisitTime);
+    text := text+#10+POP_STATUS_NAMES[SeenPopStatus];
     if SeenPopStatus = Own then
     begin
       text := text+#10+'Research: '+ShortResearchList(SeenHumanResearch);
@@ -220,7 +224,7 @@ begin
     pr2d_Circle(X, Y, 15+15-CursorSize div 4, IntfDark);
   end
   else //if VisitTime <> 0 then
-    text_Draw(fntMain, X, Y, Name);
+    text_DrawEx(fntMain, X+10, Y+10, 0.5, 0, Name, 255, White);
 end;
 
 procedure TSystem.DrawLinks;
