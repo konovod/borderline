@@ -13,7 +13,7 @@ const
 
   POP_STATUS_NAMES: array[TPopulationState] of string = ('Colonized', 'Colonizable', 'Alien', 'Lifeless');
 
-  SHIP_NAMES: array[THumanShips] of string = ('Brander', 'Cruiser', 'Minesweeper', 'Colonizer', 'TroopTransport', 'Scout');
+  SHIP_NAMES: array[THumanShips] of string = ('Brander', 'Cruiser', 'Minesweeper', 'Colonizer', 'Marine bot', 'Scout');
 
   RESEARCH_DESC: array[THumanResearch] of string = (
     'Research subatomic physics to find most potentially destructive reactions. Allows to build better mines and branders',

@@ -32,6 +32,7 @@ type
   TGameWindow = class(TModalWindow)
     function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;override;
     procedure Draw; override;
+    procedure Close; virtual;
   private
     procedure addbutton(bt: TButton);
   end;
@@ -56,10 +57,30 @@ type
     constructor Create;
   end;
 
+  TPriorityType = (prFree, prResearch, prShips, prMines);
+
+  { TPriorityBar }
+
+  TPrioritiesWindow = class;
+  TPriorityBar = class(TButton)
+    owner: TPrioritiesWindow;
+    typ: TPriorityType;
+    index: integer;
+    function MyText: string;
+    function MyValue: Single;
+    procedure ApplyValue(value: single);
+    procedure Draw; override;
+    procedure Click(event: TMouseEvent); override;
+    constructor Create(aX, aY, aW, aH: Single; aowner: TPrioritiesWindow; atyp: TPriorityType; aindex: integer);
+  end;
+
   { TPrioritiesWindow }
 
   TPrioritiesWindow = class(TGameWindow)
+    freepoints: Single;
     procedure Draw; override;
+    constructor Create;
+    procedure Close; override;
   end;
 
   { TLogWindow }
@@ -86,6 +107,57 @@ procedure InitUI;
 implementation
 
 uses ugame, uStaticData, zgl_mouse, math;
+
+{ TPriorityBar }
+
+function TPriorityBar.MyText: string;
+begin
+  case typ of
+    prFree: Result := 'Remaining points';
+    prResearch: Result := 'Do research';
+    prShips: Result := 'Build '+LowerCase(SHIP_NAMES[THumanShips(index)])+'s';
+    prMines: Result := 'Mine warp point to '+PlayerSys.Links[index].Name;
+  end;
+end;
+
+function TPriorityBar.MyValue: Single;
+begin
+  case typ of
+    prFree: Result := owner.freepoints;
+    prResearch: Result := PlayerSys.Priorities.Research;
+    prShips: Result := PlayerSys.Priorities.Ships[THumanShips(index)];
+    prMines: Result := PlayerSys.Priorities.Mines[index];
+  end;
+end;
+
+procedure TPriorityBar.ApplyValue(value: single);
+begin
+  case typ of
+    prFree: exit;
+    prResearch: PlayerSys.Priorities.Research := value;
+    prShips: PlayerSys.Priorities.Ships[THumanShips(index)] := value;
+    prMines: PlayerSys.Priorities.Mines[index] := value;
+  end;
+end;
+
+procedure TPriorityBar.Draw;
+begin
+
+end;
+
+procedure TPriorityBar.Click(event: TMouseEvent);
+begin
+
+end;
+
+constructor TPriorityBar.Create(aX, aY, aW, aH: Single;
+  aowner: TPrioritiesWindow; atyp: TPriorityType; aindex: integer);
+begin
+  inherited Create(ax,ay,aw,ah);
+  owner := aowner;
+  typ := atyp;
+  index := aindex;
+end;
 
 { TSelectResearchButton }
 
@@ -135,6 +207,18 @@ end;
 procedure TPrioritiesWindow.Draw;
 begin
   inherited Draw;
+end;
+
+constructor TPrioritiesWindow.Create;
+begin
+//  addbutton();
+end;
+
+procedure TPrioritiesWindow.Close;
+begin
+  if freepoints > 0 then
+    PlayerSys.Priorities.Research := PlayerSys.Priorities.Research + freepoints;
+  freepoints := 0;
 end;
 
 { TResearchWindow }
@@ -187,6 +271,7 @@ begin
                  CLOSE_WIDTH);
   if closebt or not inner then
   begin
+    Close;
     Result := True;
     ModalWindow := nil;
   end
@@ -202,6 +287,11 @@ begin
         SCREENY*(0.5-MODAL_HEIGHT/2),
         SCREENX*CLOSE_WIDTH,
         SCREENX*CLOSE_WIDTH);
+end;
+
+procedure TGameWindow.Close;
+begin
+
 end;
 
 procedure TGameWindow.addbutton(bt: TButton);
