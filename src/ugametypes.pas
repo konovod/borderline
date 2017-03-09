@@ -15,6 +15,7 @@ const
 type
 
   TStarDate = Integer;
+  TPriorityLevel = Integer;
 
   TLevel = 0..MAX_LEVEL;
 
@@ -31,9 +32,9 @@ type
   TMinesData = array of TSquadron;
 
   TPriorities = record
-    Ships: array[THumanShips] of Single;
-    Research: single;
-    Mines: array of Single;
+    Ships: array[THumanShips] of Integer;
+    Research: Integer;
+    Mines: array of Integer;
   end;
 
 

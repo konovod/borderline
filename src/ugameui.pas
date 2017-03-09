@@ -66,9 +66,10 @@ type
     owner: TPrioritiesWindow;
     typ: TPriorityType;
     index: integer;
+    function Visible: boolean;override;
     function MyText: string;
-    function MyValue: Single;
-    procedure ApplyValue(value: single);
+    function MyValue: TPriorityLevel;
+    procedure ApplyValue(value: TPriorityLevel);
     procedure Draw; override;
     procedure Click(event: TMouseEvent); override;
     constructor Create(aX, aY, aW, aH: Single; aowner: TPrioritiesWindow; atyp: TPriorityType; aindex: integer);
@@ -77,7 +78,6 @@ type
   { TPrioritiesWindow }
 
   TPrioritiesWindow = class(TGameWindow)
-    freepoints: Single;
     procedure Draw; override;
     constructor Create;
     procedure Close; override;
@@ -106,9 +106,14 @@ procedure InitUI;
 
 implementation
 
-uses ugame, uStaticData, zgl_mouse, math;
+uses ugame, uStaticData, uMap, zgl_mouse, math;
 
 { TPriorityBar }
+
+function TPriorityBar.Visible: boolean;
+begin
+  Result := (typ <> prMines) or (index < length(PlayerSys.Mines));
+end;
 
 function TPriorityBar.MyText: string;
 begin
@@ -120,17 +125,17 @@ begin
   end;
 end;
 
-function TPriorityBar.MyValue: Single;
+function TPriorityBar.MyValue: TPriorityLevel;
 begin
   case typ of
-    prFree: Result := owner.freepoints;
+    prFree: Result := FreePoints(PlayerSys.Priorities);
     prResearch: Result := PlayerSys.Priorities.Research;
     prShips: Result := PlayerSys.Priorities.Ships[THumanShips(index)];
     prMines: Result := PlayerSys.Priorities.Mines[index];
   end;
 end;
 
-procedure TPriorityBar.ApplyValue(value: single);
+procedure TPriorityBar.ApplyValue(value: TPriorityLevel);
 begin
   case typ of
     prFree: exit;
@@ -142,7 +147,7 @@ end;
 
 procedure TPriorityBar.Draw;
 begin
-
+  StdButton(MyText, X,Y,W,H,Normal);
 end;
 
 procedure TPriorityBar.Click(event: TMouseEvent);
@@ -210,15 +215,38 @@ begin
 end;
 
 constructor TPrioritiesWindow.Create;
+var
+  i: integer;
+  ship: THumanShips;
+  cx, cy, hg, wd: single;
 begin
-//  addbutton();
+  cy := 0.5-MODAL_HEIGHT/2 + 0.02;
+  cx := 0.5-MODAL_WIDTH/2 + 0.02;
+  wd := 0.5;
+  hg := 0.07;
+  addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prFree, 0));
+  cy := cy+hg+0.01;
+  addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prResearch, 0));
+  cy := cy+hg+0.01;
+  for ship in THumanShips do
+  begin
+    addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prShips, ord(ship)));
+    cy := cy+hg+0.01;
+  end;
+  for i := 0 to 100 do
+  begin
+    addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prMines, i));
+    cy := cy+hg+0.01;
+  end;
 end;
 
 procedure TPrioritiesWindow.Close;
+var
+  pt: TPriorityLevel;
 begin
-  if freepoints > 0 then
-    PlayerSys.Priorities.Research := PlayerSys.Priorities.Research + freepoints;
-  freepoints := 0;
+  pt := freepoints(PlayerSys.Priorities);
+  if pt > 0 then
+    PlayerSys.Priorities.Research := PlayerSys.Priorities.Research + pt;
 end;
 
 { TResearchWindow }
@@ -357,7 +385,7 @@ begin
 end;
 
 var
-  i, j: integer;
+  i: integer;
   cx, cy: single;
 begin
   //game buttons: date and actions

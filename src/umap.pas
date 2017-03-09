@@ -61,10 +61,12 @@ function AvgLevel(sqd: TSquadron): Single;
 function TotalCount(sqd: TSquadron): Integer;
 
 //TODO - colony sizes
-function PrioToEffect(prio: single; max: integer): integer;
+function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
 function GenResLevel(res:THumanResearchLevel; first, second: THumanResearch): TLevel;
 function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TLevel;
-function ChooseArea(res: THumanResearchLevel): THumanResearch;
+procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
+
+function FreePoints(prio: TPriorities): TPriorityLevel;
 implementation
 
 uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, math;
@@ -136,12 +138,12 @@ begin
     Inc(Result, sqd[lv]);
 end;
 
-function PrioToEffect(prio: single; max: integer): integer;
+function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
 var
   fract: single;
 begin
-  Result := Trunc(prio*max);
-  if random < frac(prio*max) then
+  Result := Trunc(prio/100*max);
+  if random < frac(prio/100*max) then
     inc(Result)
 end;
 
@@ -163,13 +165,36 @@ begin
   end;
 end;
 
-function ChooseArea(res: THumanResearchLevel): THumanResearch;
+procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
+var
+  area: THumanResearch;
+  i: integer;
 begin
-  //TODO: consider level?
-  if random < 0.75{0.8 actually :) } then
-    Result := ResearchPriority
-  else
-    Result := THumanResearch(Random(ord(high(THumanResearch))+1));
+  for i := 1 to 10 do
+  begin
+    if random < 0.75{0.8 actually :) } then
+      area := ResearchPriority
+    else
+      area := THumanResearch(Random(ord(high(THumanResearch))+1));
+    if (random < prio/10/max(1, res[area])) and
+       (res[area] < MAX_LEVEL) then
+    begin
+      inc(res[area]);
+      exit;
+    end;
+  end;
+end;
+
+function FreePoints(prio: TPriorities): TPriorityLevel;
+var
+  i: integer;
+  ship: THumanShips;
+begin
+  Result := 100 - prio.Research;
+	for ship in THumanShips do
+  	Result := Result - prio.Ships[ship];
+	for i := 0 to length(prio.Mines)-1 do
+  	Result := Result - prio.Mines[i];
 end;
 
 { TMap }
@@ -314,7 +339,6 @@ end;
 procedure TSystem.PassTime;
 var
   ship: THumanShips;
-  area: THumanResearch;
   lv, i: integer;
 begin
   case PopStatus of
@@ -326,12 +350,7 @@ begin
       Inc(Ships[ship][ShipLevel(ship, HumanResearch)], PrioToEffect(Priorities.Ships[ship], 10));
     end;
   //2. do research
-    area := ChooseArea(HumanResearch);
-    if (PrioToEffect(Priorities.Research / max(1, HumanResearch[area]), 1) > 0) and
-       (HumanResearch[area] < MAX_LEVEL) then
-    begin
-      inc(HumanResearch[area]);
-    end;
+  	DoResearch(Priorities.Research, HumanResearch);
   //3. build mines
     lv := HumanResearch[Explosives];
     for i := 0 to length(Mines)-1 do
