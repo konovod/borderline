@@ -56,7 +56,8 @@ type
 
 function ShortResearchList(res: THumanResearchLevel): string;
 function LongResearchList(res: THumanResearchLevel): string;
-function LongShipsList(fleet: TFleetData): string;
+function LongShipsList(fleet, damaged: TFleetData): string;
+function ShortShipsList(fleet: TFleetData): string;
 function ShortMinesList(sys: TSystem; mines: TMinesData): string;
 function LongMinesList(sys: TSystem; mines: TMinesData): string;
 function CalcPower(sqd: TSquadron): Single;
@@ -94,13 +95,37 @@ begin
   SetLength(Result, Length(Result)-1);
 end;
 
-function LongShipsList(fleet: TFleetData): string;
+function LongShipsList(fleet, damaged: TFleetData): string;
 var
   ship: THumanShips;
+  n: integer;
 begin
   Result := '';
   for ship in THumanShips do
-    Result := Result+Format('%ss: %d (lvl %.1f)'#10, [SHIP_NAMES[ship], TotalCount(fleet[ship]), AvgLevel(fleet[ship])]);
+  begin
+    n := TotalCount(fleet[ship]);
+    Result := Result+Format('%ss: %d, '#10, [SHIP_NAMES[ship], n]);
+    if n > 0 then
+      Result := Result+Format('LVL %.1f, DMG %d%%'#10#10, [
+        AvgLevel(fleet[ship]),
+        Trunc(100*TotalCount(damaged[ship])/TotalCount(fleet[ship]))])
+    else
+      Result := Result+#10;
+  end;
+  SetLength(Result, Length(Result)-1);
+end;
+
+function ShortShipsList(fleet: TFleetData): string;
+var
+  ship: THumanShips;
+  n: integer;
+begin
+  Result := '';
+  for ship in THumanShips do
+  begin
+    n := TotalCount(fleet[ship]);
+    Result := Result+Format('%ss: %d, '#10, [SHIP_NAMES[ship], n]);
+  end;
   SetLength(Result, Length(Result)-1);
 end;
 

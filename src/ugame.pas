@@ -22,7 +22,7 @@ var
   Turn: integer;
   StarDate: TStarDate;
   ResearchPriority: THumanResearch = Engines;
-  PlayerFleet: TFleetData;
+  PlayerFleet, PlayerDamaged: TFleetData;
   PlayerKnowledge: THumanResearchLevel;
 
 procedure NextTurn;
@@ -59,8 +59,8 @@ begin
   //  Cursor.ShowInfo(0, SCREENY*(1-SYSTEMINFO_HEIGHT));
   //end;
   DrawPanelUI(1-PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
-  DrawFormattedText(SCREENX*(1-PLAYERINFO_WIDTH), SCREENY*PLAYERINFO_TOP, SCREENX*PLAYERINFO_WIDTH, SCREENY*PLAYERINFO_HEIGHT,
-    'Your fleet', LongShipsList(PlayerFleet)+#10'Research data:'#10+LongResearchList(PlayerKnowledge));
+  DrawFormattedText(SCREENX*(1-PLAYERINFO_WIDTH)+10, SCREENY*PLAYERINFO_TOP+10, SCREENX*PLAYERINFO_WIDTH, SCREENY*PLAYERINFO_HEIGHT,
+    'Your fleet', ShortShipsList(PlayerFleet)+#10#10'Research data:'#10+LongResearchList(PlayerKnowledge));
 end;
 
 procedure OnClick(ax, ay: single);
@@ -84,7 +84,8 @@ begin
   PlayerFleet[Cruiser][1] := 5;
   PlayerFleet[Brander][1] := 5;
   PlayerFleet[Scout][1] := 1;
-  PlayerFleet[Colonizer][1] := 2;
+  PlayerFleet[Colonizer][1] := 1;
+  PlayerFleet[TroopTransport][1] := 2;
   for res in THumanResearch do
     PlayerKnowledge[res] := 1;
 end;
