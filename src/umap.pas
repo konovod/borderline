@@ -62,8 +62,8 @@ function TotalCount(sqd: TSquadron): Integer;
 
 //TODO - colony sizes
 function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
-function GenResLevel(res:THumanResearchLevel; first, second: THumanResearch): TLevel;
-function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TLevel;
+function GenResLevel(res:THumanResearchLevel; first, second: THumanResearch): TPowerLevel;
+function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TPowerLevel;
 procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
 
 function FreePoints(prio: TPriorities): TPriorityLevel;
@@ -106,21 +106,21 @@ end;
 
 function CalcPower(sqd: TSquadron): Single;
 var
-  lv: TLevel;
+  lv: TPowerLevel;
   n: integer;
 begin
   Result := 0;
-  for lv in TLevel do
+  for lv in TPowerLevel do
     Result := Result + sqd[lv]*power(lv, K_LVL);
 end;
 
 function AvgLevel(sqd: TSquadron): Single;
 var
-  lv: TLevel;
+  lv: TPowerLevel;
   n: integer;
 begin
   Result := 0;
-  for lv in TLevel do
+  for lv in TPowerLevel do
     Result := Result+lv*sqd[lv];
   n := TotalCount(sqd);
   if n = 0 then
@@ -131,10 +131,10 @@ end;
 
 function TotalCount(sqd: TSquadron): Integer;
 var
-  lv: TLevel;
+  lv: TPowerLevel;
 begin
   Result := 0;
-  for lv in TLevel do
+  for lv in TPowerLevel do
     Inc(Result, sqd[lv]);
 end;
 
@@ -148,12 +148,12 @@ begin
 end;
 
 function GenResLevel(res: THumanResearchLevel; first, second: THumanResearch
-  ): TLevel;
+  ): TPowerLevel;
 begin
-  Result := res[first] + res[second] + min(res[first], res[second]);
+  Result := EnsureRange((res[first] + res[second] + min(res[first], res[second])) div 2, 0, MAX_POWER_LEVEL);
 end;
 
-function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TLevel;
+function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TPowerLevel;
 begin
   case ship of
     Brander: Result := GenResLevel(res, Explosives, Engines);
@@ -177,7 +177,7 @@ begin
     else
       area := THumanResearch(Random(ord(high(THumanResearch))+1));
     if (random < prio/10/max(1, res[area])) and
-       (res[area] < MAX_LEVEL) then
+       (res[area] < MAX_RES_LEVEL) then
     begin
       inc(res[area]);
       exit;

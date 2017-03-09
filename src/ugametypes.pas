@@ -6,7 +6,8 @@ interface
 
 
 const
-  MAX_LEVEL = 20;
+  MAX_RES_LEVEL = 20;
+  MAX_POWER_LEVEL = 30;
 
   //balance koeffs
   K_LVL = 1.5;
@@ -17,16 +18,17 @@ type
   TStarDate = Integer;
   TPriorityLevel = Integer;
 
-  TLevel = 0..MAX_LEVEL;
+  TResearchLevel = 0..MAX_RES_LEVEL;
+  TPowerLevel = 0..MAX_POWER_LEVEL;
 
   THumanResearch = (Explosives, Sensors, Engines, Armor, Weapons);
   THumanShips = (Brander, Cruiser, Minesweeper, Colonizer, TroopTransport, Scout);
   TAlienResearch = (AlienCruiser, AlienBattleship, AlienMines, AlienMinesweeper, AlienOrbital);
 
-  THumanResearchLevel = array[THumanResearch] of TLevel;
-  TAlienResearchLevel = array[TAlienResearch] of TLevel;
+  THumanResearchLevel = array[THumanResearch] of TResearchLevel;
+  TAlienResearchLevel = array[TAlienResearch] of TResearchLevel;
 
-  TSquadron = array[TLevel] of Integer;
+  TSquadron = array[TPowerLevel] of Integer;
   TFleetData = array[THumanShips] of TSquadron;
 
   TMinesData = array of TSquadron;

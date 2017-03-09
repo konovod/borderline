@@ -27,7 +27,7 @@
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
-            <Filename Value="../booo"/>
+            <Filename Value="../borderline"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);../zengl/headers"/>
@@ -152,7 +152,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="../booo"/>
+      <Filename Value="../borderline"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);../zengl/headers"/>
