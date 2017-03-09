@@ -24,6 +24,7 @@ var
   ResearchPriority: THumanResearch = Engines;
   PlayerFleet, PlayerDamaged: TFleetData;
   PlayerKnowledge: THumanResearchLevel;
+  ShowCursor: boolean;
 
 procedure NextTurn;
 implementation
@@ -46,18 +47,13 @@ end;
 procedure DrawAll;
 begin
   Map.Draw;
-  if Cursor <> nil then
+  if ShowCursor and (Cursor <> nil) then
     Cursor.ShowInfo(Cursor.X, Cursor.Y);
 end;
 
 procedure DrawGameUI;
 begin
   DrawPanelUI(TOPPANEL_LEFT-0.005, 0, TOPPANEL_WIDTH+0.01, 0.26);
-  //if Cursor <> nil then
-  //begin
-  //  DrawPanelUI(0, 1-SYSTEMINFO_HEIGHT, SYSTEMINFO_WIDTH, SYSTEMINFO_HEIGHT);
-  //  Cursor.ShowInfo(0, SCREENY*(1-SYSTEMINFO_HEIGHT));
-  //end;
   DrawPanelUI(1-PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
   DrawFormattedText(SCREENX*(1-PLAYERINFO_WIDTH)+10, SCREENY*PLAYERINFO_TOP+10, SCREENX*PLAYERINFO_WIDTH, SCREENY*PLAYERINFO_HEIGHT,
     'Your fleet', ShortShipsList(PlayerFleet)+#10#10'Research data:'#10+LongResearchList(PlayerKnowledge));
@@ -68,8 +64,11 @@ var
   sys: TSystem;
 begin
   sys := Map.FindSys(ax, ay);
-  if sys <> cursor then
+  if sys = cursor then
+    ShowCursor := not ShowCursor
+  else
     CursorSize := 0;
+
   if sys <> nil then
     Cursor := sys
   else

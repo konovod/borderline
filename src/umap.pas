@@ -356,8 +356,8 @@ begin
   begin
     CursorSize := (CursorSize + 1) mod (15*4);
     pr2d_Circle(X, Y, 15+15-CursorSize div 4, IntfDark);
-  end
-  else //if VisitTime <> 0 then
+  end;
+  if (Self <> Cursor) or not ShowCursor then
     text_DrawEx(fntMain, X+10, Y+10, 0.5, 0, Name, 255, White);
 end;
 
@@ -397,6 +397,7 @@ begin
   //now make visit
   VisitTime := StarDate;
   SeenMines := Mines;
+  SetLength(SeenMines, Length(SeenMines));
   SeenHumanResearch := HumanResearch;
   SeenPopStatus := PopStatus;
   //transfer ships
