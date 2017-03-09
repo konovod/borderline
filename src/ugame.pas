@@ -13,6 +13,7 @@ procedure NewGame;
 procedure DrawAll;
 procedure DrawGameUI;
 procedure OnClick(ax, ay: single);
+procedure InitPlayer;
 
 var
   Map: TMap;
@@ -21,6 +22,8 @@ var
   Turn: integer;
   StarDate: TStarDate;
   ResearchPriority: THumanResearch = Engines;
+  PlayerFleet: TFleetData;
+  PlayerKnowledge: THumanResearchLevel;
 
 procedure NextTurn;
 implementation
@@ -35,6 +38,7 @@ begin
   Map.Generate;
   PlayerSys := Map.Systems[0];
   Cursor := nil;
+  InitPlayer;
   PlayerSys.Enter;
   ScrollToCenter(PlayerSys.x, PlayerSys.y);
 end;
@@ -55,6 +59,8 @@ begin
   //  Cursor.ShowInfo(0, SCREENY*(1-SYSTEMINFO_HEIGHT));
   //end;
   DrawPanelUI(1-PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
+  DrawFormattedText(SCREENX*(1-PLAYERINFO_WIDTH), SCREENY*PLAYERINFO_TOP, SCREENX*PLAYERINFO_WIDTH, SCREENY*PLAYERINFO_HEIGHT,
+    'Your fleet', LongShipsList(PlayerFleet)+#10'Research data:'#10+LongResearchList(PlayerKnowledge));
 end;
 
 procedure OnClick(ax, ay: single);
@@ -68,6 +74,19 @@ begin
     Cursor := sys
   else
     Cursor := nil;
+end;
+
+procedure InitPlayer;
+var
+  ship: THumanShips;
+  res: THumanResearch;
+begin
+  PlayerFleet[Cruiser][1] := 5;
+  PlayerFleet[Brander][1] := 5;
+  PlayerFleet[Scout][1] := 1;
+  PlayerFleet[Colonizer][1] := 2;
+  for res in THumanResearch do
+    PlayerKnowledge[res] := 1;
 end;
 
 procedure NextTurn;

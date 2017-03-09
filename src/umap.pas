@@ -55,6 +55,8 @@ type
 
 
 function ShortResearchList(res: THumanResearchLevel): string;
+function LongResearchList(res: THumanResearchLevel): string;
+function LongShipsList(fleet: TFleetData): string;
 function ShortMinesList(sys: TSystem; mines: TMinesData): string;
 function LongMinesList(sys: TSystem; mines: TMinesData): string;
 function CalcPower(sqd: TSquadron): Single;
@@ -79,6 +81,26 @@ begin
   Result := '';
   for it in THumanResearchLevel do
     Result := Result+RESEARCH_NAMES[it][1]+IntToStr(res[it])+',';
+  SetLength(Result, Length(Result)-1);
+end;
+
+function LongResearchList(res: THumanResearchLevel): string;
+var
+  it: THumanResearch;
+begin
+  Result := '';
+  for it in THumanResearchLevel do
+    Result := Result+RESEARCH_NAMES[it]+': '+IntToStr(res[it])+#10;
+  SetLength(Result, Length(Result)-1);
+end;
+
+function LongShipsList(fleet: TFleetData): string;
+var
+  ship: THumanShips;
+begin
+  Result := '';
+  for ship in THumanShips do
+    Result := Result+Format('%ss: %d (lvl %.1f)'#10, [SHIP_NAMES[ship], TotalCount(fleet[ship]), AvgLevel(fleet[ship])]);
   SetLength(Result, Length(Result)-1);
 end;
 
