@@ -1,4 +1,4 @@
-package zengl.booo;
+package zengl.borderline;
 
 import zengl.android.ZenGL;
 import android.app.Activity;
@@ -26,13 +26,13 @@ public class MainActivity extends Activity {
 		String appSourceDir = "";
 		try   
 		{   
-			appSourceDir = getPackageManager().getApplicationInfo( "zengl.booo", 0 ).sourceDir;
+			appSourceDir = getPackageManager().getApplicationInfo( "zengl.borderline", 0 ).sourceDir;
 		}
 		catch ( NameNotFoundException e ) {}
     
 		// RU: создаём zglCGLSurfaceView, делаем его текущим и передаём имя pascal-библиотеки
 		// EN: create new zglCGLSurfaceView, make it as a current view and pass name of pascal library
-		zengl = new ZenGL( this, "booo", appSourceDir );
+		zengl = new ZenGL( this, "borderline", appSourceDir );
 		setContentView( zengl ); 
 	}
  

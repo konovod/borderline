@@ -1,4 +1,4 @@
-library booo;
+library borderline;
 
 // RU: Этот файл содержит некоторые настройки(например использовать ли статическую компиляцию) и определения ОС под которую происходит компиляция.
 // EN: This file contains some options(e.g. whether to use static compilation) and defines of OS for which is compilation going.

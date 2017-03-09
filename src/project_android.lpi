@@ -36,7 +36,7 @@
       <Unit0>
         <Filename Value="project_android.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="booo"/>
+        <UnitName Value="borderline"/>
       </Unit0>
       <Unit1>
         <Filename Value="umain.pas"/>
@@ -70,7 +70,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="../android/files/lib/armeabi/libbooo"/>
+      <Filename Value="../android/files/lib/armeabi/libborderline"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);../zengl/headers;../zengl/headers/android"/>
@@ -112,7 +112,7 @@
 -Fu$(LazarusDir)..\android-ndk-r8e\platforms\android-3\arch-arm\usr\lib
 -FL$(LazarusDir)..\android-ndk-r8e\platforms\android-3\arch-arm\usr\lib\libdl.so"/>
       <ExecuteAfter>
-        <Command Value="C:/projects1/booo/android/ubergenerate.bat"/>
+        <Command Value="C:/projects1/borderline/android/ubergenerate.bat"/>
       </ExecuteAfter>
     </Other>
   </CompilerOptions>

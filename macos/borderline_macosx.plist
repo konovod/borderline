@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
   <key>CFBundleExecutable</key>
-  <string>booo</string>
+  <string>borderline</string>
   <key>CFBundleIconFile</key>
-  <string>booo</string>
+  <string>borderline</string>
   <key>CFBundleName</key>
-  <string>booo</string>
+  <string>borderline</string>
   <key>CFBundleIdentifier</key>
-  <string>zengl.booo</string>
+  <string>zengl.borderline</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleSignature</key>
-  <string>booo</string>
+  <string>borderline</string>
   <key>CFBundleShortVersionString</key>
   <string>1.0</string>
   <key>CFBundleVersion</key>

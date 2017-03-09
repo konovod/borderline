@@ -1,7 +1,7 @@
 cd %~dp0
 
 rem changed by user:
-set APP_NAME=booo
+set APP_NAME=borderline
 set jdkbindir=c:\Program Files\Java\jdk1.8.0_112\bin
 set SDK_PATH=c:\adt-bundle-windows-x86-20140702\sdk
 set SDK_PLATFORM_VERSION=android-20
@@ -30,7 +30,7 @@ rem generate-dependencies is needed to generate R.java file
 
 "%jdkbindir%\javac.exe" ^
   .\src\zengl\android\ZenGL.java ^
-  .\src\zengl\booo\MainActivity.java ^
+  .\src\zengl\borderline\MainActivity.java ^
   -cp "%androidjar%" ^
   -d .\classes -target 1.7 -source 1.7
   
