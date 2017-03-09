@@ -63,6 +63,7 @@ function LongMinesList(sys: TSystem; mines: TMinesData): string;
 function CalcPower(sqd: TSquadron): Single;
 function AvgLevel(sqd: TSquadron): Single;
 function TotalCount(sqd: TSquadron): Integer;
+procedure LogEventRaw(s: string);
 
 //TODO - colony sizes
 function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
@@ -73,7 +74,8 @@ procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
 function FreePoints(prio: TPriorities): TPriorityLevel;
 implementation
 
-uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, math;
+uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, uGameUI,
+  math;
 
 function ShortResearchList(res: THumanResearchLevel): string;
 var
@@ -184,6 +186,12 @@ begin
   Result := 0;
   for lv in TPowerLevel do
     Inc(Result, sqd[lv]);
+end;
+
+procedure LogEventRaw(s: string);
+begin
+  SetLength(LogWindow.lines, Length(LogWindow.lines)+1);
+  LogWindow.lines[Length(LogWindow.lines)-1] := s;
 end;
 
 function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
@@ -390,6 +398,7 @@ var
   lv: TPowerLevel;
   res: THumanResearch;
 begin
+  LogEvent('Entering');
   State := Current;
   for sys in Links do
     if sys.State < Found then
@@ -399,6 +408,8 @@ begin
   SeenMines := Mines;
   SetLength(SeenMines, Length(SeenMines));
   SeenHumanResearch := HumanResearch;
+  if SeenPopStatus <> PopStatus then
+    LogEvent('System is '+POP_STATUS_NAMES[PopStatus]+'!');
   SeenPopStatus := PopStatus;
   //transfer ships
   n1 := 0;
@@ -415,7 +426,7 @@ begin
     end;
   end;
   if n1 > 0 then LogEvent(IntToStr(n1)+' ships repaired');
-  if n2 > 0 then LogEvent(IntToStr(n2)+' new ships added to fleet');
+  if n2 > 0 then LogEvent(IntToStr(n2)+' built ships added to fleet');
   //transfer knowledge
   n1 := 0;
   n2 := 0;
@@ -431,7 +442,7 @@ begin
       PlayerKnowledge[res] := HumanResearch[res];
     end;
   if n1 > 0 then LogEvent(IntToStr(n1)+' research levels given to planet');
-  if n2 > 0 then LogEvent(IntToStr(n2)+' research levels discovered');
+  if n2 > 0 then LogEvent(IntToStr(n2)+' research levels was discovered on planet');
 end;
 
 procedure TSystem.PassTime;
@@ -472,7 +483,7 @@ end;
 
 procedure TSystem.LogEvent(s: string);
 begin
-  //TODO
+  LogEventRaw(' '+Name+': '+s);
 end;
 
 

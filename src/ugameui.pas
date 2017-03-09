@@ -86,7 +86,9 @@ type
   { TLogWindow }
 
   TLogWindow = class(TGameWindow)
+    lines: array of string;
     procedure Draw; override;
+    function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;override;
   end;
 
   { TBattleWindow }
@@ -106,7 +108,7 @@ procedure InitUI;
 
 implementation
 
-uses ugame, uStaticData, uMap, zgl_mouse, math, zgl_text, zgl_math_2d, zgl_primitives_2d;
+uses ugame, uStaticData, uMap, zgl_mouse, zgl_text, zgl_math_2d, math, zgl_primitives_2d;
 
 { TPriorityBar }
 
@@ -229,8 +231,23 @@ end;
 { TLogWindow }
 
 procedure TLogWindow.Draw;
+var
+  s: string;
+  i: integer;
 begin
   inherited Draw;
+  s := '';
+  for i := max(0, Length(lines)-N_LOG_LINES) to Length(lines)-1 do
+    s := s+lines[i]+#10;
+  SetLength(s, Length(s)-1);
+  DrawSomeText(SCREENX*(0.5-MODAL_WIDTH/2), SCREENY*(0.5-MODAL_HEIGHT/2), SCREENX*MODAL_WIDTH, SCREENY*MODAL_HEIGHT, 'Logbook records:', s);
+end;
+
+function TLogWindow.ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;
+begin
+  Close;
+  Result := True;
+  ModalWindow := nil;
 end;
 
 { TPrioritiesWindow }
