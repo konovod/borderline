@@ -9,8 +9,6 @@ uses
   zgl_utils, zgl_mouse, zgl_file, zgl_resources, zgl_text, zgl_Log, uMain,
   uglobal,
 
-  MySockets,
-
 uUI, uTextures;
 
 type
@@ -104,12 +102,6 @@ begin
   Result := ProcessQuitting;
 end;
 
-procedure Timer2;
-begin
-  if GameState = Ready then
-    TestOnline;
-end;
-
 procedure Timer;
 begin
   if GameState = Ready then
@@ -131,7 +123,6 @@ begin
   zgl_Reg(SYS_CLOSE_QUERY, @_CanQuit);
 
   tm1 := timer_Add(@Timer, 15);
-  tm2 := timer_Add(@Timer2, 500);
   zgl_Reg( SYS_UPDATE, @Update );
 
   // RU: Указываем первоначальные настройки.

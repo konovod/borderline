@@ -20,8 +20,10 @@ const
   IntfBack = Black;
 
 {$IFDEF CPUARM}
-  SCREENX = 1280 div 2;
-  SCREENY = 720 div 2;
+  //SCREENX = 1280 div 2;
+  //SCREENY = 720 div 2;
+	SCREENX = 1280;
+	SCREENY = 720;
 {$ELSE}
 	SCREENX = 1024;
 	SCREENY = 700;

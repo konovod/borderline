@@ -20,9 +20,9 @@ unit uDelaunay;
 
 interface
 
-uses Windows, SysUtils,
+uses SysUtils,
 {$IFDEF DEBUG}
-  Classes,
+  Windows, Classes,
 {$ENDIF}
   Types, Math;
 
