@@ -93,6 +93,7 @@ function LongMinesList(sys: TSystem; mines: TMinesData): string;
 var
   i, n: integer;
 begin
+  Result := '';
   for i := 0 to length(sys.Links)-1 do
   begin
     Result := Result + '  to '+sys.Links[i].Name+': '+IntToStr(trunc(CalcPower(mines[i])));
@@ -231,7 +232,7 @@ begin
   if VisitTime <> 0 then
   begin
     if VisitTime = StarDate then
-      text := #255
+      text := #1
     else
       text := 'visited at '+MyDateToStr(VisitTime);
     text := text+#10+POP_STATUS_NAMES[SeenPopStatus];
