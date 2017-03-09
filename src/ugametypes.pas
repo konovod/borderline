@@ -13,6 +13,7 @@ const
   K_LVL = 1.5;
   MINE_MULTIPLIER = 10;
   RESEARCH_CHANCE = 0.05;
+  ALIEN_RESEARCH_CHANCE = 0.02;
 
 type
 
@@ -31,6 +32,7 @@ type
 
   TSquadron = array[TPowerLevel] of Integer;
   TFleetData = array[THumanShips] of TSquadron;
+  TAlienFleetData = array[TAlienResearch] of TSquadron;
 
   TMinesData = array of TSquadron;
 

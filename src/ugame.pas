@@ -29,7 +29,7 @@ var
 procedure NextTurn;
 implementation
 
-uses Math, uMain, uNameGen, zgl_text;
+uses Math, uMain, uNameGen, zgl_text, zgl_mouse;
 
 procedure NewGame;
 begin
@@ -68,6 +68,8 @@ procedure OnClick(ax, ay: single);
 var
   sys: TSystem;
 begin
+  if InRect(mouse_x/SCREENX, mouse_y/SCREENY, TOPPANEL_LEFT-0.005, 0, TOPPANEL_WIDTH+0.01, 0.26) then exit;
+
   sys := Map.FindSys(ax, ay);
   if sys = cursor then
     ShowCursor := not ShowCursor

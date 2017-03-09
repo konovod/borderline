@@ -25,7 +25,9 @@ type
     SeenPopStatus, PopStatus: TPopulationState;
     VisitTime: TStarDate;
     AlienId: Integer;
-    AlienResearch: TAlienResearchLevel;
+    AlienResearch, AlienResearchMax: TAlienResearchLevel;
+    AlienResearchNext, AlienResearchMaxNext: TAlienResearchLevel;
+    AlienFleet: TAlienFleetData;
     SeenHumanResearch, HumanResearch: THumanResearchLevel;
     Ships: TFleetData;
     Priorities: TPriorities;
@@ -39,6 +41,9 @@ type
     constructor Create(aid, ax, ay: integer; aname: string);
     procedure Enter;
     procedure PassTime;
+    procedure ProcessHumanSystem;
+    procedure ProcessAlienSystem;
+    procedure AlienMessaging;
     function Linked(asys: TSystem): boolean;
     procedure LogEvent(s: string);
   end;
@@ -411,48 +416,57 @@ begin
   if SeenPopStatus <> PopStatus then
     LogEvent('System is '+POP_STATUS_NAMES[PopStatus]+'!');
   SeenPopStatus := PopStatus;
-  //transfer ships
-  n1 := 0;
-  n2 := 0;
-  for ship in THumanShips do
+  if PopStatus = own then
   begin
-    inc(n1, TotalCount(PlayerDamaged[ship]));
-    inc(n2, TotalCount(Ships[ship]));
-    for lv in TPowerLevel do
+    //transfer ships
+    n1 := 0;
+    n2 := 0;
+    for ship in THumanShips do
     begin
-      PlayerFleet[ship][lv] := PlayerFleet[ship][lv]+PlayerDamaged[ship][lv]+Ships[ship][lv];
-      PlayerDamaged[ship][lv] := 0;
-      Ships[ship][lv] := 0;
+      inc(n1, TotalCount(PlayerDamaged[ship]));
+      inc(n2, TotalCount(Ships[ship]));
+      for lv in TPowerLevel do
+      begin
+        PlayerFleet[ship][lv] := PlayerFleet[ship][lv]+PlayerDamaged[ship][lv]+Ships[ship][lv];
+        PlayerDamaged[ship][lv] := 0;
+        Ships[ship][lv] := 0;
+      end;
     end;
+    if n1 > 0 then LogEvent(IntToStr(n1)+' ships repaired');
+    if n2 > 0 then LogEvent(IntToStr(n2)+' built ships added to fleet');
+    //transfer knowledge
+    n1 := 0;
+    n2 := 0;
+    for res in THumanResearch do
+      if PlayerKnowledge[res] > HumanResearch[res] then
+      begin
+        inc(n1, PlayerKnowledge[res] - HumanResearch[res]);
+        HumanResearch[res] := PlayerKnowledge[res];
+      end
+      else if PlayerKnowledge[res] < HumanResearch[res] then
+      begin
+        inc(n2, HumanResearch[res] - PlayerKnowledge[res]);
+        PlayerKnowledge[res] := HumanResearch[res];
+      end;
+    if n1 > 0 then LogEvent(IntToStr(n1)+' research levels given to planet');
+    if n2 > 0 then LogEvent(IntToStr(n2)+' research levels was discovered on planet');
   end;
-  if n1 > 0 then LogEvent(IntToStr(n1)+' ships repaired');
-  if n2 > 0 then LogEvent(IntToStr(n2)+' built ships added to fleet');
-  //transfer knowledge
-  n1 := 0;
-  n2 := 0;
-  for res in THumanResearch do
-    if PlayerKnowledge[res] > HumanResearch[res] then
-    begin
-      inc(n1, PlayerKnowledge[res] - HumanResearch[res]);
-      HumanResearch[res] := PlayerKnowledge[res];
-    end
-    else if PlayerKnowledge[res] < HumanResearch[res] then
-    begin
-      inc(n2, HumanResearch[res] - PlayerKnowledge[res]);
-      PlayerKnowledge[res] := HumanResearch[res];
-    end;
-  if n1 > 0 then LogEvent(IntToStr(n1)+' research levels given to planet');
-  if n2 > 0 then LogEvent(IntToStr(n2)+' research levels was discovered on planet');
 end;
 
 procedure TSystem.PassTime;
+begin
+  case PopStatus of
+    Own: ProcessHumanSystem;
+    Alien: ProcessAlienSystem;
+    Colonizable, WipedOut: AlienMessaging;
+  end;
+end;
+
+procedure TSystem.ProcessHumanSystem;
 var
   ship: THumanShips;
   lv, i: integer;
 begin
-  case PopStatus of
-    Own:
-  begin
   //1. build ships
     for ship in THumanShips do
     begin
@@ -465,9 +479,61 @@ begin
     for i := 0 to length(Mines)-1 do
       Inc(Mines[i][lv], PrioToEffect(Priorities.Mines[i], 10*MINE_MULTIPLIER));
   //4. TODO: drift priorities
+end;
+
+procedure TSystem.ProcessAlienSystem;
+var
+  typ: TAlienResearch;
+  i: integer;
+begin
+  //1. build ships
+  repeat
+    typ := TAlienResearch(Random(ord(high(TAlienResearch))+1));
+  until AlienResearch[typ] > 0;
+  case typ of
+    AlienMines:
+    begin
+      i := Random(Length(Links));
+      inc(Mines[i][AlienResearch[typ]], MINE_MULTIPLIER);
+    end;
+    else
+      inc(AlienFleet[typ][AlienResearch[typ]])
   end;
-    Alien: ;//TODO
-    Colonizable, WipedOut: ;
+  //3. spread research
+  AlienMessaging;
+  //2. do research
+  for typ in TAlienResearch do
+    if (AlienResearch[typ] < AlienResearchMax[typ]) and (random < ALIEN_RESEARCH_CHANCE) then
+    begin
+      inc(AlienResearch[typ]);
+      break;
+    end;
+  //4. armies navigation
+  //TODO
+end;
+
+procedure TSystem.AlienMessaging;
+var
+  typ: TAlienResearch;
+  i: integer;
+begin
+  for i := 0 to length(Links)-1 do
+  begin
+    if Links[i].PopStatus = Own then continue;
+    for typ in TAlienResearch do
+    begin
+      if AlienResearchMax[typ] > Links[i].AlienResearchMax[typ] then
+        Links[i].AlienResearchMaxNext[typ] := AlienResearchMax[typ];
+      if AlienResearch[typ] > Links[i].AlienResearch[typ] then
+        Links[i].AlienResearchNext[typ] := AlienResearch[typ];
+    end;
+  end;
+  for typ in TAlienResearch do
+  begin
+    if AlienResearchMaxNext[typ] > AlienResearchMax[typ] then
+      AlienResearchMax[typ] := AlienResearchMaxNext[typ];
+    if AlienResearchNext[typ] > AlienResearch[typ] then
+      AlienResearch[typ] := AlienResearchNext[typ];
   end;
 end;
 
