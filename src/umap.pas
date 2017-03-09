@@ -31,6 +31,7 @@ type
     Priorities: TPriorities;
     SeenMines, Mines: TMinesData;
     procedure InitGameStats;
+    procedure DefaultPriorities;
     procedure ShowInfo(aX, aY: single);
     function Color: zglColor;
     procedure Draw;
@@ -176,7 +177,7 @@ begin
       area := ResearchPriority
     else
       area := THumanResearch(Random(ord(high(THumanResearch))+1));
-    if (random < prio/10/max(1, res[area])) and
+    if (random < RESEARCH_CHANCE*prio/10/max(1, res[area])) and
        (res[area] < MAX_RES_LEVEL) then
     begin
       inc(res[area]);
@@ -245,6 +246,19 @@ begin
     HumanResearch[res] := 1;
   AlienResearch[AlienBattleship] := 5;
   AlienResearch[AlienCruiser] := 5;
+  DefaultPriorities;
+end;
+
+procedure TSystem.DefaultPriorities;
+var
+  ship: THumanShips;
+  i: integer;
+begin
+  Priorities.Research := 40;
+  for ship in THumanShips do
+	  Priorities.Ships[ship] := 10;
+  for i := 0 to length(links)-1 do
+  	Priorities.Mines[i] := 0;
 end;
 
 procedure TSystem.ShowInfo(aX, aY: single);

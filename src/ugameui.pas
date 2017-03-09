@@ -224,8 +224,8 @@ begin
   cx := 0.5-MODAL_WIDTH/2 + 0.02;
   wd := 0.5;
   hg := 0.07;
-  addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prFree, 0));
-  cy := cy+hg+0.01;
+  addbutton(TPriorityBar.Create(cx+0.1, cy, wd+0.1, hg, self, prFree, 0));
+  cy := 0.5-MODAL_HEIGHT/2 + 0.22;
   addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prResearch, 0));
   cy := cy+hg+0.01;
   for ship in THumanShips do
@@ -233,6 +233,8 @@ begin
     addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prShips, ord(ship)));
     cy := cy+hg+0.01;
   end;
+  cy := 0.5-MODAL_HEIGHT/2 + 0.22;
+  cx := 0.5-MODAL_WIDTH/2 + 0.62;
   for i := 0 to 100 do
   begin
     addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prMines, i));

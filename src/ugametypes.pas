@@ -12,6 +12,7 @@ const
   //balance koeffs
   K_LVL = 1.5;
   MINE_MULTIPLIER = 10;
+  RESEARCH_CHANCE = 0.05;
 
 type
 

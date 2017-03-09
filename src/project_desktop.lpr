@@ -46,15 +46,19 @@ end;
 
 procedure _MouseUp(Key: Byte);
 begin
-  if Key = M_BRIGHT then
-    MouseRight(mouse_X, mouse_Y)
-  else
-    MouseUp(mouse_X, mouse_Y);
+  if Ready then
+  begin
+    if Key = M_BRIGHT then
+      MouseRight(mouse_X, mouse_Y)
+    else
+      MouseUp(mouse_X, mouse_Y);
+  end;
 end;
 
 procedure _MouseDown(Key: Byte);
 begin
-  MouseDown(mouse_X, mouse_Y);
+  if Ready then
+	  MouseDown(mouse_X, mouse_Y);
 end;
 
 function _CanQuit: Boolean;
@@ -64,12 +68,14 @@ end;
 
 procedure _TestKeyPress( KeyCode : Byte );
 begin
-  DoKeyPass(KeyCode);
+  if Ready then
+	  DoKeyPass(KeyCode);
 end;
 
 procedure _TestKeyUp( KeyCode : Byte );
 begin
-  DoKeyUp(KeyCode);
+  if Ready then
+	  DoKeyUp(KeyCode);
 end;
 
 procedure Timer;
