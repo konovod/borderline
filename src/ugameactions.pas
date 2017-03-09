@@ -127,6 +127,7 @@ end;
 
 procedure TPrioritiesAction.Execute;
 begin
+  PlayerSys.Priorities.Research := 0;
   ModalWindow := PrioritiesWindow;
 end;
 

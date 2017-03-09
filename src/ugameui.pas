@@ -106,7 +106,7 @@ procedure InitUI;
 
 implementation
 
-uses ugame, uStaticData, uMap, zgl_mouse, math;
+uses ugame, uStaticData, uMap, zgl_mouse, math, zgl_text, zgl_math_2d, zgl_primitives_2d;
 
 { TPriorityBar }
 
@@ -120,8 +120,8 @@ begin
   case typ of
     prFree: Result := 'Remaining points';
     prResearch: Result := 'Do research';
-    prShips: Result := 'Build '+LowerCase(SHIP_NAMES[THumanShips(index)])+'s';
-    prMines: Result := 'Mine warp point to '+PlayerSys.Links[index].Name;
+    prShips: Result := LowerCase(SHIP_NAMES[THumanShips(index)])+'s';
+    prMines: Result := 'to '+PlayerSys.Links[index].Name;
   end;
 end;
 
@@ -129,7 +129,7 @@ function TPriorityBar.MyValue: TPriorityLevel;
 begin
   case typ of
     prFree: Result := FreePoints(PlayerSys.Priorities);
-    prResearch: Result := PlayerSys.Priorities.Research;
+    prResearch: Result := PlayerSys.Priorities.Research + FreePoints(PlayerSys.Priorities);
     prShips: Result := PlayerSys.Priorities.Ships[THumanShips(index)];
     prMines: Result := PlayerSys.Priorities.Mines[index];
   end;
@@ -139,20 +139,46 @@ procedure TPriorityBar.ApplyValue(value: TPriorityLevel);
 begin
   case typ of
     prFree: exit;
-    prResearch: PlayerSys.Priorities.Research := value;
+    prResearch: exit;//PlayerSys.Priorities.Research := value;
     prShips: PlayerSys.Priorities.Ships[THumanShips(index)] := value;
     prMines: PlayerSys.Priorities.Mines[index] := value;
   end;
 end;
 
 procedure TPriorityBar.Draw;
+var
+  R: zglTRect;
 begin
-  StdButton(MyText, X,Y,W,H,Normal);
+  //StdButton(MyText, X,Y,W,H,Normal);
+  pr2d_Rect( X+W/2, Y, W/2, H, IntfBack, 255, PR2D_FILL or PR2D_SMOOTH );
+  pr2d_Rect( X+W/2, Y, W/2, H, IntfText, 255, 0 );
+  pr2d_Rect( X+W/2, Y, MyValue/100*W/2, H, IntfDark, 255, PR2D_FILL or PR2D_SMOOTH );
+  R.X := X+W/2;
+  R.Y := Y;
+  R.W := W/2;
+  R.H := H;
+  text_DrawInRectEx(fntMain, R, 1, 0, IntToStr(MyValue)+'%', 255, IntfText, TEXT_VALIGN_BOTTOM + TEXT_HALIGN_LEFT);
+
+	if mouse_Down(M_BLEFT) and InRect(mouseX, mouseY, R.X, R.Y, R.W, R.H) then
+  	Click(LeftDown);
+
+
+  R.X := X;
+  R.Y := Y;
+  R.W := W/2;
+  R.H := H;
+  text_DrawInRectEx(fntMain, R, 0.8, 0, MyText+': ', 255, IntfText, TEXT_VALIGN_BOTTOM + TEXT_HALIGN_RIGHT);
 end;
 
 procedure TPriorityBar.Click(event: TMouseEvent);
+var
+	ax: single;
+  val: TPriorityLevel;
 begin
-
+	ax := (mouseX - X)/W;
+  if ax < 0.4 then exit;
+  val := EnsureRange(Trunc(200*(ax-0.5)), 0, MyValue + FreePoints(PlayerSys.Priorities));
+  ApplyValue(val);
 end;
 
 constructor TPriorityBar.Create(aX, aY, aW, aH: Single;
@@ -210,8 +236,25 @@ end;
 { TPrioritiesWindow }
 
 procedure TPrioritiesWindow.Draw;
+
+procedure draw_label(x,y: single; text: string);
+var
+  BASE_X, BASE_Y: single;
+begin
+  BASE_X := (0.5-MODAL_WIDTH/2)*SCREENX;
+  BASE_Y := (0.5-MODAL_HEIGHT/2)*SCREENY;
+  text_DrawEx(fntMain, BASE_X + x*SCREENX, BASE_Y + y*SCREENY,
+  						0.8,0,text,255, IntfText, 0);
+end;
+
+
+
+
 begin
   inherited Draw;
+  draw_label(0.02, 0.02, 'System will spend worktime to:');
+  draw_label(0.12, 0.26, 'Build ships');
+  draw_label(0.52, 0.26, 'Place mines at warp point');
 end;
 
 constructor TPrioritiesWindow.Create;
@@ -220,13 +263,15 @@ var
   ship: THumanShips;
   cx, cy, hg, wd: single;
 begin
-  cy := 0.5-MODAL_HEIGHT/2 + 0.02;
+  cy := 0.5-MODAL_HEIGHT/2 + 0.01;
   cx := 0.5-MODAL_WIDTH/2 + 0.02;
-  wd := 0.5;
+  wd := 0.42;
   hg := 0.07;
-  addbutton(TPriorityBar.Create(cx+0.1, cy, wd+0.1, hg, self, prFree, 0));
-  cy := 0.5-MODAL_HEIGHT/2 + 0.22;
-  addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prResearch, 0));
+  cy := cy+hg+0.01;
+  addbutton(TPriorityBar.Create(cx+0.1, cy, wd+0.2, hg, self, prResearch, 0));
+  cx := 0.5-MODAL_WIDTH/2 + 0.02;
+  cy := 0.5-MODAL_HEIGHT/2 + 0.22 - hg-0.01;
+  cy := cy+hg+0.01;
   cy := cy+hg+0.01;
   for ship in THumanShips do
   begin
@@ -234,7 +279,8 @@ begin
     cy := cy+hg+0.01;
   end;
   cy := 0.5-MODAL_HEIGHT/2 + 0.22;
-  cx := 0.5-MODAL_WIDTH/2 + 0.62;
+  cy := cy+hg+0.01;
+  cx := 0.5-MODAL_WIDTH/2 + 0.45;
   for i := 0 to 100 do
   begin
     addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prMines, i));

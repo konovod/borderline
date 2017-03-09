@@ -20,9 +20,9 @@ const
   basedir ={$IFDEF MACOSX} '' {$ELSE} './assets/' {$ENDIF};
 begin
   LoadSplash(basedir);
-  res_BeginQueue(0);
+  //res_BeginQueue(0);
   LoadAll(basedir);
-  res_EndQueue;
+  //res_EndQueue;
 end;
 
 procedure Draw;
