@@ -46,6 +46,11 @@ end;
 
 procedure DrawAll;
 begin
+  if cursor = nil then
+  begin
+    Cursor := PlayerSys;
+    ShowCursor := False;
+  end;
   Map.Draw;
   if ShowCursor and (Cursor <> nil) then
     Cursor.ShowInfo(Cursor.X, Cursor.Y);
