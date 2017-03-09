@@ -221,6 +221,7 @@ end;
 
 procedure MousePressed(aX, aY: integer);
 begin
+  if ModalWindow <> nil then exit;
   if Moved or (abs(aX - InitX) > 2*MINDIST) or (abs(aY - InitY) > 2*MINDIST) then
   begin
     MouseScrolling := True;
