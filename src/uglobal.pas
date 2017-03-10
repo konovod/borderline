@@ -50,7 +50,7 @@ const
   MODAL_HEIGHT = 0.8;
   CLOSE_WIDTH = 0.05;
 
-  N_LOG_LINES = 20;
+  N_LOG_LINES = 19;
 
 
 var

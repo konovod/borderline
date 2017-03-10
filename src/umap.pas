@@ -40,6 +40,7 @@ type
     procedure DrawLinks;
     constructor Create(aid, ax, ay: integer; aname: string);
     procedure Enter;
+    procedure EnterOwn;
     procedure PassTime;
     procedure ProcessHumanSystem;
     procedure ProcessAlienSystem;
@@ -80,7 +81,7 @@ function FreePoints(prio: TPriorities): TPriorityLevel;
 implementation
 
 uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, uGameUI,
-  math;
+  uUI, math;
 
 function ShortResearchList(res: THumanResearchLevel): string;
 var
@@ -398,10 +399,6 @@ end;
 procedure TSystem.Enter;
 var
   sys: TSystem;
-  ship: THumanShips;
-  n1, n2: integer;
-  lv: TPowerLevel;
-  res: THumanResearch;
 begin
   LogEvent('Entering');
   State := Current;
@@ -416,41 +413,52 @@ begin
   if SeenPopStatus <> PopStatus then
     LogEvent('System is '+POP_STATUS_NAMES[PopStatus]+'!');
   SeenPopStatus := PopStatus;
-  if PopStatus = own then
-  begin
-    //transfer ships
-    n1 := 0;
-    n2 := 0;
-    for ship in THumanShips do
-    begin
-      inc(n1, TotalCount(PlayerDamaged[ship]));
-      inc(n2, TotalCount(Ships[ship]));
-      for lv in TPowerLevel do
-      begin
-        PlayerFleet[ship][lv] := PlayerFleet[ship][lv]+PlayerDamaged[ship][lv]+Ships[ship][lv];
-        PlayerDamaged[ship][lv] := 0;
-        Ships[ship][lv] := 0;
-      end;
-    end;
-    if n1 > 0 then LogEvent(IntToStr(n1)+' ships repaired');
-    if n2 > 0 then LogEvent(IntToStr(n2)+' built ships added to fleet');
-    //transfer knowledge
-    n1 := 0;
-    n2 := 0;
-    for res in THumanResearch do
-      if PlayerKnowledge[res] > HumanResearch[res] then
-      begin
-        inc(n1, PlayerKnowledge[res] - HumanResearch[res]);
-        HumanResearch[res] := PlayerKnowledge[res];
-      end
-      else if PlayerKnowledge[res] < HumanResearch[res] then
-      begin
-        inc(n2, HumanResearch[res] - PlayerKnowledge[res]);
-        PlayerKnowledge[res] := HumanResearch[res];
-      end;
-    if n1 > 0 then LogEvent(IntToStr(n1)+' research levels given to planet');
-    if n2 > 0 then LogEvent(IntToStr(n2)+' research levels was discovered on planet');
+  case PopStatus of
+    Own: EnterOwn;
+    Alien: ModalWindow := BattleWindow;
   end;
+end;
+
+procedure TSystem.EnterOwn;
+var
+  sys: TSystem;
+  ship: THumanShips;
+  n1, n2: integer;
+  lv: TPowerLevel;
+  res: THumanResearch;
+begin
+  //transfer ships
+  n1 := 0;
+  n2 := 0;
+  for ship in THumanShips do
+  begin
+    inc(n1, TotalCount(PlayerDamaged[ship]));
+    inc(n2, TotalCount(Ships[ship]));
+    for lv in TPowerLevel do
+    begin
+      PlayerFleet[ship][lv] := PlayerFleet[ship][lv]+PlayerDamaged[ship][lv]+Ships[ship][lv];
+      PlayerDamaged[ship][lv] := 0;
+      Ships[ship][lv] := 0;
+    end;
+  end;
+  if n1 > 0 then LogEvent(IntToStr(n1)+' ships repaired');
+  if n2 > 0 then LogEvent(IntToStr(n2)+' built ships added to fleet');
+  //transfer knowledge
+  n1 := 0;
+  n2 := 0;
+  for res in THumanResearch do
+    if PlayerKnowledge[res] > HumanResearch[res] then
+    begin
+      inc(n1, PlayerKnowledge[res] - HumanResearch[res]);
+      HumanResearch[res] := PlayerKnowledge[res];
+    end
+    else if PlayerKnowledge[res] < HumanResearch[res] then
+    begin
+      inc(n2, HumanResearch[res] - PlayerKnowledge[res]);
+      PlayerKnowledge[res] := HumanResearch[res];
+    end;
+  if n1 > 0 then LogEvent(IntToStr(n1)+' research levels given to planet');
+  if n2 > 0 then LogEvent(IntToStr(n2)+' research levels was discovered on planet');
 end;
 
 procedure TSystem.PassTime;

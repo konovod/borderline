@@ -224,8 +224,25 @@ end;
 { TBattleWindow }
 
 procedure TBattleWindow.Draw;
+
+
+procedure DrawShip(ship: THumanShips; ax, ay: single);
+begin
+  text_Draw(fntMain,
+    SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH),
+    SCREENY*(0.5-MODAL_HEIGHT/2 + ay*MODAL_HEIGHT),
+    SHIP_NAMES[ship]+'s');
+  text_Draw(fntMain,
+    SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH),
+    SCREENY*(0.5-MODAL_HEIGHT/2 + (ay+0.05)*MODAL_HEIGHT),
+    IntToStr(TotalCount(PlayerFleet[ship])));
+end;
+
 begin
   inherited Draw;
+  //draw player fleet
+  DrawShip(Cruiser, 0.1, 0.2);
+  DrawShip(Brander, 0.1, 0.4);
 end;
 
 { TLogWindow }

@@ -82,7 +82,7 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <Units Count="14">
+    <Units Count="15">
       <Unit0>
         <Filename Value="project_desktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -147,6 +147,10 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGameTypes"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="ubattle.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit14>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
