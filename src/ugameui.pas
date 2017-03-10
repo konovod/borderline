@@ -126,12 +126,16 @@ uses ugame, uStaticData, uMap, ubattle, zgl_mouse, zgl_text, zgl_math_2d, math,
 
 procedure TBattleDecisionButton.Draw;
 begin
-
+  if positive then
+    StdButton('Forward', X,Y,W,H,Active)
+  else
+    ColoredButton('Retreat', X,Y,W,H,Red, Black);
 end;
 
 procedure TBattleDecisionButton.Click(event: TMouseEvent);
 begin
-
+  Retreating := not positive;
+  TurnBattle;
 end;
 
 constructor TBattleDecisionButton.Create(aX, aY, aW, aH: Single;
@@ -328,8 +332,8 @@ end;
 
 constructor TBattleWindow.Create;
 begin
-  addbutton(TBattleDecisionButton.Create(0.3, 0.7, 0.1, 0.1, True));
-  addbutton(TBattleDecisionButton.Create(1-0.3, 0.7, 0.1, 0.1, False));
+  addbutton(TBattleDecisionButton.Create(0.5-0.2-0.2, 0.82, 0.2, 0.07, True));
+  addbutton(TBattleDecisionButton.Create(0.5+0.2, 0.82, 0.2, 0.07, False));
 end;
 
 { TLogWindow }

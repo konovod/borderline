@@ -44,6 +44,7 @@ var
   ModalWindow: TModalWindow;
 
 procedure StdButton(Text: string; X,Y,W,H: Single; State: TInvertState = Normal);
+procedure ColoredButton(Text: string; X,Y,W,H: Single; BGColor, TextColor: LongWord);
 implementation
 
 uses umain, uglobal, ugame, uGameUI;
@@ -84,6 +85,20 @@ begin
 
   pr2d_Rect( X, Y, W, H, Col, 255, PR2D_SMOOTH );
   text_DrawInRectEx(fntMain, R, 1, 0, Text, 255, Col, TEXT_VALIGN_BOTTOM + TEXT_HALIGN_CENTER);
+end;
+
+procedure ColoredButton(Text: string; X, Y, W, H: Single; BGColor, TextColor: LongWord);
+var
+  R: zglTRect;
+begin
+//  pr2d_Ellipse( X+W/2, Y+H/2, W/2, H/2, Col, 255, 32, PR2D_FILL or PR2D_SMOOTH );
+  pr2d_Rect( X, Y, W, H, BGColor, 255, PR2D_FILL or PR2D_SMOOTH );
+  R.X := X;
+  R.Y := Y;
+  R.W := W;
+  R.H := H;
+  pr2d_Rect( X, Y, W, H, TextColor, 255, PR2D_SMOOTH );
+  text_DrawInRectEx(fntMain, R, 1, 0, Text, 255, TextColor, TEXT_VALIGN_BOTTOM + TEXT_HALIGN_CENTER);
 end;
 
 procedure StdCross(X,Y,W,H: Single);
