@@ -52,6 +52,11 @@ const
 
   N_LOG_LINES = 19;
 
+  BTL_LOG_WIDTH = 0.4;
+  BTL_LOG_TOP = 0.2;
+  BTL_LOG_HEIGHT = 0.7;
+
+
 
 var
   fntMain:  zglPFont;

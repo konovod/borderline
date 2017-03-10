@@ -17,7 +17,7 @@ type
 
 var
   BattleDistance: TBattleDistance;
-  BattleLog: array of string;
+  BattleJournal: string;
   Retreating: Boolean;
 
 
@@ -27,6 +27,7 @@ procedure TriggerMines(FromSys, ToSys: TSystem);
 procedure StartBattle;
 procedure TurnBattle;
 function BattleResult: TBattleResult;
+procedure BattleLog(s: string);
 
 implementation
 
@@ -35,30 +36,6 @@ uses ugame, uGameUI, uUI;
 type
   THumanTargets = set of THumanShips;
   TAlienTargets = set of TAlienResearch;
-
-
-procedure TriggerMines(FromSys, ToSys: TSystem);
-begin
-
-end;
-
-procedure StartBattle;
-begin
-  SetLength(BattleLog, 0);
-  BattleDistance := Maximum;
-  Retreating := False;
-  ModalWindow := BattleWindow;
-end;
-
-procedure DoAlienFireStep(who: TAlienResearch; targets: THumanTargets);
-begin
-
-end;
-
-procedure DoHumanFireStep(who: THumanShips; targets: TAlienTargets);
-begin
-
-end;
 
 function AlienExists(who: TAlienTargets): boolean;
 var
@@ -80,6 +57,35 @@ begin
     if TotalCount(PlayerFleet[ship]) > TotalCount(PlayerDamaged[ship]) then
       exit;
   Result := False;
+end;
+
+
+
+procedure TriggerMines(FromSys, ToSys: TSystem);
+begin
+
+end;
+
+procedure StartBattle;
+begin
+  BattleJournal := '';
+  BattleDistance := Maximum;
+  Retreating := False;
+  ModalWindow := BattleWindow;
+
+  //TODO: fullscale scouts detection
+  if AlienExists([AlienBattleship, AlienCruiser, AlienOrbital]) then
+    BattleLog('Scanners detects multiple alien signatures');
+end;
+
+procedure DoAlienFireStep(who: TAlienResearch; targets: THumanTargets);
+begin
+
+end;
+
+procedure DoHumanFireStep(who: THumanShips; targets: TAlienTargets);
+begin
+
 end;
 
 procedure TurnBattle;
@@ -156,6 +162,14 @@ function BattleResult: TBattleResult;
 begin
   Result := InCombat;
   //TODO
+end;
+
+procedure BattleLog(s: string);
+begin
+  if BattleJournal = '' then
+    BattleJournal := s
+  else
+    BattleJournal := BattleJournal+#10+s;
 end;
 
 end.

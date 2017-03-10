@@ -91,19 +91,21 @@ type
     function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;override;
   end;
 
-{  TBattleDecisionButton = class(TButton)
-    owner: TResearchWindow;
-    res: THumanResearch;
+  { TBattleDecisionButton }
+
+  TBattleDecisionButton = class(TButton)
+    positive: boolean;
     procedure Draw; override;
     procedure Click(event: TMouseEvent); override;
-    constructor Create(aX, aY, aW, aH: Single; aowner: TResearchWindow; ares: THumanResearch);
-  end;}
+    constructor Create(aX, aY, aW, aH: Single; apositive: boolean);
+  end;
 
   { TBattleWindow }
 
   TBattleWindow = class(TGameWindow)
     function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;override;
     procedure Draw; override;
+    constructor Create;
   end;
 
 var
@@ -119,6 +121,25 @@ implementation
 
 uses ugame, uStaticData, uMap, ubattle, zgl_mouse, zgl_text, zgl_math_2d, math,
   zgl_primitives_2d;
+
+{ TBattleDecisionButton }
+
+procedure TBattleDecisionButton.Draw;
+begin
+
+end;
+
+procedure TBattleDecisionButton.Click(event: TMouseEvent);
+begin
+
+end;
+
+constructor TBattleDecisionButton.Create(aX, aY, aW, aH: Single;
+  apositive: boolean);
+begin
+  inherited Create(aX, aY, aW, aH);
+  positive := apositive;
+end;
 
 { TPriorityBar }
 
@@ -286,7 +307,7 @@ end;
 
 begin
   inherited Draw;
-  text_DrawEx(fntSecond, SCREENX/2, SCREENY*(1-MODAL_HEIGHT), 2, 0, 'VS', 255, White, TEXT_VALIGN_BOTTOM+TEXT_HALIGN_CENTER);
+  text_DrawEx(fntSecond, SCREENX/2, SCREENY*(1-MODAL_HEIGHT), 4, 0, 'Battle', 255, White, TEXT_VALIGN_BOTTOM+TEXT_HALIGN_CENTER);
   //draw player fleet
   DrawShip(Cruiser, 0.01, 0.3);
   if BattleDistance > BrandersMelee then
@@ -300,6 +321,15 @@ begin
     DrawAlienShip(AlienBattleship, 0.7, 0.3);
     DrawAlienShip(AlienCruiser, 0.7, 0.5);
   end;
+  DrawPanelUI(SCREENX*(0.5-BTL_LOG_WIDTH/2), SCREENY*BTL_LOG_TOP, SCREENX*BTL_LOG_WIDTH, SCREENY*BTL_LOG_HEIGHT);
+  DrawFormattedText(SCREENX*(0.5-BTL_LOG_WIDTH/2), SCREENY*BTL_LOG_TOP, SCREENX*BTL_LOG_WIDTH, SCREENY*BTL_LOG_HEIGHT,
+    '', BattleJournal);
+end;
+
+constructor TBattleWindow.Create;
+begin
+  addbutton(TBattleDecisionButton.Create(0.3, 0.7, 0.1, 0.1, True));
+  addbutton(TBattleDecisionButton.Create(1-0.3, 0.7, 0.1, 0.1, False));
 end;
 
 { TLogWindow }
