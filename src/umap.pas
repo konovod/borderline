@@ -70,7 +70,7 @@ function ShortShipsList(fleet: TFleetData): string;
 function ShortMinesList(sys: TSystem; mines: TMinesData): string;
 function LongMinesList(sys: TSystem; mines: TMinesData): string;
 function CalcPower(sqd: TSquadron): Single;
-function AvgLevel(sqd: TSquadron): Single;
+function AvgLevel(sqd: TSquadron): String;
 function TotalCount(sqd: TSquadron): Integer;
 procedure LogEventRaw(s: string);
 
@@ -174,19 +174,21 @@ begin
     Result := Result + sqd[lv]*power(lv, K_LVL);
 end;
 
-function AvgLevel(sqd: TSquadron): Single;
+function AvgLevel(sqd: TSquadron): String;
 var
   lv: TPowerLevel;
   n: integer;
+  res: integer;
 begin
-  Result := 0;
+  Res := 0;
   for lv in TPowerLevel do
-    Result := Result+lv*sqd[lv];
+    Res := Res+lv*sqd[lv];
   n := TotalCount(sqd);
   if n = 0 then
-    Result := 0
+    Res := 0
   else
-    Result := Result / n;
+    Res := Trunc(10*Res / n);
+  Result := IntToStr(Res div 10)+'.'+IntToStr(Res mod 10);
 end;
 
 function TotalCount(sqd: TSquadron): Integer;

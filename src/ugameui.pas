@@ -91,9 +91,18 @@ type
     function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;override;
   end;
 
+{  TBattleDecisionButton = class(TButton)
+    owner: TResearchWindow;
+    res: THumanResearch;
+    procedure Draw; override;
+    procedure Click(event: TMouseEvent); override;
+    constructor Create(aX, aY, aW, aH: Single; aowner: TResearchWindow; ares: THumanResearch);
+  end;}
+
   { TBattleWindow }
 
   TBattleWindow = class(TGameWindow)
+    function ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;override;
     procedure Draw; override;
   end;
 
@@ -108,7 +117,8 @@ procedure InitUI;
 
 implementation
 
-uses ugame, uStaticData, uMap, zgl_mouse, zgl_text, zgl_math_2d, math, zgl_primitives_2d;
+uses ugame, uStaticData, uMap, ubattle, zgl_mouse, zgl_text, zgl_math_2d, math,
+  zgl_primitives_2d;
 
 { TPriorityBar }
 
@@ -223,26 +233,64 @@ end;
 
 { TBattleWindow }
 
+function TBattleWindow.ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;
+begin
+  Result := True;
+end;
+
 procedure TBattleWindow.Draw;
 
 
 procedure DrawShip(ship: THumanShips; ax, ay: single);
+var
+  dmg: single;
+  basex, basey, scy, scx: single;
 begin
-  text_Draw(fntMain,
-    SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH),
-    SCREENY*(0.5-MODAL_HEIGHT/2 + ay*MODAL_HEIGHT),
-    SHIP_NAMES[ship]+'s');
-  text_Draw(fntMain,
-    SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH),
-    SCREENY*(0.5-MODAL_HEIGHT/2 + (ay+0.05)*MODAL_HEIGHT),
-    IntToStr(TotalCount(PlayerFleet[ship])));
+  basex := SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH);
+  basey := SCREENY*(0.5-MODAL_HEIGHT/2 + ay*MODAL_HEIGHT);
+  scx := SCREENX*MODAL_WIDTH;
+  scy := SCREENY*MODAL_HEIGHT;
+  text_Draw(fntMain, basex, basey,
+    SHIP_NAMES[ship]+'s '+IntToStr(TotalCount(PlayerFleet[ship])));
+  text_DrawEx(fntMain, basex, basey+scy*0.05, 0.5, 0,
+    'level '+AvgLevel(PlayerFleet[ship]));
+  //damage level
+  dmg := TotalCount(PlayerFleet[ship]);
+  if dmg > 0 then
+    dmg := TotalCount(PlayerDamaged[ship]) / dmg;
+  pr2d_Rect(basex, basey+scy*0.1, scx*0.25, scy*0.03, IntfText, 255, PR2D_FILL);
+  pr2d_Rect(basex+(1-dmg)*scx*0.25, basey+scy*0.1, dmg*scx*0.25, scy*0.03, Red, 255, PR2D_FILL);
+  text_DrawEx(fntMain, basex, basey+scy*0.11, 0.5, 0,
+    Format('%d%% damaged', [Trunc(dmg*100)]), 255, Black);
+end;
+
+procedure DrawAlienShip(ship: TAlienResearch; ax, ay: single);
+var
+  dmg: single;
+  basex, basey, scy, scx: single;
+  flt: TAlienFleetData;
+begin
+  flt := PlayerSys.AlienFleet;
+  basex := SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH);
+  basey := SCREENY*(0.5-MODAL_HEIGHT/2 + ay*MODAL_HEIGHT);
+  scx := SCREENX*MODAL_WIDTH;
+  scy := SCREENY*MODAL_HEIGHT;
+  text_Draw(fntMain, basex, basey,
+    ALIEN_RESEARCH_NAMES[ship]+'s '+IntToStr(TotalCount(flt[ship])));
+  text_DrawEx(fntMain, basex, basey+scy*0.05, 0.5, 0,
+    'level '+AvgLevel(flt[ship]));
 end;
 
 begin
   inherited Draw;
   //draw player fleet
-  DrawShip(Cruiser, 0.1, 0.2);
-  DrawShip(Brander, 0.1, 0.4);
+  DrawShip(Cruiser, 0.01, 0.3);
+  DrawShip(Brander, 0.01, 0.5);
+  DrawShip(TroopTransport, 0.01, 0.7);
+  //if BattleDistance < ;
+  DrawAlienShip(AlienBattleship, 0.7, 0.3);
+  DrawAlienShip(AlienCruiser, 0.7, 0.5);
+  DrawAlienShip(AlienOrbital, 0.7, 0.7);
 end;
 
 { TLogWindow }

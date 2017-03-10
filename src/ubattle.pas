@@ -60,13 +60,25 @@ begin
 end;
 
 function AlienExists(who: TAlienTargets): boolean;
+var
+  ship: TAlienResearch;
 begin
-
+  Result := True;
+  for ship in who do
+    if TotalCount(PlayerSys.AlienFleet[ship]) > 0 then
+      exit;
+  Result := False;
 end;
 
 function HumanExists(who: THumanTargets): boolean;
+var
+  ship: THumanShips;
 begin
-
+  Result := True;
+  for ship in who do
+    if TotalCount(PlayerFleet[ship]) > TotalCount(PlayerDamaged[ship]) then
+      exit;
+  Result := False;
 end;
 
 procedure TurnBattle;
