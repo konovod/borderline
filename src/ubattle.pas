@@ -99,13 +99,18 @@ begin
 end;
 
 procedure DoAlienFireStep(who: TAlienResearch; targets: THumanTargets);
+var
+  dmg: single;
 begin
-  BattleLog(ALIEN_RESEARCH_NAMES[who]+' opens fire');
+  dmg := CalcPower(PlayerSys.AlienFleet[who]);
+  if dmg <= 0 then exit;
+  BattleLog('Alien '+ALIEN_RESEARCH_NAMES[who]+'s opens fire');
+
 end;
 
 procedure DoHumanFireStep(who: THumanShips; targets: TAlienTargets);
 begin
-  BattleLog(SHIP_NAMES[who]+' opens fire');
+  BattleLog(SHIP_NAMES[who]+'s opens fire');
 end;
 
 procedure TurnBattle;
