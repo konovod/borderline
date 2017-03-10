@@ -85,7 +85,7 @@ function FreePoints(prio: TPriorities): TPriorityLevel;
 implementation
 
 uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, uGameUI,
-  uUI, math;
+  uUI, ubattle, math;
 
 function ShortResearchList(res: THumanResearchLevel): string;
 var
@@ -417,7 +417,7 @@ begin
     LogEvent('System is '+POP_STATUS_NAMES[PopStatus]+'!');
   case PopStatus of
     Own: EnterOwn;
-    Alien: ModalWindow := BattleWindow;
+    Alien: StartBattle;
   end;
   SeenMines := Mines;
   SetLength(SeenMines, Length(SeenMines));

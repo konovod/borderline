@@ -30,7 +30,7 @@ function BattleResult: TBattleResult;
 
 implementation
 
-uses ugame;
+uses ugame, uGameUI, uUI;
 
 type
   THumanTargets = set of THumanShips;
@@ -47,6 +47,7 @@ begin
   SetLength(BattleLog, 0);
   BattleDistance := Maximum;
   Retreating := False;
+  ModalWindow := BattleWindow;
 end;
 
 procedure DoAlienFireStep(who: TAlienResearch; targets: THumanTargets);

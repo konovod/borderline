@@ -269,28 +269,37 @@ var
   dmg: single;
   basex, basey, scy, scx: single;
   flt: TAlienFleetData;
+  n: integer;
 begin
   flt := PlayerSys.AlienFleet;
+  n := TotalCount(flt[ship]);
+  if n = 0 then exit;
   basex := SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH);
   basey := SCREENY*(0.5-MODAL_HEIGHT/2 + ay*MODAL_HEIGHT);
   scx := SCREENX*MODAL_WIDTH;
   scy := SCREENY*MODAL_HEIGHT;
-  text_Draw(fntMain, basex, basey,
-    ALIEN_RESEARCH_NAMES[ship]+'s '+IntToStr(TotalCount(flt[ship])));
+  text_DrawEx(fntMain, basex, basey,1,0,
+    ALIEN_RESEARCH_NAMES[ship]+'s '+IntToStr(n), 255, Red);
   text_DrawEx(fntMain, basex, basey+scy*0.05, 0.5, 0,
-    'level '+AvgLevel(flt[ship]));
+    'level '+AvgLevel(flt[ship]), 255, Red);
 end;
 
 begin
   inherited Draw;
+  text_DrawEx(fntSecond, SCREENX/2, SCREENY*(1-MODAL_HEIGHT), 2, 0, 'VS', 255, White, TEXT_VALIGN_BOTTOM+TEXT_HALIGN_CENTER);
   //draw player fleet
   DrawShip(Cruiser, 0.01, 0.3);
-  DrawShip(Brander, 0.01, 0.5);
-  DrawShip(TroopTransport, 0.01, 0.7);
-  //if BattleDistance < ;
-  DrawAlienShip(AlienBattleship, 0.7, 0.3);
-  DrawAlienShip(AlienCruiser, 0.7, 0.5);
-  DrawAlienShip(AlienOrbital, 0.7, 0.7);
+  if BattleDistance > BrandersMelee then
+    DrawShip(TroopTransport, 0.01, 0.7)
+  else
+    DrawShip(Brander, 0.01, 0.5);
+  if BattleDistance > BrandersMelee then
+    DrawAlienShip(AlienOrbital, 0.7, 0.7)
+  else
+  begin
+    DrawAlienShip(AlienBattleship, 0.7, 0.3);
+    DrawAlienShip(AlienCruiser, 0.7, 0.5);
+  end;
 end;
 
 { TLogWindow }
