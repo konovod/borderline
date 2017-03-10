@@ -96,6 +96,7 @@ type
   TBattleDecisionButton = class(TButton)
     positive: boolean;
     procedure Draw; override;
+    function Visible: Boolean; override;
     procedure Click(event: TMouseEvent); override;
     constructor Create(aX, aY, aW, aH: Single; apositive: boolean);
   end;
@@ -127,15 +128,43 @@ uses ugame, uStaticData, uMap, ubattle, zgl_mouse, zgl_text, zgl_math_2d, math,
 procedure TBattleDecisionButton.Draw;
 begin
   if positive then
-    StdButton('Forward', X,Y,W,H,Active)
+  begin
+    if BattleResult = SpaceWon then
+      StdButton('Invade', X,Y,W,H,Active)
+    else
+      StdButton('Forward', X,Y,W,H,Active)
+  end
   else
-    ColoredButton('Retreat', X,Y,W,H,Red, Black);
+  begin
+    if BattleResult <> InCombat then
+      ColoredButton('Done', X,Y,W,H,Red, Black)
+    else
+      ColoredButton('Retreat', X,Y,W,H,Red, Black);
+  end
+end;
+
+function TBattleDecisionButton.Visible: Boolean;
+begin
+  if positive then
+    Result := BattleResult in [InCombat, SpaceWon]
 end;
 
 procedure TBattleDecisionButton.Click(event: TMouseEvent);
 begin
   Retreating := not positive;
-  TurnBattle;
+  case BattleResult of
+    InCombat: TurnBattle;
+    SpaceWon: if positive then
+      begin
+        BattleDistance := BotsClosing;
+        TurnBattle;
+      end
+      else
+        DoRetreat(False);
+    SpaceLost:
+      DoRetreat(True);
+    GroundWon, GroundLost: DoRetreat(False);
+  end;
 end;
 
 constructor TBattleDecisionButton.Create(aX, aY, aW, aH: Single;
@@ -311,19 +340,21 @@ end;
 
 begin
   inherited Draw;
-  text_DrawEx(fntSecond, SCREENX/2, SCREENY*(1-MODAL_HEIGHT), 4, 0, 'Battle', 255, White, TEXT_VALIGN_BOTTOM+TEXT_HALIGN_CENTER);
+  text_DrawEx(fntSecond, SCREENX/2, SCREENY*(1-MODAL_HEIGHT), 4, 0, 'VS', 255, White, TEXT_VALIGN_BOTTOM+TEXT_HALIGN_CENTER);
+  text_DrawEx(fntMain, SCREENX*0.17, SCREENY*(1-MODAL_HEIGHT), 1, 0, 'Your fleet', 255, White, TEXT_VALIGN_BOTTOM+TEXT_HALIGN_CENTER);
+  text_DrawEx(fntMain, SCREENX*0.83, SCREENY*(1-MODAL_HEIGHT), 1, 0, 'Alien fleet', 255, White, TEXT_VALIGN_BOTTOM+TEXT_HALIGN_CENTER);
   //draw player fleet
   DrawShip(Cruiser, 0.01, 0.3);
   if BattleDistance > BrandersMelee then
-    DrawShip(TroopTransport, 0.01, 0.7)
+    DrawShip(TroopTransport, 0.01, 0.5)
   else
     DrawShip(Brander, 0.01, 0.5);
   if BattleDistance > BrandersMelee then
-    DrawAlienShip(AlienOrbital, 0.7, 0.7)
+    DrawAlienShip(AlienOrbital, 0.72, 0.3)
   else
   begin
-    DrawAlienShip(AlienBattleship, 0.7, 0.3);
-    DrawAlienShip(AlienCruiser, 0.7, 0.5);
+    DrawAlienShip(AlienBattleship, 0.72, 0.3);
+    DrawAlienShip(AlienCruiser, 0.72, 0.5);
   end;
   DrawPanel(SCREENX*(0.5-BTL_LOG_WIDTH/2), SCREENY*BTL_LOG_TOP, SCREENX*BTL_LOG_WIDTH, SCREENY*BTL_LOG_HEIGHT);
   DrawFormattedText(SCREENX*(0.5-BTL_LOG_WIDTH/2), SCREENY*BTL_LOG_TOP, SCREENX*BTL_LOG_WIDTH, SCREENY*BTL_LOG_HEIGHT,

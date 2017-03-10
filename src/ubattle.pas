@@ -157,7 +157,7 @@ begin
   //change distances
   if Retreating then
   begin
-    if BattleDistance in [BattleshipsFire, BotsClosing] then
+    if BattleDistance in [Maximum, BattleshipsFire, BotsClosing] then
       DoRetreat(BattleDistance = BattleshipsFire)
     else
     begin
@@ -170,6 +170,7 @@ begin
     if BattleDistance = BotsLanding  then
     begin
       //ground combat
+      BattleLog('Troops continue invasion');
       if random < 0.3 then
       begin
         //battle won
@@ -182,7 +183,8 @@ begin
     end
     else
     begin
-      BattleDistance := Succ(BattleDistance);
+      if (BattleDistance <> BotsClosing) or (random < 0.5) then
+        BattleDistance := Succ(BattleDistance);
       BattleLog('Closing by');
     end
   end;
