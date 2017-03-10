@@ -190,6 +190,7 @@ begin
   begin
     if Assigned(PlayerSys) then
       PlayerSys.State := Visited;
+    PrevSystem := PlayerSys;
     PlayerSys := Cursor;
   end;
   PlayerSys.Enter;

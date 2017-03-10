@@ -5,7 +5,7 @@ unit ubattle;
 interface
 
 uses
-  Classes, SysUtils, uGameTypes, uMap;
+  Classes, SysUtils, uGameTypes, uMap, uglobal;
 
 type
   TBattleDistance = (
@@ -17,7 +17,6 @@ type
 
 var
   BattleDistance: TBattleDistance;
-  BattleJournal: string;
   Retreating: Boolean;
 
 
@@ -28,10 +27,17 @@ procedure StartBattle;
 procedure TurnBattle;
 function BattleResult: TBattleResult;
 procedure BattleLog(s: string);
+function BattleJournal: string;
+
+procedure DoRetreat(total: boolean);
 
 implementation
 
-uses ugame, uGameUI, uUI;
+uses ugame, uGameUI, uUI, uStaticData, ugameactions, Math;
+
+var
+  BattleJournals: array of string;
+
 
 type
   THumanTargets = set of THumanShips;
@@ -60,6 +66,20 @@ begin
 end;
 
 
+procedure DoRetreat(total: boolean);
+begin
+  ModalWindow := nil;
+  if total then
+  begin
+    Cursor := PrevSystem;
+    //lol TODO - ugly hack
+    with TJumpAction.Create do
+    begin
+      Execute;
+      Free
+    end;
+  end;
+end;
 
 procedure TriggerMines(FromSys, ToSys: TSystem);
 begin
@@ -68,7 +88,7 @@ end;
 
 procedure StartBattle;
 begin
-  BattleJournal := '';
+  SetLength(BattleJournals, 0);
   BattleDistance := Maximum;
   Retreating := False;
   ModalWindow := BattleWindow;
@@ -80,12 +100,12 @@ end;
 
 procedure DoAlienFireStep(who: TAlienResearch; targets: THumanTargets);
 begin
-
+  BattleLog(ALIEN_RESEARCH_NAMES[who]+' opens fire');
 end;
 
 procedure DoHumanFireStep(who: THumanShips; targets: TAlienTargets);
 begin
-
+  BattleLog(SHIP_NAMES[who]+' opens fire');
 end;
 
 procedure TurnBattle;
@@ -129,14 +149,21 @@ begin
       DoHumanFireStep(Cruiser, [AlienOrbital]);
     end;
   end;
-  if BattleResult <> InCombat then exit;
+  if BattleResult <> InCombat then
+  begin
+    //TODO???
+    exit;
+  end;
   //change distances
   if Retreating then
   begin
     if BattleDistance in [BattleshipsFire, BotsClosing] then
-      //retreat;
+      DoRetreat(BattleDistance = BattleshipsFire)
     else
+    begin
       BattleDistance := Pred(BattleDistance);
+      BattleLog('Retreating');
+    end
   end
   else
   begin
@@ -154,22 +181,47 @@ begin
       //do nothing
     end
     else
+    begin
       BattleDistance := Succ(BattleDistance);
+      BattleLog('Closing by');
+    end
   end;
 end;
 
 function BattleResult: TBattleResult;
 begin
-  Result := InCombat;
-  //TODO
+  if PlayerSys.PopStatus <> Alien then
+    Result := GroundWon
+  else if AlienExists([AlienBattleship, AlienCruiser]) and not HumanExists([Cruiser, Brander]) then
+    Result := SpaceLost
+  else if AlienExists([AlienBattleship, AlienCruiser]) and HumanExists([Cruiser, Brander]) then
+    Result := InCombat
+  else if not HumanExists([TroopTransport]) then
+    Result := GroundLost
+  else if not AlienExists([AlienOrbital]) then
+    Result := GroundWon
+  else if BattleDistance <= BrandersMelee then
+    Result := SpaceWon
+  else
+    Result := InCombat;
 end;
 
 procedure BattleLog(s: string);
 begin
-  if BattleJournal = '' then
-    BattleJournal := s
-  else
-    BattleJournal := BattleJournal+#10+s;
+  SetLength(BattleJournals, Length(BattleJournals)+1);
+  BattleJournals[Length(BattleJournals)-1] := s;
+end;
+
+function BattleJournal: string;
+var
+  s: string;
+  i: integer;
+begin
+  s := '';
+  for i := max(0, Length(BattleJournals)-N_BTL_LOG_LINES) to Length(BattleJournals)-1 do
+    s := s+BattleJournals[i]+#10;
+  SetLength(s, Length(s)-1);
+  Result := s
 end;
 
 end.

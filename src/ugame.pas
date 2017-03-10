@@ -17,7 +17,7 @@ procedure InitPlayer;
 
 var
   Map: TMap;
-  PlayerSys, Cursor: TSystem;
+  PlayerSys, Cursor, PrevSystem: TSystem;
   CursorSize: Integer;
   Turn: integer;
   StarDate: TStarDate;
