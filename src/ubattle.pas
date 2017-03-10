@@ -30,6 +30,8 @@ function BattleResult: TBattleResult;
 
 implementation
 
+uses ugame;
+
 type
   THumanTargets = set of THumanShips;
   TAlienTargets = set of TAlienResearch;
@@ -120,7 +122,18 @@ begin
   else
   begin
     if BattleDistance = BotsLanding  then
+    begin
       //ground combat
+      if random < 0.3 then
+      begin
+        //battle won
+        PlayerSys.Capture;
+      end
+    end
+    else if (BattleDistance = BrandersMelee) and AlienExists([AlienBattleship, AlienCruiser]) then
+    begin
+      //do nothing
+    end
     else
       BattleDistance := Succ(BattleDistance);
   end;

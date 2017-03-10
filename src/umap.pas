@@ -47,6 +47,9 @@ type
     procedure AlienMessaging;
     function Linked(asys: TSystem): boolean;
     procedure LogEvent(s: string);
+    procedure Capture;
+    procedure Colonize;
+    procedure ClearAliens;
   end;
 
   { TMap }
@@ -78,6 +81,7 @@ function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TPowerLevel;
 procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
 
 function FreePoints(prio: TPriorities): TPriorityLevel;
+
 implementation
 
 uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, uGameUI,
@@ -407,16 +411,16 @@ begin
       sys.State := Found;
   //now make visit
   VisitTime := StarDate;
-  SeenMines := Mines;
-  SetLength(SeenMines, Length(SeenMines));
-  SeenHumanResearch := HumanResearch;
   if SeenPopStatus <> PopStatus then
     LogEvent('System is '+POP_STATUS_NAMES[PopStatus]+'!');
-  SeenPopStatus := PopStatus;
   case PopStatus of
     Own: EnterOwn;
     Alien: ModalWindow := BattleWindow;
   end;
+  SeenMines := Mines;
+  SetLength(SeenMines, Length(SeenMines));
+  SeenHumanResearch := HumanResearch;
+  SeenPopStatus := PopStatus;
 end;
 
 procedure TSystem.EnterOwn;
@@ -558,6 +562,36 @@ end;
 procedure TSystem.LogEvent(s: string);
 begin
   LogEventRaw(' '+Name+': '+s);
+end;
+
+procedure TSystem.Capture;
+begin
+  ClearAliens;
+  LogEvent('System was captured by ground forces, alien population wiped out');
+  PopStatus := Colonizable;
+end;
+
+procedure TSystem.Colonize;
+begin
+  ClearAliens;
+  LogEvent('System was colonized');
+  PopStatus := Own;
+  EnterOwn;
+  SeenMines := Mines;
+  SetLength(SeenMines, Length(SeenMines));
+  SeenHumanResearch := HumanResearch;
+  SeenPopStatus := PopStatus;
+end;
+
+procedure TSystem.ClearAliens;
+var
+  ship: TAlienResearch;
+  lv: TPowerLevel;
+begin
+  FillChar(AlienFleet, SizeOf(AlienFleet), 0);
+  SetLength(Mines, 0);
+  SetLength(Mines, length(Links));
+  //TODO: remove armies here
 end;
 
 

@@ -5,7 +5,7 @@ unit ugameactions;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, uGameTypes;
 
 type
   TAction = class
@@ -18,6 +18,15 @@ type
 
   { TJumpAction }
   TJumpAction = class(TAction)
+    procedure Execute; override;
+    function Allowed: Boolean; override;
+    function Visible: Boolean; override;
+    function Text: String; override;
+  end;
+
+  { TColonizeAction }
+
+  TColonizeAction = class(TAction)
     procedure Execute; override;
     function Allowed: Boolean; override;
     function Visible: Boolean; override;
@@ -75,7 +84,31 @@ begin
   adda(TResearchAction.Create);
   adda(TPrioritiesAction.Create);
   adda(TCheckLogAction.Create);
+  adda(TColonizeAction.Create);
   ActiveActions := AllActions;
+end;
+
+{ TColonizeAction }
+
+procedure TColonizeAction.Execute;
+begin
+  PlayerSys.Colonize;
+  Dec(PlayerFleet[Colonizer][1]);
+end;
+
+function TColonizeAction.Allowed: Boolean;
+begin
+  Result := (PlayerSys.PopStatus = Colonizable) and (TotalCount(PlayerFleet[Colonizer])>0);
+end;
+
+function TColonizeAction.Visible: Boolean;
+begin
+  Result := (PlayerSys.PopStatus = Colonizable);
+end;
+
+function TColonizeAction.Text: String;
+begin
+  Result := 'Colonize';
 end;
 
 { TCheckLogAction }
