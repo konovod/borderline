@@ -101,6 +101,8 @@ begin
   inc(Turn);
   for sys in Map.Systems do
     sys.PassTime;
+  for sys in Map.Systems do
+    sys.SecondPass;
   StarDate := StarDate + 1;
 end;
 

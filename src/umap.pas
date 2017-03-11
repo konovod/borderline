@@ -13,12 +13,13 @@ type
 
   TSystemState = (Hidden, Found, Visited, Current);
   TPopulationState = (Own, Colonizable, Alien, WipedOut);
+  TPopulationStates = set of TPopulationState;
 
   TAlienArmyState = (None, Walking, Fleeing, Returning);
 
   TSystem = class;
   TAlienArmy = record
-    State: TAlienArmyState;
+    State, StateNext: TAlienArmyState;
     waypoints: array of TSystem;
   end;
 
@@ -35,7 +36,7 @@ type
     AlienId: Integer;
     AlienResearch, AlienResearchMax: TAlienResearchLevel;
     AlienResearchNext, AlienResearchMaxNext: TAlienResearchLevel;
-    AlienFleet: TAlienFleetData;
+    AlienFleet, AlienFleetNext: TAlienFleetData;
     SeenHumanResearch, HumanResearch: THumanResearchLevel;
     Ships: TFleetData;
     Priorities: TPriorities;
@@ -51,6 +52,7 @@ type
     procedure Enter;
     procedure EnterOwn;
     procedure PassTime;
+    procedure SecondPass;
     procedure ProcessHumanSystem;
     procedure ProcessAlienSystem;
     procedure AlienMessaging;
@@ -61,6 +63,7 @@ type
     procedure ClearAliens;
     procedure ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
     procedure SetResearch(res: TAlienResearch; n: integer);
+    function RandomLink(allowed: TPopulationStates = [Own, Alien, Colonizable, WipedOut]): TSystem;
   end;
 
   { TMap }
@@ -515,6 +518,30 @@ begin
   AlienMessaging;
 end;
 
+procedure TSystem.SecondPass;
+var
+  typ: TAlienResearch;
+  lv: TPowerLevel;
+begin
+  for typ in TAlienResearch do
+  begin
+    if AlienResearchMaxNext[typ] > AlienResearchMax[typ] then
+      AlienResearchMax[typ] := AlienResearchMaxNext[typ];
+    if AlienResearchNext[typ] > AlienResearch[typ] then
+      AlienResearch[typ] := AlienResearchNext[typ];
+    for lv in TPowerLevel do
+    begin
+      AlienFleet[typ][lv] := AlienFleet[typ][lv] + AlienFleetNext[typ][lv];
+      AlienFleetNext[typ][lv] := 0;
+    end;
+  end;
+  if AlienArmy.StateNext <> None then
+  begin
+    AlienArmy.State := AlienArmy.StateNext;
+    AlienArmy.StateNext := None;
+  end;
+end;
+
 procedure TSystem.ProcessHumanSystem;
 var
   ship: THumanShip;
@@ -561,21 +588,15 @@ begin
       inc(AlienResearch[typ]);
       break;
     end;
-  //4. armies navigation
-  case AlienArmy.State of
-    None:;
-    Walking:
-      begin
-
-      end;
-  end;
-  //TODO
 end;
 
 procedure TSystem.AlienMessaging;
 var
   typ: TAlienResearch;
   i: integer;
+  target: TSystem;
+  army: TAlienFleetData;
+  lv: TPowerLevel;
 begin
   for i := 0 to length(Links)-1 do
   begin
@@ -588,12 +609,37 @@ begin
         Links[i].AlienResearchNext[typ] := AlienResearch[typ];
     end;
   end;
-  for typ in TAlienResearch do
-  begin
-    if AlienResearchMaxNext[typ] > AlienResearchMax[typ] then
-      AlienResearchMax[typ] := AlienResearchMaxNext[typ];
-    if AlienResearchNext[typ] > AlienResearch[typ] then
-      AlienResearch[typ] := AlienResearchNext[typ];
+  //4. armies navigation
+  case AlienArmy.State of
+    None:;
+    Walking, Returning:
+      begin
+        if AlienArmy.State = Walking then
+          target := RandomLink
+        else
+        begin
+          target := AlienArmy.waypoints[Length(AlienArmy.waypoints)-1];
+          SetLength(AlienArmy.waypoints, Length(AlienArmy.waypoints)-1);
+          if Length(AlienArmy.waypoints) = 0 then AlienArmy.State := Walking;
+        end;
+        FillChar(army, SizeOf(army), 0);
+        for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
+        begin
+          Move(AlienFleet[typ], army[typ], sizeof(TSquadron));
+          FillChar(AlienFleet[typ], SizeOf(TSquadron), 0);
+        end;
+        if target.PopStatus = Own then
+          //TODO: invasion
+        else
+        begin
+          if target.AlienArmy.StateNext < AlienArmy.State then
+            target.AlienArmy.StateNext := AlienArmy.State;
+          AlienArmy.State := None;
+          for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
+            for lv in TPowerLevel do
+              target.AlienFleetNext[typ][lv] := target.AlienFleetNext[typ][lv] + army[typ][lv];
+        end;
+      end;
   end;
 end;
 
@@ -638,7 +684,7 @@ begin
   FillChar(AlienFleet, SizeOf(AlienFleet), 0);
   SetLength(Mines, 0);
   SetLength(Mines, length(Links));
-  //TODO: remove armies here
+  AlienArmy.State := None;
 end;
 
 procedure TSystem.ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
@@ -678,6 +724,25 @@ begin
     n := MAX_RES_LEVEL;
   if AlienResearchMax[res] < n then
     AlienResearchMax[res] := n;
+end;
+
+function TSystem.RandomLink(allowed: TPopulationStates): TSystem;
+var
+  i: integer;
+  sys: TSystem;
+  list: array of TSystem;
+begin
+  SetLength(List, 0);
+  for sys in Links do
+    if sys.PopStatus in allowed then
+    begin
+      SetLength(List, length(list)+1);
+      list[length(list)-1] := sys;
+    end;
+  if Length(list) = 0 then
+    Result := nil
+  else
+    Result := list[random(Length(list))];
 end;
 
 
