@@ -117,11 +117,15 @@ var
 
 procedure InitUI;
 
+procedure GameIsOver;
 
 implementation
 
 uses ugame, uStaticData, uMap, ubattle, zgl_mouse, zgl_text, zgl_math_2d, math,
   zgl_primitives_2d;
+
+var
+  GameOver: boolean;
 
 { TBattleDecisionButton }
 
@@ -384,9 +388,16 @@ end;
 
 function TLogWindow.ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;
 begin
-  Close;
-  Result := True;
-  ModalWindow := nil;
+  if GameOver then
+  begin
+    Result := True;
+  end
+  else
+  begin
+    Close;
+    Result := True;
+    ModalWindow := nil;
+  end;
 end;
 
 { TPrioritiesWindow }
@@ -612,6 +623,12 @@ begin
   LogWindow := TLogWindow.Create;
   BattleWindow := TBattleWindow.Create;
   PrioritiesWindow := TPrioritiesWindow.Create;
+end;
+
+procedure GameIsOver;
+begin
+  GameOver := True;
+  ModalWindow := LogWindow;
 end;
 
 

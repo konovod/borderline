@@ -335,6 +335,7 @@ begin
   for res in THumanResearch do
     HumanResearch[res] := 1;
   AlienResearch[AlienBattleship] := 1;
+  AlienResearch[AlienMines] := 1;
   //AlienResearch[AlienCruiser] := 1;
   //AlienResearch[AlienCruiser] := 1;
   //AlienResearch[AlienOrbital] := 10;
@@ -563,7 +564,7 @@ var
 begin
   for i := 0 to length(Links)-1 do
   begin
-   // if Links[i].PopStatus = Own then continue;
+    if Links[i].PopStatus = Own then continue;
     for typ in TAlienResearch do
     begin
       if AlienResearchMax[typ] > Links[i].AlienResearchMax[typ] then
@@ -631,7 +632,8 @@ var
   i: integer;
 begin
   case sit of
-    HumanMinesweepers: SetResearch(AlienMines, MaxLevel(PlayerFleet[Minesweeper]));
+    HumanMinesweepers:
+      for sys in Links do sys.SetResearch(AlienMines, MaxLevel(PlayerFleet[Minesweeper]));
     HumanMines:
     begin
       for i := 0 to Length(Links)-1 do
@@ -643,13 +645,13 @@ begin
     end;
     HumanSpace:
     begin
-      SetResearch(AlienBattleship, MaxLevel(PlayerFleet[Cruiser]));
-      SetResearch(AlienCruiser, MaxLevel(PlayerFleet[Brander]));
+      for sys in Links do sys.SetResearch(AlienBattleship, MaxLevel(PlayerFleet[Cruiser]));
+      for sys in Links do sys.SetResearch(AlienCruiser, MaxLevel(PlayerFleet[Brander]));
     end;
     HumanMarine:
     begin
-      SetResearch(AlienBattleship, MaxLevel(PlayerFleet[Cruiser]));
-      SetResearch(AlienOrbital, MaxLevel(PlayerFleet[TroopTransport]));
+      for sys in Links do sys.SetResearch(AlienBattleship, MaxLevel(PlayerFleet[Cruiser]));
+      for sys in Links do sys.SetResearch(AlienOrbital, MaxLevel(PlayerFleet[TroopTransport]));
     end;
   end;
 end;

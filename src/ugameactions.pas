@@ -237,6 +237,7 @@ begin
       PlayerSys.State := Visited;
     PrevSystem := PlayerSys;
     PlayerSys := Cursor;
+    TriggerMines(True, PrevSystem, PlayerSys);
   end;
   f :=  FirstColony and (PlayerSys.VisitTime = 0) and (PlayerSys.PopStatus = Colonizable);
   PlayerSys.Enter;

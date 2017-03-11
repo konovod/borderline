@@ -20,7 +20,7 @@ var
   Retreating: Boolean;
 
 
-//procedure TriggerMines(FromSys, ToSys: TSystem);
+function TriggerMines(Human: boolean; FromSys, ToSys: TSystem): boolean;
 
 //uses player fleet and player system
 procedure StartBattle(ground: boolean);
@@ -81,23 +81,25 @@ type
     lvl: TPowerLevel;
     typ: THumanShip;
     atyp: TAlienShip;
-    size: integer;
+    size: Single;
   end;
 
-function DamageHuman(applyvalue: single; typs: THumanShips; always_fatal: boolean): single;
+function DamageHuman(applyvalue: single; typs: THumanShips; always_fatal: boolean;log_total: boolean = false): single;
 var
   groups: array of TDamageGroup;
   grp: TDamageGroup;
   lv: TPowerLevel;
   ship: THumanShip;
-  n, i, x: integer;
+  i: integer;
+  x, fullsize, pwr: single;
   lognormal: array[THumanShip] of integer;
   logdamaged: array[THumanShip] of integer;
+  s: string;
 begin
   //fill groups
   //and count total damage size
   SetLength(groups, 0);
-  n := 0;
+  fullsize := 0;
   for ship in typs do
   begin
     logdamaged[ship] := 0;//TotalCount(PlayerDamaged[ship]);
@@ -109,13 +111,13 @@ begin
       begin
         SetLength(groups, Length(groups)+1);
         grp.lvl := lv;
-        grp.size := PlayerFleet[ship][lv] * lv;
-        inc(n, grp.size);
+        grp.size := PlayerFleet[ship][lv] * power(lv, K_LVL);
+        fullsize := fullsize + grp.size;
         grp.typ := ship;
         groups[Length(groups)-1] := grp;
       end;
   //full destruction, return sum damage
-  if applyvalue >= n then
+  if applyvalue >= fullsize then
   begin
     for ship in typs do
       for lv in TPowerLevel do
@@ -125,22 +127,23 @@ begin
         PlayerFleet[ship][lv] := 0;
         PlayerDamaged[ship][lv] := 0;
       end;
-    Result := n;
+    Result := fullsize;
   end
   else
   //spread damage to random groups
   begin
     Result := applyvalue;
-    while applyvalue > 0 do
+    while applyvalue > 0.001 do
     begin
-      x := random(n);
+      x := random*fullsize;
       for i := 0 to Length(groups)-1 do
         if x >= groups[i].size then
-          dec(x, groups[i].size)
+          x := x - groups[i].size
         else
         begin
           grp := groups[i];
-          applyvalue := applyvalue - grp.lvl;
+          pwr := power(grp.lvl, K_LVL);
+          applyvalue := applyvalue - pwr;
           if random < PlayerDamaged[grp.typ][grp.lvl] / PlayerFleet[grp.typ][grp.lvl] then
           begin
             //attack damaged ship
@@ -149,8 +152,8 @@ begin
               dec(logdamaged[grp.typ]);
               dec(PlayerDamaged[grp.typ][grp.lvl]);
               dec(PlayerFleet[grp.typ][grp.lvl]);
-              dec(grp.size, grp.lvl);
-              dec(n, grp.lvl);
+              grp.size := grp.size - pwr;
+              fullsize := fullsize - grp.lvl;
             end;
           end
           else
@@ -160,8 +163,8 @@ begin
             begin
               dec(lognormal[grp.typ]);
               dec(PlayerFleet[grp.typ][grp.lvl]);
-              dec(grp.size, grp.lvl);
-              dec(n, grp.lvl);
+              grp.size := grp.size - pwr;
+              fullsize := fullsize - grp.lvl;
             end
             else
             begin
@@ -169,7 +172,6 @@ begin
               dec(lognormal[grp.typ]);
               inc(logdamaged[grp.typ]);
             end;
-
           end;
           break;
         end;
@@ -178,9 +180,21 @@ begin
   for ship in typs do
   begin
     if -logdamaged[ship]-lognormal[ship] > 0 then
-      BattleLog(Format('    %d %ss destroyed', [-logdamaged[ship]-lognormal[ship], SHIP_NAMES[ship]]));
+    begin
+      s := Format('    %d %ss destroyed', [-logdamaged[ship]-lognormal[ship], SHIP_NAMES[ship]]);
+      if log_total then
+        LogEventRaw(s)
+      else
+        BattleLog(s);
+    end;
     if logdamaged[ship] > 0 then
-      BattleLog(Format('    %d %ss damaged', [logdamaged[ship], SHIP_NAMES[ship]]));
+    begin
+      s := Format('    %d %ss damaged', [logdamaged[ship], SHIP_NAMES[ship]]);
+      if log_total then
+        LogEventRaw(s)
+      else
+        BattleLog(s);
+    end;
   end;
 end;
 
@@ -190,7 +204,8 @@ var
   grp: TDamageGroup;
   lv: TPowerLevel;
   ship: TAlienShip;
-  n, i, x: integer;
+  i: integer;
+  x, fullsize, pwr: single;
   lognormal: array[TAlienShip] of integer;
   flt: TAlienFleetData;
 begin
@@ -198,7 +213,7 @@ begin
   //fill groups
   //and count total damage size
   SetLength(groups, 0);
-  n := 0;
+  fullsize := 0;
   for ship in typs do
     lognormal[ship] := 0;
   for ship in typs do
@@ -207,13 +222,13 @@ begin
       begin
         SetLength(groups, Length(groups)+1);
         grp.lvl := lv;
-        grp.size := flt[ship][lv] * lv;
-        inc(n, grp.size);
+        grp.size := flt[ship][lv] * power(lv, K_LVL);
+        fullsize := fullsize + grp.size;
         grp.atyp := ship;
         groups[Length(groups)-1] := grp;
       end;
   //full destruction, return sum damage
-  if applyvalue >= n then
+  if applyvalue >= fullsize then
   begin
     for ship in typs do
       for lv in TPowerLevel do
@@ -221,28 +236,29 @@ begin
         lognormal[ship] := lognormal[ship]-flt[ship][lv];
         flt[ship][lv] := 0;
       end;
-    Result := n;
+    Result := fullsize;
   end
   else
   //spread damage to random groups
   begin
     Result := applyvalue;
-    while applyvalue > 0 do
+    while applyvalue > 0.001 do
     begin
-      x := random(n);
+      x := random*fullsize;
       for i := 0 to Length(groups)-1 do
         if x >= groups[i].size then
-          dec(x, groups[i].size)
+          x := x - groups[i].size
         else
         begin
           grp := groups[i];
-          applyvalue := applyvalue - grp.size;
+          pwr := power(grp.lvl, K_LVL);
+          applyvalue := applyvalue - pwr;
           if random < 0.5 then
           begin
             dec(lognormal[grp.atyp]);
             dec(flt[grp.atyp][grp.lvl]);
-            dec(grp.size, grp.lvl);
-            dec(n, grp.lvl);
+            grp.size := max(grp.size - pwr, 0);
+            fullsize := fullsize - pwr;
           end;
         end;
     end;
@@ -257,21 +273,45 @@ end;
 
 
 
-//procedure TriggerMines(Human: boolean; FromSys, ToSys: TSystem);
-//var
-//  dmg: single;
-//  i, n: integer;
-//begin
-//  if human and (ToSys.PopStatus <> Alien) then exit;
-//  n := 0;
-//  for i := 0 to FromSys;
-//  dmg := random*CalcPower(ToSys[who]) * ALIEN_DAMAGE_K;
-//  if dmg <= 0 then exit;
-//  BattleLog('Alien '+ALIEN_SHIP_NAMES[who]+'s opens fire');
-//  DamageHuman(dmg, targets, false);
-//
-//
-//end;
+function TriggerMines(Human: boolean; FromSys, ToSys: TSystem): Boolean;
+var
+  countered, dmg, applied: single;
+  i, n: integer;
+  lv: TPowerLevel;
+begin
+  Result := False;
+  if human and (ToSys.PopStatus <> Alien) then exit;
+  dmg := 0;
+  for i := 0 to Length(ToSys.Links)-1 do
+    if ToSys.Links[i] = FromSys then
+    begin
+      dmg := CalcPower(ToSys.Mines[i]);
+      break;
+    end;
+  if dmg <= 0 then exit;
+  if Human then
+  begin
+    Result := True;
+    ToSys.LogEvent('Minefields triggered on transit');
+    countered := CalcPower(PlayerFleet[Minesweeper])-CalcPower(PlayerDamaged[Minesweeper]);
+    if countered > 0 then
+      LogEventRaw(Format('    Minesweepers cleaned about %d%%', [Trunc(100*countered/dmg)]));
+    dmg := dmg - countered;
+    if dmg > 0 then
+    begin
+      applied := DamageHuman(dmg, ALL_HUMAN_SHIPS, false, True);
+      if applied < dmg-0.001 then
+      begin
+        LogEventRaw('    Commander ship was destroyed');
+        LogEventRaw('    GAME OVER');
+        GameIsOver;
+        exit
+      end;
+    end;
+  end;
+  for lv in TPowerLevel do
+    ToSys.Mines[i][lv] := 0;
+end;
 
 procedure StartBattle(ground: boolean);
 begin

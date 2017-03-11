@@ -53,6 +53,8 @@ type
 
   TContactSituation = (HumanMinesweepers, HumanSpace, HumanMarine, HumanMines);
 
+const
+  ALL_HUMAN_SHIPS: THumanShips = [Low(THumanShip)..High(THumanShip)];
 
 implementation
 
