@@ -84,7 +84,7 @@ end;
 
 procedure InitPlayer;
 var
-  ship: THumanShips;
+  ship: THumanShip;
   res: THumanResearch;
 begin
   PlayerFleet[Cruiser][1] := 5;

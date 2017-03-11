@@ -38,14 +38,9 @@ uses ugame, uGameUI, uUI, uStaticData, ugameactions, Math;
 var
   BattleJournals: array of string;
 
-
-type
-  THumanTargets = set of THumanShips;
-  TAlienTargets = set of TAlienResearch;
-
-function AlienExists(who: TAlienTargets): boolean;
+function AlienExists(who: TAlienShips): boolean;
 var
-  ship: TAlienResearch;
+  ship: TAlienShip;
 begin
   Result := True;
   for ship in who do
@@ -54,9 +49,9 @@ begin
   Result := False;
 end;
 
-function HumanExists(who: THumanTargets): boolean;
+function HumanExists(who: THumanShips): boolean;
 var
-  ship: THumanShips;
+  ship: THumanShip;
 begin
   Result := True;
   for ship in who do
@@ -84,20 +79,20 @@ end;
 type
   TDamageGroup = record
     lvl: TPowerLevel;
-    typ: THumanShips;
-    atyp: TAlienResearch;
+    typ: THumanShip;
+    atyp: TAlienShip;
     size: integer;
   end;
 
-function DamageHuman(applyvalue: single; typs: THumanTargets; always_fatal: boolean): single;
+function DamageHuman(applyvalue: single; typs: THumanShips; always_fatal: boolean): single;
 var
   groups: array of TDamageGroup;
   grp: TDamageGroup;
   lv: TPowerLevel;
-  ship: THumanShips;
+  ship: THumanShip;
   n, i, x: integer;
-  lognormal: array[THumanShips] of integer;
-  logdamaged: array[THumanShips] of integer;
+  lognormal: array[THumanShip] of integer;
+  logdamaged: array[THumanShip] of integer;
 begin
   //fill groups
   //and count total damage size
@@ -187,14 +182,14 @@ begin
   end;
 end;
 
-function DamageAlien(applyvalue: single; typs: TAlienTargets): single;
+function DamageAlien(applyvalue: single; typs: TAlienShips): single;
 var
   groups: array of TDamageGroup;
   grp: TDamageGroup;
   lv: TPowerLevel;
-  ship: TAlienResearch;
+  ship: TAlienShip;
   n, i, x: integer;
-  lognormal: array[TAlienResearch] of integer;
+  lognormal: array[TAlienShip] of integer;
   flt: TAlienFleetData;
 begin
   flt := PlayerSys.AlienFleet;
@@ -251,7 +246,7 @@ begin
   for ship in typs do
   begin
     if lognormal[ship] <> 0 then
-      BattleLog(Format('    %d alien %ss destroyed', [-lognormal[ship], LowerCase(ALIEN_RESEARCH_NAMES[ship])]));
+      BattleLog(Format('    %d alien %ss destroyed', [-lognormal[ship], LowerCase(ALIEN_SHIP_NAMES[ship])]));
   end;
   PlayerSys.AlienFleet := flt;
 end;
@@ -268,7 +263,7 @@ end;
 //  for i := 0 to FromSys;
 //  dmg := random*CalcPower(ToSys[who]) * ALIEN_DAMAGE_K;
 //  if dmg <= 0 then exit;
-//  BattleLog('Alien '+ALIEN_RESEARCH_NAMES[who]+'s opens fire');
+//  BattleLog('Alien '+ALIEN_SHIP_NAMES[who]+'s opens fire');
 //  DamageHuman(dmg, targets, false);
 //
 //
@@ -289,17 +284,17 @@ begin
     BattleLog('Scanners detects multiple alien signatures');
 end;
 
-procedure DoAlienFireStep(who: TAlienResearch; targets: THumanTargets);
+procedure DoAlienFireStep(who: TAlienShip; targets: THumanShips);
 var
   dmg: single;
 begin
   dmg := random*CalcPower(PlayerSys.AlienFleet[who]) * ALIEN_DAMAGE_K;
   if dmg <= 0 then exit;
-  BattleLog('Alien '+ALIEN_RESEARCH_NAMES[who]+'s opens fire');
+  BattleLog('Alien '+ALIEN_SHIP_NAMES[who]+'s opens fire');
   DamageHuman(dmg, targets, false);
 end;
 
-procedure DoHumanFireStep(who: THumanShips; targets: TAlienTargets);
+procedure DoHumanFireStep(who: THumanShip; targets: TAlienShips);
 var
   dmg: single;
 begin

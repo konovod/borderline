@@ -28,20 +28,25 @@ type
   TPowerLevel = 0..MAX_POWER_LEVEL;
 
   THumanResearch = (Explosives, Sensors, Engines, Armor, Weapons);
-  THumanShips = (Brander, Cruiser, Minesweeper, Colonizer, TroopTransport, Scout);
+  THumanShip = (Brander, Cruiser, Minesweeper, Colonizer, TroopTransport, Scout);
+  THumanShips = set of THumanShip;
+
+
   TAlienResearch = (AlienCruiser, AlienBattleship, AlienMines, AlienMinesweeper, AlienOrbital);
+  TAlienShip = TAlienResearch;
+  TAlienShips = set of TAlienShip;
 
   THumanResearchLevel = array[THumanResearch] of TResearchLevel;
   TAlienResearchLevel = array[TAlienResearch] of TResearchLevel;
 
   TSquadron = array[TPowerLevel] of Integer;
-  TFleetData = array[THumanShips] of TSquadron;
-  TAlienFleetData = array[TAlienResearch] of TSquadron;
+  TFleetData = array[THumanShip] of TSquadron;
+  TAlienFleetData = array[TAlienShip] of TSquadron;
 
   TMinesData = array of TSquadron;
 
   TPriorities = record
-    Ships: array[THumanShips] of Integer;
+    Ships: array[THumanShip] of Integer;
     Research: Integer;
     Mines: array of Integer;
   end;

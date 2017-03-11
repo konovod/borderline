@@ -186,7 +186,7 @@ begin
   case typ of
     prFree: Result := 'Remaining points';
     prResearch: Result := 'Do research';
-    prShips: Result := LowerCase(SHIP_NAMES[THumanShips(index)])+'s';
+    prShips: Result := LowerCase(SHIP_NAMES[THumanShip(index)])+'s';
     prMines: Result := 'to '+PlayerSys.Links[index].Name;
   end;
 end;
@@ -196,7 +196,7 @@ begin
   case typ of
     prFree: Result := FreePoints(PlayerSys.Priorities);
     prResearch: Result := PlayerSys.Priorities.Research + FreePoints(PlayerSys.Priorities);
-    prShips: Result := PlayerSys.Priorities.Ships[THumanShips(index)];
+    prShips: Result := PlayerSys.Priorities.Ships[THumanShip(index)];
     prMines: Result := PlayerSys.Priorities.Mines[index];
   end;
 end;
@@ -206,7 +206,7 @@ begin
   case typ of
     prFree: exit;
     prResearch: exit;//PlayerSys.Priorities.Research := value;
-    prShips: PlayerSys.Priorities.Ships[THumanShips(index)] := value;
+    prShips: PlayerSys.Priorities.Ships[THumanShip(index)] := value;
     prMines: PlayerSys.Priorities.Mines[index] := value;
   end;
 end;
@@ -295,7 +295,7 @@ end;
 procedure TBattleWindow.Draw;
 
 
-procedure DrawShip(ship: THumanShips; ax, ay: single);
+procedure DrawShip(ship: THumanShip; ax, ay: single);
 var
   dmg: single;
   basex, basey, scy, scx: single;
@@ -319,7 +319,7 @@ begin
     Format('%d%% damaged', [Trunc(dmg*100)]), 255, Black);
 end;
 
-procedure DrawAlienShip(ship: TAlienResearch; ax, ay: single);
+procedure DrawAlienShip(ship: TAlienShip; ax, ay: single);
 var
   dmg: single;
   basex, basey, scy, scx: single;
@@ -334,7 +334,7 @@ begin
   scx := SCREENX*MODAL_WIDTH;
   scy := SCREENY*MODAL_HEIGHT;
   text_DrawEx(fntMain, basex, basey,1,0,
-    ALIEN_RESEARCH_NAMES[ship]+'s '+IntToStr(n), 255, Red);
+    ALIEN_SHIP_NAMES[ship]+'s '+IntToStr(n), 255, Red);
   text_DrawEx(fntMain, basex, basey+scy*0.05, 0.5, 0,
     'level '+AvgLevel(flt[ship]), 255, Red);
 end;
@@ -418,7 +418,7 @@ end;
 constructor TPrioritiesWindow.Create;
 var
   i: integer;
-  ship: THumanShips;
+  ship: THumanShip;
   cx, cy, hg, wd: single;
 begin
   cy := 0.5-MODAL_HEIGHT/2 + 0.01;
@@ -431,7 +431,7 @@ begin
   cy := 0.5-MODAL_HEIGHT/2 + 0.22 - hg-0.01;
   cy := cy+hg+0.01;
   cy := cy+hg+0.01;
-  for ship in THumanShips do
+  for ship in THumanShip do
   begin
     addbutton(TPriorityBar.Create(cx, cy, wd, hg, self, prShips, ord(ship)));
     cy := cy+hg+0.01;

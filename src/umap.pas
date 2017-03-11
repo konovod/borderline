@@ -77,7 +77,7 @@ procedure LogEventRaw(s: string);
 //TODO - colony sizes
 function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
 function GenResLevel(res:THumanResearchLevel; first, second: THumanResearch): TPowerLevel;
-function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TPowerLevel;
+function ShipLevel(ship: THumanShip; res:THumanResearchLevel): TPowerLevel;
 procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
 
 function FreePoints(prio: TPriorities): TPriorityLevel;
@@ -109,11 +109,11 @@ end;
 
 function LongShipsList(fleet, damaged: TFleetData): string;
 var
-  ship: THumanShips;
+  ship: THumanShip;
   n: integer;
 begin
   Result := '';
-  for ship in THumanShips do
+  for ship in THumanShip do
   begin
     n := TotalCount(fleet[ship]);
     Result := Result+Format('%ss: %d, '#10, [SHIP_NAMES[ship], n]);
@@ -129,11 +129,11 @@ end;
 
 function ShortShipsList(fleet: TFleetData): string;
 var
-  ship: THumanShips;
+  ship: THumanShip;
   n: integer;
 begin
   Result := '';
-  for ship in THumanShips do
+  for ship in THumanShip do
   begin
     n := TotalCount(fleet[ship]);
     Result := Result+Format('%ss: %d, '#10, [SHIP_NAMES[ship], n]);
@@ -221,7 +221,7 @@ begin
   Result := EnsureRange((res[first] + res[second] + min(res[first], res[second])) div 2, 0, MAX_POWER_LEVEL);
 end;
 
-function ShipLevel(ship: THumanShips; res:THumanResearchLevel): TPowerLevel;
+function ShipLevel(ship: THumanShip; res:THumanResearchLevel): TPowerLevel;
 begin
   case ship of
     Brander: Result := GenResLevel(res, Explosives, Engines);
@@ -256,10 +256,10 @@ end;
 function FreePoints(prio: TPriorities): TPriorityLevel;
 var
   i: integer;
-  ship: THumanShips;
+  ship: THumanShip;
 begin
   Result := 100 - prio.Research;
-	for ship in THumanShips do
+	for ship in THumanShip do
   	Result := Result - prio.Ships[ship];
 	for i := 0 to length(prio.Mines)-1 do
   	Result := Result - prio.Mines[i];
@@ -318,11 +318,11 @@ end;
 
 procedure TSystem.DefaultPriorities;
 var
-  ship: THumanShips;
+  ship: THumanShip;
   i: integer;
 begin
   Priorities.Research := 40;
-  for ship in THumanShips do
+  for ship in THumanShip do
 	  Priorities.Ships[ship] := 10;
   for i := 0 to length(links)-1 do
   	Priorities.Mines[i] := 0;
@@ -428,7 +428,7 @@ end;
 procedure TSystem.EnterOwn;
 var
   sys: TSystem;
-  ship: THumanShips;
+  ship: THumanShip;
   n1, n2: integer;
   lv: TPowerLevel;
   res: THumanResearch;
@@ -436,7 +436,7 @@ begin
   //transfer ships
   n1 := 0;
   n2 := 0;
-  for ship in THumanShips do
+  for ship in THumanShip do
   begin
     inc(n1, TotalCount(PlayerDamaged[ship]));
     inc(n2, TotalCount(Ships[ship]));
@@ -478,11 +478,11 @@ end;
 
 procedure TSystem.ProcessHumanSystem;
 var
-  ship: THumanShips;
+  ship: THumanShip;
   lv, i: integer;
 begin
   //1. build ships
-    for ship in THumanShips do
+    for ship in THumanShip do
     begin
       Inc(Ships[ship][ShipLevel(ship, HumanResearch)], PrioToEffect(Priorities.Ships[ship], 10));
     end;
@@ -587,9 +587,6 @@ begin
 end;
 
 procedure TSystem.ClearAliens;
-var
-  ship: TAlienResearch;
-  lv: TPowerLevel;
 begin
   FillChar(AlienFleet, SizeOf(AlienFleet), 0);
   SetLength(Mines, 0);
