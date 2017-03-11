@@ -2,10 +2,10 @@ unit uglobal;
 
 interface
 
-uses   zgl_font, zgl_textures, zgl_math_2d, SysUtils, uGameTypes;
+uses  zgl_font, zgl_textures, zgl_math_2d, SysUtils, uGameTypes;
 
 type
-  zglColor = LongWord;
+  zglColor = longword;
 
 const
 
@@ -22,17 +22,17 @@ const
 {$IFDEF CPUARM}
   //SCREENX = 1280 div 2;
   //SCREENY = 720 div 2;
-	SCREENX = 1280;
-	SCREENY = 720;
+  SCREENX = 1280;
+  SCREENY = 720;
 {$ELSE}
-	SCREENX = 1024;
-	SCREENY = 700;
-//  SCREENY = 768;
+  SCREENX = 1024;
+  SCREENY = 700;
+  //  SCREENY = 768;
 
 {$ENDIF}
 
   TOPPANEL_LEFT = 0.12;
-  TOPPANEL_WIDTH = 1-TOPPANEL_LEFT*2;
+  TOPPANEL_WIDTH = 1 - TOPPANEL_LEFT * 2;
   ACTIONBTN_WIDTH = 0.2;
 
   SYSTEMINFO_WIDTH = 0.3;
@@ -60,30 +60,31 @@ const
 
 
 var
-  fntMain:  zglPFont;
-  fntSecond:  zglPFont;
-  Quitting: Boolean;
+  fntMain :zglPFont;
+  fntSecond :zglPFont;
+  Quitting :boolean;
 
-function Distance(X1, Y1, X2, Y2: Single): Single;
+function Distance(X1, Y1, X2, Y2 :single) :single;
 
 function Rand(afrom, ato :integer) :integer; overload;
 function Randf(afrom, ato :single) :single; overload;
 procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
-procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
-procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
-procedure DrawFormattedText(X,Y,W,H: Single; caption, text: string);
-procedure DrawSomeText(X,Y,W,H, scale: Single; caption, text: string);
+procedure DrawPanelUI(X, Y, W, H :single; alpha :single = 1);
+procedure DrawPanel(X, Y, W, H :single; alpha :single = 1);
+procedure DrawFormattedText(X, Y, W, H :single; Caption, Text :string);
+procedure DrawSomeText(X, Y, W, H, scale :single; Caption, Text :string);
 
-function MyDateToStr(adate: TStarDate): string;
+function MyDateToStr(adate :TStarDate) :string;
 
-function InRect(x,y: single; x0,y0,w,h: single): boolean;
+function InRect(x, y :single; x0, y0, w, h :single) :boolean;
 
 implementation
+
 uses Math, zgl_primitives_2d, zgl_text;
 
-function Distance(X1, Y1, X2, Y2: Single): Single;
+function Distance(X1, Y1, X2, Y2 :single) :single;
 begin
-  Result := sqrt(sqr(x1-x2)+sqr(y1-y2));
+  Result := sqrt(sqr(x1 - x2) + sqr(y1 - y2));
 end;
 
 function Rand(afrom, ato :integer) :integer; overload;
@@ -117,58 +118,62 @@ begin
   end;
 end;
 
-procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
+procedure DrawPanel(X, Y, W, H :single; alpha :single = 1);
 var
-  a: byte;
+  a :byte;
 begin
-  a := EnsureRange(Trunc(alpha*256), 0, 255);
+  a := EnsureRange(Trunc(alpha * 256), 0, 255);
   pr2d_Rect(X, Y, W, H, Black, a, PR2D_FILL);
   pr2d_Rect(X, Y, W, H, IntfText);
 end;
 
-procedure DrawFormattedText(X, Y, W, H: Single; caption, text: string);
+procedure DrawFormattedText(X, Y, W, H :single; Caption, Text :string);
 var
-  R: zglTRect;
+  R :zglTRect;
 begin
   R.X := X;
   R.Y := Y + 25;
   R.W := W;
   R.H := H;
-  text_DrawEx(fntMain, X, Y, 0.6, 0, caption,  255, White, TEXT_HALIGN_LEFT+TEXT_VALIGN_TOP);
-  text_DrawInRectEx(fntMain, R, 0.5, 0, Text,  255, IntfText, {TEXT_CLIP_RECT+}TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
+  text_DrawEx(fntMain, X, Y, 0.6, 0, Caption, 255, White,
+    TEXT_HALIGN_LEFT + TEXT_VALIGN_TOP);
+  text_DrawInRectEx(fntMain, R, 0.5, 0, Text, 255, IntfText,
+    {TEXT_CLIP_RECT+}TEXT_HALIGN_JUSTIFY + TEXT_VALIGN_TOP);
   //ExtractSubstr();
 end;
 
-procedure DrawSomeText(X, Y, W, H, scale: Single; caption, text: string);
+procedure DrawSomeText(X, Y, W, H, scale :single; Caption, Text :string);
 var
-  R: zglTRect;
+  R :zglTRect;
 begin
   R.X := X;
-  R.Y := Y+10;
+  R.Y := Y + 10;
   R.W := W;
   R.H := 25;
-  text_DrawInRectEx(fntMain, R, scale, 0, caption,  255, White, TEXT_HALIGN_CENTER+TEXT_VALIGN_CENTER);
+  text_DrawInRectEx(fntMain, R, scale, 0, Caption, 255, White,
+    TEXT_HALIGN_CENTER + TEXT_VALIGN_CENTER);
   R.X := X;
   R.Y := Y + 35;
   R.W := W;
   R.H := H;
-  text_DrawInRectEx(fntMain, R, scale, 0, Text,  255, IntfText, TEXT_CLIP_RECT+TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
+  text_DrawInRectEx(fntMain, R, scale, 0, Text, 255, IntfText,
+    TEXT_CLIP_RECT + TEXT_HALIGN_JUSTIFY + TEXT_VALIGN_TOP);
 end;
 
-procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
+procedure DrawPanelUI(X, Y, W, H :single; alpha :single = 1);
 begin
-  DrawPanel(SCREENX*X, SCREENY*Y, SCREENX*W, SCREENY*H, alpha);
+  DrawPanel(SCREENX * X, SCREENY * Y, SCREENX * W, SCREENY * H, alpha);
 end;
 
-function MyDateToStr(adate: TStarDate): string;
+function MyDateToStr(adate :TStarDate) :string;
 begin
-  Result := IntToStr(2113+adate);
+  Result := IntToStr(2113 + adate);
   //DateTimeToString(Result, 'yyyy-mm-dd', adate)
 end;
 
-function InRect(x, y: single; x0, y0, w, h: single): boolean;
+function InRect(x, y :single; x0, y0, w, h :single) :boolean;
 begin
-  Result := InRange(x, x0, x0+w) and InRange(y, y0, y0+h);
+  Result := InRange(x, x0, x0 + w) and InRange(y, y0, y0 + h);
 end;
 
 end.

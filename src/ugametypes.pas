@@ -21,8 +21,8 @@ const
 
 type
 
-  TStarDate = Integer;
-  TPriorityLevel = Integer;
+  TStarDate = integer;
+  TPriorityLevel = integer;
 
   TResearchLevel = 0..MAX_RES_LEVEL;
   TPowerLevel = 0..MAX_POWER_LEVEL;
@@ -32,32 +32,32 @@ type
   THumanShips = set of THumanShip;
 
 
-  TAlienResearch = (AlienCruiser, AlienBattleship, AlienMines, AlienMinesweeper, AlienOrbital);
+  TAlienResearch = (AlienCruiser, AlienBattleship, AlienMines,
+    AlienMinesweeper, AlienOrbital);
   TAlienShip = TAlienResearch;
   TAlienShips = set of TAlienShip;
 
   THumanResearchLevel = array[THumanResearch] of TResearchLevel;
   TAlienResearchLevel = array[TAlienResearch] of TResearchLevel;
 
-  TSquadron = array[TPowerLevel] of Integer;
+  TSquadron = array[TPowerLevel] of integer;
   TFleetData = array[THumanShip] of TSquadron;
   TAlienFleetData = array[TAlienShip] of TSquadron;
 
   TMinesData = array of TSquadron;
 
   TPriorities = record
-    Ships: array[THumanShip] of Integer;
-    Research: Integer;
-    Mines: array of Integer;
+    Ships :array[THumanShip] of integer;
+    Research :integer;
+    Mines :array of integer;
   end;
 
   TContactSituation = (HumanMinesweepers, HumanSpace, HumanMarine, HumanMines);
 
 const
-  ALL_HUMAN_SHIPS: THumanShips = [Low(THumanShip)..High(THumanShip)];
-  ALL_ALIEN_SHIPS: TAlienShips = [Low(TAlienShip)..High(TAlienShip)];
+  ALL_HUMAN_SHIPS :THumanShips = [Low(THumanShip)..High(THumanShip)];
+  ALL_ALIEN_SHIPS :TAlienShips = [Low(TAlienShip)..High(TAlienShip)];
 
 implementation
 
 end.
-

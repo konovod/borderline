@@ -10,88 +10,91 @@ uses
 type
   TAction = class
     procedure Execute; virtual; abstract;
-    function Allowed: Boolean; virtual; abstract;
-    function Visible: Boolean; virtual; abstract;
-    function Text: String; virtual; abstract;
+    function Allowed :boolean; virtual; abstract;
+    function Visible :boolean; virtual; abstract;
+    function Text :string; virtual; abstract;
     //TODO: hotkey
   end;
 
   { TJumpAction }
   TJumpAction = class(TAction)
     procedure Execute; override;
-    function Allowed: Boolean; override;
-    function Visible: Boolean; override;
-    function Text: String; override;
+    function Allowed :boolean; override;
+    function Visible :boolean; override;
+    function Text :string; override;
   end;
 
   { TColonizeAction }
 
   TColonizeAction = class(TAction)
     procedure Execute; override;
-    function Allowed: Boolean; override;
-    function Visible: Boolean; override;
-    function Text: String; override;
+    function Allowed :boolean; override;
+    function Visible :boolean; override;
+    function Text :string; override;
   end;
 
   { TAssaultAction }
 
   TAssaultAction = class(TAction)
     procedure Execute; override;
-    function Allowed: Boolean; override;
-    function Visible: Boolean; override;
-    function Text: String; override;
+    function Allowed :boolean; override;
+    function Visible :boolean; override;
+    function Text :string; override;
   end;
 
   { TOwnSystemAction }
 
   TOwnSystemAction = class(TAction)
-    function Allowed: Boolean; override;
-    function Visible: Boolean; override;
+    function Allowed :boolean; override;
+    function Visible :boolean; override;
   end;
 
   { TPrioritiesAction }
 
   TPrioritiesAction = class(TOwnSystemAction)
     procedure Execute; override;
-    function Text: String; override;
+    function Text :string; override;
   end;
 
   { TResearchAction }
 
   TResearchAction = class(TAction)
     procedure Execute; override;
-    function Allowed: Boolean; override;
-    function Visible: Boolean; override;
-    function Text: String; override;
+    function Allowed :boolean; override;
+    function Visible :boolean; override;
+    function Text :string; override;
   end;
 
   { TCheckLogAction }
 
   TCheckLogAction = class(TAction)
-    function Allowed: Boolean; override;
-    function Visible: Boolean; override;
+    function Allowed :boolean; override;
+    function Visible :boolean; override;
     procedure Execute; override;
-    function Text: String; override;
+    function Text :string; override;
   end;
 
 procedure InitActions;
 
 var
-  ActiveActions, AllActions: array of TAction;
+  ActiveActions, AllActions :array of TAction;
 
-  FirstCapture: Boolean = true;
-  FirstColony: Boolean = true;
-  FirstBurned: Boolean = true;
+  FirstCapture :boolean = True;
+  FirstColony :boolean = True;
+  FirstBurned :boolean = True;
+
 implementation
 
 uses ugame, uMap, uMain, uGameUI, uUI, ubattle;
 
 procedure InitActions;
-  procedure adda(act: TAction);
+
+  procedure adda(act :TAction);
   begin
-    SetLength(AllActions, Length(AllActions)+1);
-    AllActions[Length(AllActions)-1] := act;
+    SetLength(AllActions, Length(AllActions) + 1);
+    AllActions[Length(AllActions) - 1] := act;
   end;
+
 begin
   adda(TJumpAction.Create);
   adda(TResearchAction.Create);
@@ -113,25 +116,25 @@ begin
     begin
       ModalWindow := LogWindow;
       FirstCapture := False;
-    end
+    end;
   end
   else
-    StartBattle(false);
+    StartBattle(False);
 end;
 
-function TAssaultAction.Allowed: Boolean;
+function TAssaultAction.Allowed :boolean;
 begin
   Result := (PlayerSys.PopStatus = Alien) and (BattleResult in [SpaceWon, GroundWon]);
 end;
 
-function TAssaultAction.Visible: Boolean;
+function TAssaultAction.Visible :boolean;
 begin
-  Result := (PlayerSys.PopStatus = Alien) ;
+  Result := (PlayerSys.PopStatus = Alien);
 end;
 
-function TAssaultAction.Text: String;
+function TAssaultAction.Text :string;
 begin
-  Result := 'Capture'
+  Result := 'Capture';
 end;
 
 { TColonizeAction }
@@ -142,29 +145,30 @@ begin
   Dec(PlayerFleet[Colonizer][1]);
 end;
 
-function TColonizeAction.Allowed: Boolean;
+function TColonizeAction.Allowed :boolean;
 begin
-  Result := (PlayerSys.PopStatus = Colonizable) and (TotalCount(PlayerFleet[Colonizer])>0);
+  Result := (PlayerSys.PopStatus = Colonizable) and
+    (TotalCount(PlayerFleet[Colonizer]) > 0);
 end;
 
-function TColonizeAction.Visible: Boolean;
+function TColonizeAction.Visible :boolean;
 begin
   Result := (PlayerSys.PopStatus = Colonizable);
 end;
 
-function TColonizeAction.Text: String;
+function TColonizeAction.Text :string;
 begin
   Result := 'Colonize';
 end;
 
 { TCheckLogAction }
 
-function TCheckLogAction.Allowed: Boolean;
+function TCheckLogAction.Allowed :boolean;
 begin
   Result := True;
 end;
 
-function TCheckLogAction.Visible: Boolean;
+function TCheckLogAction.Visible :boolean;
 begin
   Result := True;
 end;
@@ -174,9 +178,9 @@ begin
   ModalWindow := LogWindow;
 end;
 
-function TCheckLogAction.Text: String;
+function TCheckLogAction.Text :string;
 begin
-  Result := 'Check log'
+  Result := 'Check log';
 end;
 
 { TResearchAction }
@@ -186,19 +190,19 @@ begin
   ModalWindow := ResearchWindow;
 end;
 
-function TResearchAction.Allowed: Boolean;
+function TResearchAction.Allowed :boolean;
 begin
   Result := True;
 end;
 
-function TResearchAction.Visible: Boolean;
+function TResearchAction.Visible :boolean;
 begin
   Result := True;
 end;
 
-function TResearchAction.Text: String;
+function TResearchAction.Text :string;
 begin
-  Result := 'Research'
+  Result := 'Research';
 end;
 
 { TPrioritiesAction }
@@ -209,19 +213,19 @@ begin
   ModalWindow := PrioritiesWindow;
 end;
 
-function TPrioritiesAction.Text: String;
+function TPrioritiesAction.Text :string;
 begin
-  Result := 'Manage'
+  Result := 'Manage';
 end;
 
 { TOwnSystemAction }
 
-function TOwnSystemAction.Allowed: Boolean;
+function TOwnSystemAction.Allowed :boolean;
 begin
   Result := (PlayerSys = Cursor) and (PlayerSys.PopStatus = Own);
 end;
 
-function TOwnSystemAction.Visible: Boolean;
+function TOwnSystemAction.Visible :boolean;
 begin
   Result := (PlayerSys = Cursor) and (PlayerSys.PopStatus = Own);
 end;
@@ -230,7 +234,7 @@ end;
 
 procedure TJumpAction.Execute;
 var
-  f: boolean;
+  f :boolean;
 begin
   NextTurn;
   if (Cursor <> PlayerSys) and (Cursor <> nil) then
@@ -241,7 +245,8 @@ begin
     PlayerSys := Cursor;
     TriggerMines(True, PrevSystem, PlayerSys);
   end;
-  f :=  FirstColony and (PlayerSys.VisitTime = 0) and (PlayerSys.PopStatus = Colonizable);
+  f := FirstColony and (PlayerSys.VisitTime = 0) and
+    (PlayerSys.PopStatus = Colonizable);
   PlayerSys.Enter;
   if f then
   begin
@@ -259,17 +264,17 @@ begin
   ScrollToCenter(PlayerSys.X, PlayerSys.Y);
 end;
 
-function TJumpAction.Allowed: Boolean;
+function TJumpAction.Allowed :boolean;
 begin
-  Result := (Cursor = PlayerSys)or (Cursor = nil) or Cursor.Linked(PlayerSys);
+  Result := (Cursor = PlayerSys) or (Cursor = nil) or Cursor.Linked(PlayerSys);
 end;
 
-function TJumpAction.Visible: Boolean;
+function TJumpAction.Visible :boolean;
 begin
   Result := True;
 end;
 
-function TJumpAction.Text: String;
+function TJumpAction.Text :string;
 begin
   if (Cursor = PlayerSys) or (Cursor = nil) then
     Text := 'Wait'
@@ -278,4 +283,3 @@ begin
 end;
 
 end.
-

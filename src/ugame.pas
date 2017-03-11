@@ -5,27 +5,28 @@ unit ugame;
 interface
 
 uses
-  Classes, SysUtils, uglobal, uTextures, uMap, zgl_textures, zgl_fx, zgl_particles_2d, uGameTypes;
-
+  Classes, SysUtils, uglobal, uTextures, uMap, zgl_textures, zgl_fx,
+  zgl_particles_2d, uGameTypes;
 
 procedure NewGame;
 procedure DrawAll;
 procedure DrawGameUI;
-procedure OnClick(ax, ay: single);
+procedure OnClick(ax, ay :single);
 procedure InitPlayer;
 
 var
-  Map: TMap;
-  PlayerSys, Cursor, PrevSystem: TSystem;
-  CursorSize: Integer;
-  Turn: integer;
-  StarDate: TStarDate;
-  ResearchPriority: THumanResearch = Engines;
-  PlayerFleet, PlayerDamaged: TFleetData;
-  PlayerKnowledge: THumanResearchLevel;
-  ShowCursor: boolean;
+  Map :TMap;
+  PlayerSys, Cursor, PrevSystem :TSystem;
+  CursorSize :integer;
+  Turn :integer;
+  StarDate :TStarDate;
+  ResearchPriority :THumanResearch = Engines;
+  PlayerFleet, PlayerDamaged :TFleetData;
+  PlayerKnowledge :THumanResearchLevel;
+  ShowCursor :boolean;
 
 procedure NextTurn;
+
 implementation
 
 uses uMain, uNameGen, zgl_text, zgl_mouse;
@@ -57,17 +58,21 @@ end;
 
 procedure DrawGameUI;
 begin
-  DrawPanelUI(TOPPANEL_LEFT-0.005, 0, TOPPANEL_WIDTH+0.01, 0.26);
-  DrawPanelUI(1-PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
-  DrawFormattedText(SCREENX*(1-PLAYERINFO_WIDTH)+10, SCREENY*PLAYERINFO_TOP+10, SCREENX*PLAYERINFO_WIDTH, SCREENY*PLAYERINFO_HEIGHT,
-    'Your fleet', ShortShipsList(PlayerFleet)+#10#10'Research data:'#10+LongResearchList(PlayerKnowledge));
+  DrawPanelUI(TOPPANEL_LEFT - 0.005, 0, TOPPANEL_WIDTH + 0.01, 0.26);
+  DrawPanelUI(1 - PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
+  DrawFormattedText(SCREENX * (1 - PLAYERINFO_WIDTH) + 10, SCREENY * PLAYERINFO_TOP + 10,
+    SCREENX * PLAYERINFO_WIDTH, SCREENY * PLAYERINFO_HEIGHT,
+    'Your fleet', ShortShipsList(PlayerFleet) + #10#10'Research data:'#10 +
+    LongResearchList(PlayerKnowledge));
 end;
 
-procedure OnClick(ax, ay: single);
+procedure OnClick(ax, ay :single);
 var
-  sys: TSystem;
+  sys :TSystem;
 begin
-  if InRect(mouse_x/SCREENX, mouse_y/SCREENY, TOPPANEL_LEFT-0.005, 0, TOPPANEL_WIDTH+0.01, 0.26) then exit;
+  if InRect(mouse_x / SCREENX, mouse_y / SCREENY, TOPPANEL_LEFT -
+    0.005, 0, TOPPANEL_WIDTH + 0.01, 0.26) then
+    exit;
 
   sys := Map.FindSys(ax, ay);
   if sys = cursor then
@@ -83,7 +88,7 @@ end;
 
 procedure InitPlayer;
 var
-  res: THumanResearch;
+  res :THumanResearch;
 begin
   PlayerFleet[Cruiser][1] := 5;
   PlayerFleet[Brander][1] := 5;
@@ -96,9 +101,9 @@ end;
 
 procedure NextTurn;
 var
-  sys: TSystem;
+  sys :TSystem;
 begin
-  inc(Turn);
+  Inc(Turn);
   for sys in Map.Systems do
     sys.PassTime;
   for sys in Map.Systems do
