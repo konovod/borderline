@@ -5,7 +5,7 @@ unit uGameUI;
 interface
 
 uses
-  Classes, SysUtils, uUI, ugameactions, uglobal, uGameTypes;
+  Classes, SysUtils, uUI, ugameactions, uglobal, uMap, uGameTypes;
 
 type
 
@@ -122,13 +122,16 @@ procedure InitUI;
 
 procedure GameIsOver;
 
+procedure LogAndRetreat(sys: TSystem);
+
 implementation
 
-uses ugame, uStaticData, uMap, ubattle, zgl_mouse, zgl_text, zgl_math_2d, Math,
+uses ugame, uStaticData, ubattle, zgl_mouse, zgl_text, zgl_math_2d, Math,
   zgl_primitives_2d;
 
 var
   GameOver :boolean;
+  JumpPending: TSystem;
 
 { TBattleDecisionButton }
 
@@ -410,6 +413,20 @@ begin
   begin
     Result := True;
   end
+  else if JumpPending <> nil then
+  begin
+    Close;
+    Result := True;
+    ModalWindow := nil;
+    Cursor := JumpPending;
+    JumpPending := nil;
+    //lol TODO - ugly hack
+    with TJumpAction.Create do
+    begin
+      Execute;
+      Free;
+    end;
+  end
   else
   begin
     Close;
@@ -473,10 +490,13 @@ end;
 procedure TPrioritiesWindow.Close;
 var
   pt :TPriorityLevel;
+  ship: THumanShip;
 begin
   pt := freepoints(PlayerSys.Priorities);
   if pt > 0 then
     PlayerSys.Priorities.Research := PlayerSys.Priorities.Research + pt;
+  for ship in THumanShip do
+    SavedPrio.Ships[ship] := PlayerSys.Priorities.Ships[ship];
 end;
 
 { TResearchWindow }
@@ -645,6 +665,12 @@ procedure GameIsOver;
 begin
   GameOver := True;
   ModalWindow := LogWindow;
+end;
+
+procedure LogAndRetreat(sys: TSystem);
+begin
+  ModalWindow := LogWindow;
+  JumpPending := sys;
 end;
 
 end.

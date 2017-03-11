@@ -16,11 +16,12 @@ procedure InitPlayer;
 
 var
   Map :TMap;
-  PlayerSys, Cursor, PrevSystem :TSystem;
+  JumpTarget, PlayerSys, Cursor, PrevSystem :TSystem;
   CursorSize :integer;
   Turn :integer;
   StarDate :TStarDate;
   ResearchPriority :THumanResearch = Engines;
+  SavedPrio: TPriorities;
   PlayerFleet, PlayerDamaged :TFleetData;
   PlayerKnowledge :THumanResearchLevel;
   ShowCursor :boolean;

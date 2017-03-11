@@ -366,8 +366,12 @@ var
   i :integer;
 begin
   Priorities.Research := 40;
-  for ship in THumanShip do
-    Priorities.Ships[ship] := 10;
+  Priorities.Ships[Brander] := 17;
+  Priorities.Ships[Cruiser] := 19;
+  Priorities.Ships[Minesweeper] := 5;
+  Priorities.Ships[Colonizer] := 3;
+  Priorities.Ships[TroopTransport] := 15;
+  Priorities.Ships[Scout] := 1;
   for i := 0 to length(links) - 1 do
     Priorities.Mines[i] := 0;
 end;
@@ -610,7 +614,7 @@ procedure TSystem.AlienMessaging;
 var
   typ :TAlienResearch;
   i :integer;
-  target :TSystem;
+  target, rescue :TSystem;
   lv :TPowerLevel;
 begin
   for i := 0 to length(Links) - 1 do
@@ -693,10 +697,19 @@ begin
           target.AlienArmyNext.State := None;
           exit;
         end;
-        if target = PlayerSys then
+        if target = JumpTarget then
         begin
-          //TODO: visible invasion
-          LogEventRaw('TEST');
+          //invasion on player position
+          target.WipeOut;
+            rescue := RandomLink([Own, Colonizable, WipedOut]);
+          if rescue = nil then
+            rescue := RandomLink;
+          target.LogEvent('Invasion fleet passed through the minefields');
+          LogEventRaw('    they are spreading nanoreplicators');
+          LogEventRaw('    you have nothing to stop them');
+          LogEventRaw('    the only chance to survive was to jump through nearest warp point');
+          LogAndRetreat(rescue);
+          target.WipeOut;
         end
         else
         begin

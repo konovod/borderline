@@ -236,6 +236,10 @@ procedure TJumpAction.Execute;
 var
   f :boolean;
 begin
+  if (Cursor <> PlayerSys) and (Cursor <> nil) then
+    JumpTarget := Cursor
+  else
+    JumpTarget := PlayerSys;
   NextTurn;
   if (Cursor <> PlayerSys) and (Cursor <> nil) then
   begin
