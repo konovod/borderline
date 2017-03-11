@@ -631,7 +631,5 @@ begin
   ModalWindow := LogWindow;
 end;
 
-
-
 end.
 

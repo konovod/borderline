@@ -78,8 +78,10 @@ procedure InitActions;
 
 var
   ActiveActions, AllActions: array of TAction;
+
   FirstCapture: Boolean = true;
   FirstColony: Boolean = true;
+  FirstBurned: Boolean = true;
 implementation
 
 uses ugame, uMap, uMain, uGameUI, uUI, ubattle;
@@ -247,6 +249,12 @@ begin
     PlayerSys.LogEvent('System has some sort of civilization that did''nt get ');
     LogEventRaw('   even to middle ages. We can colonize it easily without a shot.');
     ModalWindow := LogWindow;
+  end;
+  if (PlayerSys.PopStatus = WipedOut) and FirstBurned then
+  begin
+    PlayerSys.LogEvent('All planets of system wasturned into sort of grey goo.');
+    LogEventRaw('   perhaps it was the nanoreplicating weapon.');
+    FirstBurned := False;
   end;
   ScrollToCenter(PlayerSys.X, PlayerSys.Y);
 end;
