@@ -442,7 +442,7 @@ begin
     inc(n2, TotalCount(Ships[ship]));
     for lv in TPowerLevel do
     begin
-      PlayerFleet[ship][lv] := PlayerFleet[ship][lv]+PlayerDamaged[ship][lv]+Ships[ship][lv];
+      PlayerFleet[ship][lv] := PlayerFleet[ship][lv]+Ships[ship][lv];
       PlayerDamaged[ship][lv] := 0;
       Ships[ship][lv] := 0;
     end;
