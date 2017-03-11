@@ -334,8 +334,8 @@ begin
   SetLength(Priorities.Mines, Length(Links));
   for res in THumanResearch do
     HumanResearch[res] := 1;
-  AlienResearch[AlienBattleship] := 5;
-  AlienResearch[AlienCruiser] := 5;
+  AlienResearch[AlienBattleship] := 1;
+  //AlienResearch[AlienCruiser] := 1;
   //AlienResearch[AlienCruiser] := 1;
   //AlienResearch[AlienOrbital] := 10;
   DefaultPriorities;
@@ -540,6 +540,8 @@ begin
       i := Random(Length(Links));
       inc(Mines[i][AlienResearch[typ]], MINE_MULTIPLIER);
     end;
+    AlienOrbital:
+      inc(AlienFleet[typ][AlienResearch[typ]], BUILD_ALIEN_ORBITAL);
     else
       inc(AlienFleet[typ][AlienResearch[typ]])
   end;

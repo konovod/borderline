@@ -120,8 +120,8 @@ begin
     for ship in typs do
       for lv in TPowerLevel do
       begin
-        lognormal[ship] := -PlayerFleet[ship][lv]+PlayerDamaged[ship][lv];
-        logdamaged[ship] := -PlayerDamaged[ship][lv];
+        lognormal[ship] := lognormal[ship]-PlayerFleet[ship][lv]+PlayerDamaged[ship][lv];
+        logdamaged[ship] := logdamaged[ship]-PlayerDamaged[ship][lv];
         PlayerFleet[ship][lv] := 0;
         PlayerDamaged[ship][lv] := 0;
       end;
@@ -218,7 +218,7 @@ begin
     for ship in typs do
       for lv in TPowerLevel do
       begin
-        lognormal[ship] := -flt[ship][lv];
+        lognormal[ship] := lognormal[ship]-flt[ship][lv];
         flt[ship][lv] := 0;
       end;
     Result := n;

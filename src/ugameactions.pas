@@ -243,7 +243,8 @@ begin
   if f then
   begin
     FirstColony := False;
-    PlayerSys.LogEvent('System has some sort of civilization that did''nt get even to middle ages. We can colonize it easily without a shot.');
+    PlayerSys.LogEvent('System has some sort of civilization that did''nt get ');
+    LogEventRaw('   even to middle ages. We can colonize it easily without a shot.');
     ModalWindow := LogWindow;
   end;
   ScrollToCenter(PlayerSys.X, PlayerSys.Y);
