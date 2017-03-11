@@ -299,19 +299,20 @@ procedure DrawShip(ship: THumanShips; ax, ay: single);
 var
   dmg: single;
   basex, basey, scy, scx: single;
+  n: integer;
 begin
   basex := SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH);
   basey := SCREENY*(0.5-MODAL_HEIGHT/2 + ay*MODAL_HEIGHT);
   scx := SCREENX*MODAL_WIDTH;
   scy := SCREENY*MODAL_HEIGHT;
+  n := TotalCount(PlayerFleet[ship]);
+  if n = 0 then exit;
   text_Draw(fntMain, basex, basey,
-    SHIP_NAMES[ship]+'s '+IntToStr(TotalCount(PlayerFleet[ship])));
+    SHIP_NAMES[ship]+'s '+IntToStr(n));
   text_DrawEx(fntMain, basex, basey+scy*0.05, 0.5, 0,
     'level '+AvgLevel(PlayerFleet[ship]));
   //damage level
-  dmg := TotalCount(PlayerFleet[ship]);
-  if dmg > 0 then
-    dmg := TotalCount(PlayerDamaged[ship]) / dmg;
+  dmg := TotalCount(PlayerDamaged[ship]) / n;
   pr2d_Rect(basex, basey+scy*0.1, scx*0.25, scy*0.03, IntfText, 255, PR2D_FILL);
   pr2d_Rect(basex+(1-dmg)*scx*0.25, basey+scy*0.1, dmg*scx*0.25, scy*0.03, Red, 255, PR2D_FILL);
   text_DrawEx(fntMain, basex, basey+scy*0.11, 0.5, 0,
@@ -379,7 +380,8 @@ begin
   for i := max(0, Length(lines)-N_LOG_LINES) to Length(lines)-1 do
     s := s+lines[i]+#10;
   SetLength(s, Length(s)-1);
-  DrawSomeText(SCREENX*(0.5-MODAL_WIDTH/2), SCREENY*(0.5-MODAL_HEIGHT/2), SCREENX*MODAL_WIDTH, SCREENY*MODAL_HEIGHT, 'Logbook records:', s);
+  DrawSomeText(SCREENX*(0.5-MODAL_WIDTH/2), SCREENY*(0.5-MODAL_HEIGHT/2), SCREENX*MODAL_WIDTH, SCREENY*MODAL_HEIGHT,
+    0.7, 'Logbook records:', s);
 end;
 
 function TLogWindow.ProcessClick(x, y: Integer; event: TMouseEvent): Boolean;
@@ -470,7 +472,8 @@ begin
   wd := 0.5+MODAL_WIDTH/2 - descx;
   hg := 0.5+MODAL_HEIGHT/2 - descy;
   DrawPanelUI(descx, descy, wd,hg, 1);
-  DrawSomeText(SCREENX*descx, SCREENY*descy, SCREENX*wd,SCREENY*hg,RESEARCH_NAMES[cursor],RESEARCH_DESC[cursor]);
+  DrawSomeText(SCREENX*descx, SCREENY*descy, SCREENX*wd,SCREENY*hg,
+    1, RESEARCH_NAMES[cursor],RESEARCH_DESC[cursor]);
 end;
 
 constructor TResearchWindow.Create;

@@ -72,7 +72,7 @@ procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
 procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawPanel(X,Y,W,H: Single; alpha: single = 1);
 procedure DrawFormattedText(X,Y,W,H: Single; caption, text: string);
-procedure DrawSomeText(X,Y,W,H: Single; caption, text: string);
+procedure DrawSomeText(X,Y,W,H, scale: Single; caption, text: string);
 
 function MyDateToStr(adate: TStarDate): string;
 
@@ -139,7 +139,7 @@ begin
   //ExtractSubstr();
 end;
 
-procedure DrawSomeText(X, Y, W, H: Single; caption, text: string);
+procedure DrawSomeText(X, Y, W, H, scale: Single; caption, text: string);
 var
   R: zglTRect;
 begin
@@ -147,12 +147,12 @@ begin
   R.Y := Y+10;
   R.W := W;
   R.H := 25;
-  text_DrawInRectEx(fntMain, R, 1, 0, caption,  255, White, TEXT_HALIGN_CENTER+TEXT_VALIGN_CENTER);
+  text_DrawInRectEx(fntMain, R, scale, 0, caption,  255, White, TEXT_HALIGN_CENTER+TEXT_VALIGN_CENTER);
   R.X := X;
   R.Y := Y + 35;
   R.W := W;
   R.H := H;
-  text_DrawInRectEx(fntMain, R, 1, 0, Text,  255, IntfText, TEXT_CLIP_RECT+TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
+  text_DrawInRectEx(fntMain, R, scale, 0, Text,  255, IntfText, TEXT_CLIP_RECT+TEXT_HALIGN_JUSTIFY+TEXT_VALIGN_TOP);
 end;
 
 procedure DrawPanelUI(X,Y,W,H: Single; alpha: single = 1);

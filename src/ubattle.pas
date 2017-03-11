@@ -20,7 +20,7 @@ var
   Retreating: Boolean;
 
 
-procedure TriggerMines(FromSys, ToSys: TSystem);
+//procedure TriggerMines(FromSys, ToSys: TSystem);
 
 //uses player fleet and player system
 procedure StartBattle(ground: boolean);
@@ -89,7 +89,7 @@ type
     size: integer;
   end;
 
-function DamageHuman(applyvalue: single; typs: THumanTargets): single;
+function DamageHuman(applyvalue: single; typs: THumanTargets; always_fatal: boolean): single;
 var
   groups: array of TDamageGroup;
   grp: TDamageGroup;
@@ -147,7 +147,7 @@ begin
           if random < PlayerDamaged[grp.typ][grp.lvl] / PlayerFleet[grp.typ][grp.lvl] then
           begin
             //attack damaged ship
-            if random < 0.5 then
+            if always_fatal or (random < 0.5) then
             begin
               dec(logdamaged[grp.typ]);
               dec(PlayerDamaged[grp.typ][grp.lvl]);
@@ -159,9 +159,20 @@ begin
           else
           begin
             //damage new ship
-            inc(PlayerDamaged[grp.typ][grp.lvl]);
-            dec(lognormal[grp.typ]);
-            inc(logdamaged[grp.typ]);
+            if always_fatal or (random < 0.2) then
+            begin
+              dec(lognormal[grp.typ]);
+              dec(PlayerFleet[grp.typ][grp.lvl]);
+              dec(grp.size, grp.lvl);
+              dec(n, grp.lvl);
+            end
+            else
+            begin
+              inc(PlayerDamaged[grp.typ][grp.lvl]);
+              dec(lognormal[grp.typ]);
+              inc(logdamaged[grp.typ]);
+            end;
+
           end;
           break;
         end;
@@ -247,10 +258,21 @@ end;
 
 
 
-procedure TriggerMines(FromSys, ToSys: TSystem);
-begin
-
-end;
+//procedure TriggerMines(Human: boolean; FromSys, ToSys: TSystem);
+//var
+//  dmg: single;
+//  i, n: integer;
+//begin
+//  if human and (ToSys.PopStatus <> Alien) then exit;
+//  n := 0;
+//  for i := 0 to FromSys;
+//  dmg := random*CalcPower(ToSys[who]) * ALIEN_DAMAGE_K;
+//  if dmg <= 0 then exit;
+//  BattleLog('Alien '+ALIEN_RESEARCH_NAMES[who]+'s opens fire');
+//  DamageHuman(dmg, targets, false);
+//
+//
+//end;
 
 procedure StartBattle(ground: boolean);
 begin
@@ -274,7 +296,7 @@ begin
   dmg := random*CalcPower(PlayerSys.AlienFleet[who]) * ALIEN_DAMAGE_K;
   if dmg <= 0 then exit;
   BattleLog('Alien '+ALIEN_RESEARCH_NAMES[who]+'s opens fire');
-  DamageHuman(dmg, targets);
+  DamageHuman(dmg, targets, false);
 end;
 
 procedure DoHumanFireStep(who: THumanShips; targets: TAlienTargets);
@@ -286,7 +308,7 @@ begin
   BattleLog(SHIP_NAMES[who]+'s opens fire');
   dmg := DamageAlien(dmg, targets);
   if who = Brander then
-    DamageHuman(dmg, [Brander]);
+    DamageHuman(dmg, [Brander], true);
 end;
 
 procedure TurnBattle;
