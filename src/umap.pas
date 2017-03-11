@@ -388,8 +388,8 @@ begin
     end;
 
     //debug
-    text := text+#10+'Alien:'+ShortAlienResearchList(AlienResearch);
-    text := text+#10+'Alien max:'+ShortAlienResearchList(AlienResearchMax);
+    //text := text+#10+'Alien:'+ShortAlienResearchList(AlienResearch);
+    //text := text+#10+'Alien max:'+ShortAlienResearchList(AlienResearchMax);
 
   end;
   DrawFormattedText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, caption, text);

@@ -302,7 +302,10 @@ begin
     ToSys.LogEvent('Minefields triggered on transit');
     countered := CalcPower(PlayerFleet[Minesweeper])-CalcPower(PlayerDamaged[Minesweeper]);
     if countered > 0 then
+    begin
       LogEventRaw(Format('    Minesweepers cleaned about %d%%', [Trunc(100*countered/dmg)]));
+      ToSys.ContactHuman(HumanMinesweepers);
+    end;
     dmg := dmg - countered;
     if dmg > 0 then
     begin
@@ -325,6 +328,7 @@ begin
     dmg := dmg - countered;
     if dmg > 0 then
     begin
+      ToSys.ContactHuman(HumanMines, FromSys);
       applied := DamageAlien(dmg, ALL_ALIEN_SHIPS, ToSys.AlienFleet);
       if applied < dmg-0.001 then
       begin
