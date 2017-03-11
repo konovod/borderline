@@ -101,7 +101,6 @@ var
   sys: TSystem;
 begin
   inc(Turn);
-  //TODO - all processing
   for sys in Map.Systems do
     sys.PassTime;
   StarDate := StarDate + 1;

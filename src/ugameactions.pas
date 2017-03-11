@@ -125,7 +125,6 @@ end;
 
 procedure TCheckLogAction.Execute;
 begin
-  //TODO
   ModalWindow := LogWindow;
 end;
 

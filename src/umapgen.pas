@@ -139,7 +139,6 @@ begin
       inc(NLines);
     end;
   if NLines = 0 then exit;
-  //TODO: sort
   DoQuickSort(0, NLines-1);
   //Actually, process lines
   MaxLine := 0;
@@ -269,7 +268,6 @@ begin
   //use poisson-smth?
   n := N_SYSTEMS;
   SetLength(Map.Systems, n);
-  //TODO: names generator
   for i := 0 to n-1 do
     Map.Systems[I] := TSystem.Create(i, Rand(1, GALAXY_SIZE), Rand(1, GALAXY_SIZE), '');
   //remove too close
