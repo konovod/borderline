@@ -33,6 +33,15 @@ type
     function Text: String; override;
   end;
 
+  { TAssaultAction }
+
+  TAssaultAction = class(TAction)
+    procedure Execute; override;
+    function Allowed: Boolean; override;
+    function Visible: Boolean; override;
+    function Text: String; override;
+  end;
+
   { TOwnSystemAction }
 
   TOwnSystemAction = class(TAction)
@@ -71,7 +80,7 @@ var
   ActiveActions, AllActions: array of TAction;
 implementation
 
-uses ugame, uMap, uMain, uGameUI, uUI;
+uses ugame, uMap, uMain, uGameUI, uUI, ubattle;
 
 procedure InitActions;
   procedure adda(act: TAction);
@@ -85,7 +94,36 @@ begin
   adda(TPrioritiesAction.Create);
   adda(TCheckLogAction.Create);
   adda(TColonizeAction.Create);
+  adda(TAssaultAction.Create);
   ActiveActions := AllActions;
+end;
+
+{ TAssaultAction }
+
+procedure TAssaultAction.Execute;
+begin
+  if BattleResult = GroundWon then
+  begin
+    PlayerSys.Capture;
+    ModalWindow := LogWindow;
+  end
+  else
+    StartBattle(false);
+end;
+
+function TAssaultAction.Allowed: Boolean;
+begin
+  Result := (PlayerSys.PopStatus = Alien) and (BattleResult in [SpaceWon, GroundWon]);
+end;
+
+function TAssaultAction.Visible: Boolean;
+begin
+  Result := (PlayerSys.PopStatus = Alien) ;
+end;
+
+function TAssaultAction.Text: String;
+begin
+  Result := 'Attack'
 end;
 
 { TColonizeAction }

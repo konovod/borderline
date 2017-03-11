@@ -83,10 +83,10 @@ uses uglobal, uUI, uGameUI, ugameactions, math;
 
 procedure DoKeyUp(key: Byte);
 begin
-  case key of
-    K_ESCAPE: Quitting := true;
-    //K_R: NewGame;
-  end;
+  //case key of
+  //  K_ESCAPE: Quitting := true;
+  //  //K_R: NewGame;
+  //end;
 end;
 
 procedure DoKeyPass(key: Byte);

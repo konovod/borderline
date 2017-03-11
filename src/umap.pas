@@ -417,7 +417,7 @@ begin
     LogEvent('System is '+POP_STATUS_NAMES[PopStatus]+'!');
   case PopStatus of
     Own: EnterOwn;
-    Alien: StartBattle;
+    Alien: StartBattle(False);
   end;
   SeenMines := Mines;
   SetLength(SeenMines, Length(SeenMines));
@@ -569,8 +569,9 @@ end;
 procedure TSystem.Capture;
 begin
   ClearAliens;
-  LogEvent('System was captured by ground forces, alien population wiped out');
+  LogEvent('System was captured by ground forces, alien population wiped out, system can be colonized');
   PopStatus := Colonizable;
+  SeenPopStatus := Colonizable;
 end;
 
 procedure TSystem.Colonize;

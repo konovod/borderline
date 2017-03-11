@@ -23,7 +23,7 @@ var
 procedure TriggerMines(FromSys, ToSys: TSystem);
 
 //uses player fleet and player system
-procedure StartBattle;
+procedure StartBattle(ground: boolean);
 procedure TurnBattle;
 function BattleResult: TBattleResult;
 procedure BattleLog(s: string);
@@ -252,10 +252,13 @@ begin
 
 end;
 
-procedure StartBattle;
+procedure StartBattle(ground: boolean);
 begin
   SetLength(BattleJournals, 0);
-  BattleDistance := Maximum;
+  if ground then
+    BattleDistance := BotsClosing
+  else
+    BattleDistance := Maximum;
   Retreating := False;
   ModalWindow := BattleWindow;
 
