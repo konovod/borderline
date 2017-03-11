@@ -78,6 +78,8 @@ procedure InitActions;
 
 var
   ActiveActions, AllActions: array of TAction;
+  FirstCapture: Boolean = true;
+  FirstColony: Boolean = true;
 implementation
 
 uses ugame, uMap, uMain, uGameUI, uUI, ubattle;
@@ -105,7 +107,11 @@ begin
   if BattleResult = GroundWon then
   begin
     PlayerSys.Capture;
-    ModalWindow := LogWindow;
+    if FirstCapture then
+    begin
+      ModalWindow := LogWindow;
+      FirstCapture := False;
+    end
   end
   else
     StartBattle(false);
@@ -221,6 +227,8 @@ end;
 { TJumpAction }
 
 procedure TJumpAction.Execute;
+var
+  f: boolean;
 begin
   NextTurn;
   if (Cursor <> PlayerSys) and (Cursor <> nil) then
@@ -230,7 +238,14 @@ begin
     PrevSystem := PlayerSys;
     PlayerSys := Cursor;
   end;
+  f :=  FirstColony and (PlayerSys.VisitTime = 0) and (PlayerSys.PopStatus = Colonizable);
   PlayerSys.Enter;
+  if f then
+  begin
+    FirstColony := False;
+    PlayerSys.LogEvent('System has some sort of civilization that did''nt get even to middle ages. We can colonize it easily without a shot.');
+    ModalWindow := LogWindow;
+  end;
   ScrollToCenter(PlayerSys.X, PlayerSys.Y);
 end;
 

@@ -157,7 +157,7 @@ begin
     SpaceWon: if positive then
       begin
         BattleDistance := BotsClosing;
-        TurnBattle;
+        //TurnBattle;
       end
       else
         DoRetreat(False);
