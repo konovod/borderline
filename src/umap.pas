@@ -50,6 +50,8 @@ type
     procedure Capture;
     procedure Colonize;
     procedure ClearAliens;
+    procedure ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
+    procedure SetResearch(res: TAlienResearch; n: integer);
   end;
 
   { TMap }
@@ -71,6 +73,7 @@ function ShortMinesList(sys: TSystem; mines: TMinesData): string;
 function LongMinesList(sys: TSystem; mines: TMinesData): string;
 function CalcPower(sqd: TSquadron): Single;
 function AvgLevel(sqd: TSquadron): String;
+function MaxLevel(sqd: TSquadron): TPowerLevel;
 function TotalCount(sqd: TSquadron): Integer;
 procedure LogEventRaw(s: string);
 
@@ -188,6 +191,19 @@ begin
   else
     Res := Trunc(10*Res / n);
   Result := IntToStr(Res div 10)+'.'+IntToStr(Res mod 10);
+end;
+
+function MaxLevel(sqd: TSquadron): TPowerLevel;
+var
+  lv: TPowerLevel;
+begin
+  Result := 0;
+  for lv := High(TPowerLevel) to Low(TPowerLevel) do
+    if sqd[lv] > 0 then
+    begin
+      Result := lv;
+      exit
+    end;
 end;
 
 function TotalCount(sqd: TSquadron): Integer;
@@ -468,8 +484,9 @@ begin
   case PopStatus of
     Own: ProcessHumanSystem;
     Alien: ProcessAlienSystem;
-    Colonizable, WipedOut: AlienMessaging;
+    Colonizable, WipedOut: ;
   end;
+  AlienMessaging;
 end;
 
 procedure TSystem.ProcessHumanSystem;
@@ -509,8 +526,6 @@ begin
     else
       inc(AlienFleet[typ][AlienResearch[typ]])
   end;
-  //3. spread research
-  AlienMessaging;
   //2. do research
   for typ in TAlienResearch do
     if (AlienResearch[typ] < AlienResearchMax[typ]) and (random < ALIEN_RESEARCH_CHANCE) then
@@ -529,7 +544,7 @@ var
 begin
   for i := 0 to length(Links)-1 do
   begin
-    if Links[i].PopStatus = Own then continue;
+   // if Links[i].PopStatus = Own then continue;
     for typ in TAlienResearch do
     begin
       if AlienResearchMax[typ] > Links[i].AlienResearchMax[typ] then
@@ -588,6 +603,43 @@ begin
   SetLength(Mines, 0);
   SetLength(Mines, length(Links));
   //TODO: remove armies here
+end;
+
+procedure TSystem.ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
+var
+  sys: TSystem;
+  i: integer;
+begin
+  case sit of
+    HumanMinesweepers: SetResearch(AlienMines, MaxLevel(PlayerFleet[Minesweeper]));
+    HumanMines:
+    begin
+      for i := 0 to Length(Links)-1 do
+        if Links[i] = MineFromSys then
+        begin
+          MineFromSys.SetResearch(AlienMinesweeper, MaxLevel(Mines[i]));
+          break;
+        end;
+    end;
+    HumanSpace:
+    begin
+      SetResearch(AlienBattleship, MaxLevel(PlayerFleet[Cruiser]));
+      SetResearch(AlienCruiser, MaxLevel(PlayerFleet[Brander]));
+    end;
+    HumanMarine:
+    begin
+      SetResearch(AlienBattleship, MaxLevel(PlayerFleet[Cruiser]));
+      SetResearch(AlienOrbital, MaxLevel(PlayerFleet[TroopTransport]));
+    end;
+  end;
+end;
+
+procedure TSystem.SetResearch(res: TAlienResearch; n: integer);
+begin
+  if n > MAX_RES_LEVEL then
+    n := MAX_RES_LEVEL;
+  if AlienResearchMax[res] < n then
+    AlienResearchMax[res] := n;
 end;
 
 

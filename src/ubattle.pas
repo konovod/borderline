@@ -281,7 +281,13 @@ begin
 
   //TODO: fullscale scouts detection
   if AlienExists([AlienBattleship, AlienCruiser, AlienOrbital]) then
+  begin
     BattleLog('Scanners detects multiple alien signatures');
+    if ground then
+      PlayerSys.ContactHuman(HumanMarine)
+    else
+      PlayerSys.ContactHuman(HumanSpace)
+  end;
 end;
 
 procedure DoAlienFireStep(who: TAlienShip; targets: THumanShips);

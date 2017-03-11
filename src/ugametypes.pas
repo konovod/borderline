@@ -51,6 +51,8 @@ type
     Mines: array of Integer;
   end;
 
+  TContactSituation = (HumanMinesweepers, HumanSpace, HumanMarine, HumanMines);
+
 
 implementation
 
