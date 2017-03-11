@@ -173,12 +173,12 @@ end;
 
 function TOwnSystemAction.Allowed: Boolean;
 begin
-  Result := (PlayerSys = Cursor);//TODO: check planet ownership
+  Result := (PlayerSys = Cursor) and (PlayerSys.PopStatus = Own);
 end;
 
 function TOwnSystemAction.Visible: Boolean;
 begin
-  Result := (PlayerSys = Cursor);//TODO: check planet ownership
+  Result := (PlayerSys = Cursor) and (PlayerSys.PopStatus = Own);
 end;
 
 { TJumpAction }

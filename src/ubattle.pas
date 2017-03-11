@@ -143,14 +143,13 @@ begin
         if x < groups[i].size then
         begin
           grp := groups[i];
-          applyvalue := applyvalue - grp.size;
+          applyvalue := applyvalue - grp.lvl;
           if random < PlayerDamaged[grp.typ][grp.lvl] / PlayerFleet[grp.typ][grp.lvl] then
           begin
             //attack damaged ship
             if random < 0.5 then
             begin
-              dec(lognormal[grp.typ]);
-              inc(logdamaged[grp.typ]);
+              dec(logdamaged[grp.typ]);
               dec(PlayerDamaged[grp.typ][grp.lvl]);
               dec(PlayerFleet[grp.typ][grp.lvl]);
               dec(grp.size, grp.lvl);
@@ -161,16 +160,19 @@ begin
           begin
             //damage new ship
             inc(PlayerDamaged[grp.typ][grp.lvl]);
-            dec(logdamaged[grp.typ]);
+            dec(lognormal[grp.typ]);
+            inc(logdamaged[grp.typ]);
           end;
+          break;
         end;
     end;
   end;
   for ship in typs do
   begin
-    BattleLog(Format('%d %s destroyed', [-logdamaged[ship]-lognormal[ship], SHIP_NAMES[ship]]));
+    if -logdamaged[ship]-lognormal[ship] > 0 then
+      BattleLog(Format('    %d %ss destroyed', [-logdamaged[ship]-lognormal[ship], SHIP_NAMES[ship]]));
     if logdamaged[ship] > 0 then
-      BattleLog(Format('%d %s damaged', [logdamaged[ship], SHIP_NAMES[ship]]));
+      BattleLog(Format('    %d %ss damaged', [logdamaged[ship], SHIP_NAMES[ship]]));
   end;
 end;
 
@@ -237,7 +239,8 @@ begin
   end;
   for ship in typs do
   begin
-    BattleLog(Format('%d alien %s destroyed', [-lognormal[ship], LowerCase(ALIEN_RESEARCH_NAMES[ship])]));
+    if lognormal[ship] <> 0 then
+      BattleLog(Format('    %d alien %ss destroyed', [-lognormal[ship], LowerCase(ALIEN_RESEARCH_NAMES[ship])]));
   end;
   PlayerSys.AlienFleet := flt;
 end;
@@ -265,7 +268,7 @@ procedure DoAlienFireStep(who: TAlienResearch; targets: THumanTargets);
 var
   dmg: single;
 begin
-  dmg := CalcPower(PlayerSys.AlienFleet[who]);
+  dmg := random*CalcPower(PlayerSys.AlienFleet[who]) * ALIEN_DAMAGE_K;
   if dmg <= 0 then exit;
   BattleLog('Alien '+ALIEN_RESEARCH_NAMES[who]+'s opens fire');
   DamageHuman(dmg, targets);
@@ -275,7 +278,7 @@ procedure DoHumanFireStep(who: THumanShips; targets: TAlienTargets);
 var
   dmg: single;
 begin
-  dmg := random*(CalcPower(PlayerFleet[who]) - CalcPower(PlayerDamaged[who]));
+  dmg := random*(CalcPower(PlayerFleet[who]) - CalcPower(PlayerDamaged[who])) * HUMAN_DAMAGE_K;
   if dmg <= 0 then exit;
   BattleLog(SHIP_NAMES[who]+'s opens fire');
   dmg := DamageAlien(dmg, targets);

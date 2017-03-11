@@ -55,7 +55,7 @@ const
   BTL_LOG_WIDTH = 0.38;
   BTL_LOG_TOP = 0.2;
   BTL_LOG_HEIGHT = 0.7;
-  N_BTL_LOG_LINES = 33;
+  N_BTL_LOG_LINES = 32;
 
 
 
