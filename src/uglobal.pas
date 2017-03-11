@@ -60,34 +60,34 @@ const
 
 
 var
-  fntMain :zglPFont;
-  fntSecond :zglPFont;
-  Quitting :boolean;
+  fntMain: zglPFont;
+  fntSecond: zglPFont;
+  Quitting: boolean;
 
-function Distance(X1, Y1, X2, Y2 :single) :single;
+function Distance(X1, Y1, X2, Y2: single): single;
 
-function Rand(afrom, ato :integer) :integer; overload;
-function Randf(afrom, ato :single) :single; overload;
-procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
-procedure DrawPanelUI(X, Y, W, H :single; alpha :single = 1);
-procedure DrawPanel(X, Y, W, H :single; alpha :single = 1);
-procedure DrawFormattedText(X, Y, W, H :single; Caption, Text :string);
-procedure DrawSomeText(X, Y, W, H, scale :single; Caption, Text :string);
+function Rand(afrom, ato: integer): integer; overload;
+function Randf(afrom, ato: single): single; overload;
+procedure BoldLine(X1, Y1, X2, Y2: single; C: cardinal);
+procedure DrawPanelUI(X, Y, W, H: single; alpha: single = 1);
+procedure DrawPanel(X, Y, W, H: single; alpha: single = 1);
+procedure DrawFormattedText(X, Y, W, H: single; Caption, Text: string);
+procedure DrawSomeText(X, Y, W, H, scale: single; Caption, Text: string);
 
-function MyDateToStr(adate :TStarDate) :string;
+function MyDateToStr(adate: TStarDate): string;
 
-function InRect(x, y :single; x0, y0, w, h :single) :boolean;
+function InRect(x, y: single; x0, y0, w, h: single): boolean;
 
 implementation
 
 uses Math, zgl_primitives_2d, zgl_text;
 
-function Distance(X1, Y1, X2, Y2 :single) :single;
+function Distance(X1, Y1, X2, Y2: single): single;
 begin
   Result := sqrt(sqr(x1 - x2) + sqr(y1 - y2));
 end;
 
-function Rand(afrom, ato :integer) :integer; overload;
+function Rand(afrom, ato: integer): integer; overload;
 begin
   assert(ato >= afrom);
   if ato = afrom then
@@ -96,12 +96,12 @@ begin
     Result := Random(ato - afrom + 1) + afrom;
 end;
 
-function Randf(afrom, ato :single) :single; overload;
+function Randf(afrom, ato: single): single; overload;
 begin
   Result := Random * (ato - afrom) + afrom;
 end;
 
-procedure BoldLine(X1, Y1, X2, Y2 :single; C :cardinal);
+procedure BoldLine(X1, Y1, X2, Y2: single; C: cardinal);
 const
   delta = 0.5;
 begin
@@ -118,18 +118,18 @@ begin
   end;
 end;
 
-procedure DrawPanel(X, Y, W, H :single; alpha :single = 1);
+procedure DrawPanel(X, Y, W, H: single; alpha: single = 1);
 var
-  a :byte;
+  a: byte;
 begin
   a := EnsureRange(Trunc(alpha * 256), 0, 255);
   pr2d_Rect(X, Y, W, H, Black, a, PR2D_FILL);
   pr2d_Rect(X, Y, W, H, IntfText);
 end;
 
-procedure DrawFormattedText(X, Y, W, H :single; Caption, Text :string);
+procedure DrawFormattedText(X, Y, W, H: single; Caption, Text: string);
 var
-  R :zglTRect;
+  R: zglTRect;
 begin
   R.X := X;
   R.Y := Y + 25;
@@ -142,9 +142,9 @@ begin
   //ExtractSubstr();
 end;
 
-procedure DrawSomeText(X, Y, W, H, scale :single; Caption, Text :string);
+procedure DrawSomeText(X, Y, W, H, scale: single; Caption, Text: string);
 var
-  R :zglTRect;
+  R: zglTRect;
 begin
   R.X := X;
   R.Y := Y + 10;
@@ -160,18 +160,18 @@ begin
     TEXT_CLIP_RECT + TEXT_HALIGN_JUSTIFY + TEXT_VALIGN_TOP);
 end;
 
-procedure DrawPanelUI(X, Y, W, H :single; alpha :single = 1);
+procedure DrawPanelUI(X, Y, W, H: single; alpha: single = 1);
 begin
   DrawPanel(SCREENX * X, SCREENY * Y, SCREENX * W, SCREENY * H, alpha);
 end;
 
-function MyDateToStr(adate :TStarDate) :string;
+function MyDateToStr(adate: TStarDate): string;
 begin
   Result := IntToStr(2113 + adate);
   //DateTimeToString(Result, 'yyyy-mm-dd', adate)
 end;
 
-function InRect(x, y :single; x0, y0, w, h :single) :boolean;
+function InRect(x, y: single; x0, y0, w, h: single): boolean;
 begin
   Result := InRange(x, x0, x0 + w) and InRange(y, y0, y0 + h);
 end;

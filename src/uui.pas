@@ -10,19 +10,19 @@ type
   TMouseEvent = (LeftDown, LeftUp, RightDown, RightUp);
   TMouseEvents = set of TMouseEvent;
 
-function ClickUI(x, y :integer; event :TMouseEvent) :boolean;
+function ClickUI(x, y: integer; event: TMouseEvent): boolean;
 
 type
 
   { TButton }
 
   TButton = class
-    X, Y, W, H :single;
-    function Visible :boolean; virtual;
+    X, Y, W, H: single;
+    function Visible: boolean; virtual;
     procedure Draw; virtual; abstract;
-    procedure Click(event :TMouseEvent); virtual; abstract;
-    function CatchEvents :TMouseEvents; virtual;
-    constructor Create(aX, aY, aW, aH :single);
+    procedure Click(event: TMouseEvent); virtual; abstract;
+    function CatchEvents: TMouseEvents; virtual;
+    constructor Create(aX, aY, aW, aH: single);
   end;
 
 
@@ -32,24 +32,24 @@ type
   { TModalWindow }
 
   TModalWindow = class
-    Buttons :TButtonsArray;
+    Buttons: TButtonsArray;
     procedure Draw; virtual; abstract;
-    function ProcessClick(x, y :integer; event :TMouseEvent) :boolean; virtual;
+    function ProcessClick(x, y: integer; event: TMouseEvent): boolean; virtual;
   end;
 
 var
-  IngameButtons :TButtonsArray;
-  __ax, __ay :integer;
-  ModalWindow :TModalWindow;
+  IngameButtons: TButtonsArray;
+  __ax, __ay: integer;
+  ModalWindow: TModalWindow;
 
-procedure StdButton(Text :string; X, Y, W, H :single; State :TInvertState = Normal);
-procedure ColoredButton(Text :string; X, Y, W, H :single; BGColor, TextColor :longword);
+procedure StdButton(Text: string; X, Y, W, H: single; State: TInvertState = Normal);
+procedure ColoredButton(Text: string; X, Y, W, H: single; BGColor, TextColor: longword);
 
 implementation
 
 uses uglobal;
 
-function Buttons :TButtonsArray;
+function Buttons: TButtonsArray;
 begin
   if ModalWindow <> nil then
     Result := ModalWindow.Buttons
@@ -58,15 +58,15 @@ begin
 end;
 
 
-procedure StdButton(Text :string; X, Y, W, H :single; State :TInvertState = Normal);
+procedure StdButton(Text: string; X, Y, W, H: single; State: TInvertState = Normal);
 var
-  R :zglTRect;
-  Col :cardinal;
+  R: zglTRect;
+  Col: cardinal;
 begin
   case State of
-    Normal :Col := IntfBack;
-    Inactive :Col := IntfBack;
-    Active :Col := IntfText;
+    Normal: Col := IntfBack;
+    Inactive: Col := IntfBack;
+    Active: Col := IntfText;
   end;
 
   //  pr2d_Ellipse( X+W/2, Y+H/2, W/2, H/2, Col, 255, 32, PR2D_FILL or PR2D_SMOOTH );
@@ -77,9 +77,9 @@ begin
   R.H := H;
 
   case State of
-    Normal :Col := IntfText;
-    Inactive :Col := IntfDark;
-    Active :Col := IntfBack;
+    Normal: Col := IntfText;
+    Inactive: Col := IntfDark;
+    Active: Col := IntfBack;
   end;
 
   pr2d_Rect(X, Y, W, H, Col, 255, PR2D_SMOOTH);
@@ -87,9 +87,9 @@ begin
     TEXT_HALIGN_CENTER);
 end;
 
-procedure ColoredButton(Text :string; X, Y, W, H :single; BGColor, TextColor :longword);
+procedure ColoredButton(Text: string; X, Y, W, H: single; BGColor, TextColor: longword);
 var
-  R :zglTRect;
+  R: zglTRect;
 begin
   //  pr2d_Ellipse( X+W/2, Y+H/2, W/2, H/2, Col, 255, 32, PR2D_FILL or PR2D_SMOOTH );
   pr2d_Rect(X, Y, W, H, BGColor, 255, PR2D_FILL or PR2D_SMOOTH);
@@ -102,7 +102,7 @@ begin
     TEXT_HALIGN_CENTER);
 end;
 
-procedure StdCross(X, Y, W, H :single);
+procedure StdCross(X, Y, W, H: single);
 begin
   pr2d_Line(X, Y, X + W, Y + H, $FF0000);
   pr2d_Line(X, Y + 1, X + W, Y + H + 1, $FF0000);
@@ -114,7 +114,7 @@ end;
 
 procedure DrawUI;
 var
-  B :TButton;
+  B: TButton;
 begin
   if ModalWindow <> nil then
   begin
@@ -128,9 +128,9 @@ begin
       B.Draw;
 end;
 
-function ClickUI(x, y :integer; event :TMouseEvent) :boolean;
+function ClickUI(x, y: integer; event: TMouseEvent): boolean;
 var
-  B :TButton;
+  B: TButton;
 begin
   __ax := x;
   __ay := y;
@@ -149,14 +149,14 @@ end;
 
 { TModalWindow }
 
-function TModalWindow.ProcessClick(x, y :integer; event :TMouseEvent) :boolean;
+function TModalWindow.ProcessClick(x, y: integer; event: TMouseEvent): boolean;
 begin
   Result := False;
 end;
 
 { TButton }
 
-constructor TButton.Create(aX, aY, aW, aH :single);
+constructor TButton.Create(aX, aY, aW, aH: single);
 begin
   inherited Create;
   X := aX * SCREENX;
@@ -165,12 +165,12 @@ begin
   H := aH * SCREENY;
 end;
 
-function TButton.Visible :boolean;
+function TButton.Visible: boolean;
 begin
   Result := True;
 end;
 
-function TButton.CatchEvents :TMouseEvents;
+function TButton.CatchEvents: TMouseEvents;
 begin
   Result := [LeftUp];
 end;

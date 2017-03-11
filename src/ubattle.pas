@@ -18,32 +18,32 @@ type
   TLogMode = (lBattle, lGlobal, lSilent);
 
 var
-  BattleDistance :TBattleDistance;
-  Retreating :boolean;
+  BattleDistance: TBattleDistance;
+  Retreating: boolean;
 
 
-function TriggerMines(Human :boolean; FromSys, ToSys :TSystem) :boolean;
+function TriggerMines(Human: boolean; FromSys, ToSys: TSystem): boolean;
 
 //uses player fleet and player system
-procedure StartBattle(ground :boolean);
+procedure StartBattle(ground: boolean);
 procedure TurnBattle;
-function BattleResult :TBattleResult;
-procedure BattleLog(s :string);
-function BattleJournal :string;
+function BattleResult: TBattleResult;
+procedure BattleLog(s: string);
+function BattleJournal: string;
 
-procedure DoRetreat(total :boolean);
-function AutoInvasionBattle(sys :TSystem) :boolean;
+procedure DoRetreat(total: boolean);
+function AutoInvasionBattle(sys: TSystem): boolean;
 
 implementation
 
 uses ugame, uGameUI, uUI, uStaticData, ugameactions, Math;
 
 var
-  BattleJournals :array of string;
+  BattleJournals: array of string;
 
-function AlienExists(who :TAlienShips) :boolean;
+function AlienExists(who: TAlienShips): boolean;
 var
-  ship :TAlienShip;
+  ship: TAlienShip;
 begin
   Result := True;
   for ship in who do
@@ -52,9 +52,9 @@ begin
   Result := False;
 end;
 
-function HumanExists(who :THumanShips) :boolean;
+function HumanExists(who: THumanShips): boolean;
 var
-  ship :THumanShip;
+  ship: THumanShip;
 begin
   Result := True;
   for ship in who do
@@ -64,36 +64,36 @@ begin
 end;
 
 
-procedure DoRetreat(total :boolean);
+procedure DoRetreat(total: boolean);
 begin
   ModalWindow := nil;
   if total then
   begin
-    LogEventRaw('    you have retreated to warp point and jumped to '+PrevSystem.Name);
+    LogEventRaw('    you have retreated to warp point and jumped to ' + PrevSystem.Name);
     LogAndRetreat(PrevSystem);
   end;
 end;
 
 type
   TDamageGroup = record
-    lvl :TPowerLevel;
-    typ :THumanShip;
-    atyp :TAlienShip;
-    size :single;
+    lvl: TPowerLevel;
+    typ: THumanShip;
+    atyp: TAlienShip;
+    size: single;
   end;
 
-function DamageHuman(applyvalue :single; typs :THumanShips;
-  always_fatal :boolean; log_mode :TLogMode = lBattle) :single;
+function DamageHuman(applyvalue: single; typs: THumanShips;
+  always_fatal: boolean; log_mode: TLogMode = lBattle): single;
 var
-  groups :array of TDamageGroup;
-  grp :TDamageGroup;
-  lv :TPowerLevel;
-  ship :THumanShip;
-  i :integer;
-  x, fullsize, pwr :single;
-  lognormal :array[THumanShip] of integer;
-  logdamaged :array[THumanShip] of integer;
-  s :string;
+  groups: array of TDamageGroup;
+  grp: TDamageGroup;
+  lv: TPowerLevel;
+  ship: THumanShip;
+  i: integer;
+  x, fullsize, pwr: single;
+  lognormal: array[THumanShip] of integer;
+  logdamaged: array[THumanShip] of integer;
+  s: string;
 begin
   //fill groups
   //and count total damage size
@@ -185,8 +185,8 @@ begin
       s := Format('    %d %ss destroyed', [-logdamaged[ship] -
         lognormal[ship], SHIP_NAMES[ship]]);
       case log_mode of
-        lGlobal :LogEventRaw(s);
-        lBattle :BattleLog(s);
+        lGlobal: LogEventRaw(s);
+        lBattle: BattleLog(s);
         else;
       end;
     end;
@@ -194,25 +194,25 @@ begin
     begin
       s := Format('    %d %ss damaged', [logdamaged[ship], SHIP_NAMES[ship]]);
       case log_mode of
-        lGlobal :LogEventRaw(s);
-        lBattle :BattleLog(s);
+        lGlobal: LogEventRaw(s);
+        lBattle: BattleLog(s);
         else;
       end;
     end;
   end;
 end;
 
-function DamageAlien(applyvalue :single; typs :TAlienShips;
-  var fleet :TAlienFleetData) :single;
+function DamageAlien(applyvalue: single; typs: TAlienShips;
+  var fleet: TAlienFleetData): single;
 var
-  groups :array of TDamageGroup;
-  grp :TDamageGroup;
-  lv :TPowerLevel;
-  ship :TAlienShip;
-  i :integer;
-  x, fullsize, pwr :single;
-  lognormal :array[TAlienShip] of integer;
-  flt :TAlienFleetData;
+  groups: array of TDamageGroup;
+  grp: TDamageGroup;
+  lv: TPowerLevel;
+  ship: TAlienShip;
+  i: integer;
+  x, fullsize, pwr: single;
+  lognormal: array[TAlienShip] of integer;
+  flt: TAlienFleetData;
 begin
   flt := PlayerSys.AlienFleet;
   //fill groups
@@ -279,11 +279,11 @@ end;
 
 
 
-function TriggerMines(Human :boolean; FromSys, ToSys :TSystem) :boolean;
+function TriggerMines(Human: boolean; FromSys, ToSys: TSystem): boolean;
 var
-  countered, dmg, applied :single;
-  i, n, index :integer;
-  lv :TPowerLevel;
+  countered, dmg, applied: single;
+  i, n, index: integer;
+  lv: TPowerLevel;
 begin
   Result := False;
   if human and (ToSys.PopStatus <> Alien) then
@@ -363,7 +363,7 @@ begin
   end;
 end;
 
-procedure StartBattle(ground :boolean);
+procedure StartBattle(ground: boolean);
 begin
   SetLength(BattleJournals, 0);
   if ground then
@@ -384,9 +384,9 @@ begin
   end;
 end;
 
-procedure DoAlienFireStep(who :TAlienShip; targets :THumanShips);
+procedure DoAlienFireStep(who: TAlienShip; targets: THumanShips);
 var
-  dmg :single;
+  dmg: single;
 begin
   dmg := random * CalcPower(PlayerSys.AlienFleet[who]) * ALIEN_DAMAGE_K;
   if dmg <= 0 then
@@ -395,9 +395,9 @@ begin
   DamageHuman(dmg, targets, False);
 end;
 
-procedure DoHumanFireStep(who :THumanShip; targets :TAlienShips);
+procedure DoHumanFireStep(who: THumanShip; targets: TAlienShips);
 var
-  dmg :single;
+  dmg: single;
 begin
   dmg := random * (CalcPower(PlayerFleet[who]) - CalcPower(PlayerDamaged[who])) *
     HUMAN_DAMAGE_K;
@@ -413,8 +413,8 @@ procedure TurnBattle;
 begin
   //firing
   case BattleDistance of
-    Maximum :;
-    BattleshipsFire :DoAlienFireStep(AlienBattleship, [Cruiser, Brander]);
+    Maximum: ;
+    BattleshipsFire: DoAlienFireStep(AlienBattleship, [Cruiser, Brander]);
     CruisersFire:
     begin
       DoAlienFireStep(AlienCruiser, [Cruiser, Brander]);
@@ -498,7 +498,7 @@ begin
   end;
 end;
 
-function BattleResult :TBattleResult;
+function BattleResult: TBattleResult;
 begin
   if PlayerSys.PopStatus <> Alien then
     Result := GroundWon
@@ -518,16 +518,16 @@ begin
     Result := InCombat;
 end;
 
-procedure BattleLog(s :string);
+procedure BattleLog(s: string);
 begin
   SetLength(BattleJournals, Length(BattleJournals) + 1);
   BattleJournals[Length(BattleJournals) - 1] := s;
 end;
 
-function BattleJournal :string;
+function BattleJournal: string;
 var
-  s :string;
-  i :integer;
+  s: string;
+  i: integer;
 begin
   s := '';
   for i := max(0, Length(BattleJournals) - N_BTL_LOG_LINES)
@@ -538,9 +538,9 @@ begin
 end;
 
 
-function AutoInvasionBattle(sys :TSystem) :boolean;
+function AutoInvasionBattle(sys: TSystem): boolean;
 var
-  powera, powerh :single;
+  powera, powerh: single;
 begin
   Result := False;
 end;

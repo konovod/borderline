@@ -11,20 +11,20 @@ uses
 procedure NewGame;
 procedure DrawAll;
 procedure DrawGameUI;
-procedure OnClick(ax, ay :single);
+procedure OnClick(ax, ay: single);
 procedure InitPlayer;
 
 var
-  Map :TMap;
-  JumpTarget, PlayerSys, Cursor, PrevSystem :TSystem;
-  CursorSize :integer;
-  Turn :integer;
-  StarDate :TStarDate;
-  ResearchPriority :THumanResearch = Engines;
+  Map: TMap;
+  JumpTarget, PlayerSys, Cursor, PrevSystem: TSystem;
+  CursorSize: integer;
+  Turn: integer;
+  StarDate: TStarDate;
+  ResearchPriority: THumanResearch = Engines;
   SavedPrio: TPriorities;
-  PlayerFleet, PlayerDamaged :TFleetData;
-  PlayerKnowledge :THumanResearchLevel;
-  ShowCursor :boolean;
+  PlayerFleet, PlayerDamaged: TFleetData;
+  PlayerKnowledge: THumanResearchLevel;
+  ShowCursor: boolean;
 
 procedure NextTurn;
 
@@ -67,9 +67,9 @@ begin
     LongResearchList(PlayerKnowledge));
 end;
 
-procedure OnClick(ax, ay :single);
+procedure OnClick(ax, ay: single);
 var
-  sys :TSystem;
+  sys: TSystem;
 begin
   if InRect(mouse_x / SCREENX, mouse_y / SCREENY, TOPPANEL_LEFT -
     0.005, 0, TOPPANEL_WIDTH + 0.01, 0.26) then
@@ -89,7 +89,7 @@ end;
 
 procedure InitPlayer;
 var
-  res :THumanResearch;
+  res: THumanResearch;
 begin
   PlayerFleet[Cruiser][1] := 5;
   PlayerFleet[Brander][1] := 5;
@@ -102,7 +102,7 @@ end;
 
 procedure NextTurn;
 var
-  sys :TSystem;
+  sys: TSystem;
 begin
   Inc(Turn);
   for sys in Map.Systems do

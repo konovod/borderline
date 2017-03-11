@@ -47,16 +47,16 @@ type
   TMinesData = array of TSquadron;
 
   TPriorities = record
-    Ships :array[THumanShip] of integer;
-    Research :integer;
-    Mines :array of integer;
+    Ships: array[THumanShip] of integer;
+    Research: integer;
+    Mines: array of integer;
   end;
 
   TContactSituation = (HumanMinesweepers, HumanSpace, HumanMarine, HumanMines);
 
 const
-  ALL_HUMAN_SHIPS :THumanShips = [Low(THumanShip)..High(THumanShip)];
-  ALL_ALIEN_SHIPS :TAlienShips = [Low(TAlienShip)..High(TAlienShip)];
+  ALL_HUMAN_SHIPS: THumanShips = [Low(THumanShip)..High(THumanShip)];
+  ALL_ALIEN_SHIPS: TAlienShips = [Low(TAlienShip)..High(TAlienShip)];
 
 implementation
 

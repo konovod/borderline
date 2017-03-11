@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, uMap, uglobal;
 
-procedure Generate(Map :TMap);
+procedure Generate(Map: TMap);
 
 const
   GALAXY_SIZE = 2000;
@@ -22,7 +22,7 @@ implementation
 
 uses uDelaunay, uNameGen, zgl_log;
 
-procedure AddLink(First, second :TSystem);
+procedure AddLink(First, second: TSystem);
 begin
   if First.Linked(second) then
     exit;
@@ -32,7 +32,7 @@ begin
   second.Links[Length(second.Links) - 1] := First;
 end;
 
-procedure DelLink(sys :TSystem; index :integer);
+procedure DelLink(sys: TSystem; index: integer);
 begin
   if index <> High(sys.Links) then
     sys.Links[index] := sys.Links[High(sys.Links)];
@@ -41,20 +41,20 @@ end;
 
 
 
-procedure MinimalTree(Map :TMap);
+procedure MinimalTree(Map: TMap);
 //using https://ru.wikipedia.org/wiki/Алгоритм_Крускала
 //and https://ru.wikipedia.org/wiki/Система_непересекающихся_множеств
 
 type
   TLine = record
-    Length, A, B :integer;
-    Active :boolean;
+    Length, A, B: integer;
+    Active: boolean;
   end;
 
 var
-  NRoots, NLines :integer;
-  Roots :array of integer;
-  Lines :array of TLine;
+  NRoots, NLines: integer;
+  Roots: array of integer;
+  Lines: array of TLine;
 
 {procedure makeset(x:integer);
 begin
@@ -62,14 +62,14 @@ begin
   inc(NRoots);
 end;}
 
-  function find(x :integer) :integer;
+  function find(x: integer): integer;
   begin
     if Roots[x] <> x then
       Roots[x] := find(Roots[x]);
     Result := Roots[x];
   end;
 
-  function union(x, y :integer) :boolean;
+  function union(x, y: integer): boolean;
   begin
     x := find(x);
     y := find(y);
@@ -84,11 +84,11 @@ end;}
     end;
   end;
 
-  procedure DoQuickSort(iLo, iHi :integer);
+  procedure DoQuickSort(iLo, iHi: integer);
   var
-    Lo, Hi :integer;
-    Mid :double;
-    T :TLine;
+    Lo, Hi: integer;
+    Mid: double;
+    T: TLine;
   begin
     Lo := iLo;
     Hi := iHi;
@@ -114,9 +114,9 @@ end;}
   end;
 
 var
-  I, J, K, A, B :integer;
-  Ra, Rb :TSystem;
-  MaxLine :integer;
+  I, J, K, A, B: integer;
+  Ra, Rb: TSystem;
+  MaxLine: integer;
 begin
   NRoots := length(Map.Systems);
   SetLength(Roots, NRoots);
@@ -181,25 +181,25 @@ begin
 end;
 
 
-procedure Populate(Map :TMap);
+procedure Populate(Map: TMap);
 var
-  i :integer;
-  remains :integer;
-  sys :TSystem;
-  ants :array[1..N_ALIENS] of TSystem;
-  nsteps, ntries :integer;
+  i: integer;
+  remains: integer;
+  sys: TSystem;
+  ants: array[1..N_ALIENS] of TSystem;
+  nsteps, ntries: integer;
 
-  function RandomSys :TSystem;
+  function RandomSys: TSystem;
   begin
     Result := Map.Systems[Random(Length(Map.Systems))];
   end;
 
-  function RandomNeighbour(asys :TSystem) :TSystem;
+  function RandomNeighbour(asys: TSystem): TSystem;
   begin
     Result := asys.Links[Random(Length(asys.Links))];
   end;
 
-  function step(asys :TSystem; index :integer) :boolean;
+  function step(asys: TSystem; index: integer): boolean;
   begin
     Result := asys.AlienId in [0, index];
     if asys.PopStatus = WipedOut then
@@ -259,13 +259,13 @@ end;
 
 
 
-procedure Generate(Map :TMap);
+procedure Generate(Map: TMap);
 var
-  i, j, n :integer;
-  n1, n2, n3 :integer;
-  TRI :TDelaunay;
+  i, j, n: integer;
+  n1, n2, n3: integer;
+  TRI: TDelaunay;
 
-  procedure AddLink1(First, second :integer);
+  procedure AddLink1(First, second: integer);
   begin
     if First >= length(Map.Systems) then
       exit;

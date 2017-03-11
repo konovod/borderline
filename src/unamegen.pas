@@ -15,7 +15,7 @@ const
 procedure InitNameGen;
 procedure ParseNameData;
 procedure LoadNameData;
-function GenerateName :string;
+function GenerateName: string;
 
 implementation
 
@@ -24,7 +24,7 @@ uses uglobal, zgl_log;
 
 //from https://en.wikipedia.org/wiki/Planets_in_science_fiction
 const
-  RAW_NAMES :array[1..210] of string = (
+  RAW_NAMES: array[1..210] of string = (
     'Acheron',
     'Abydos',
     'Aegis',
@@ -238,7 +238,7 @@ const
 
 //parsed to mark chain
 const
-  MARK_DATA :array[1..272] of string = (
+  MARK_DATA: array[1..272] of string = (
     'ab=y',
     'ac=hbreehe',
     'ad=io',
@@ -514,7 +514,7 @@ const
 
 
 const
-  STARTERS :array[1..112] of string = (
+  STARTERS: array[1..112] of string = (
     'ab',
     'ac',
     'ae',
@@ -629,9 +629,9 @@ const
     'zy');
 
 var
-  already :TStringList;
-  MarkData :TStringList;
-  Starts :TStringList;
+  already: TStringList;
+  MarkData: TStringList;
+  Starts: TStringList;
 
 procedure InitNameGen;
 begin
@@ -649,9 +649,9 @@ end;
 
 procedure ParseNameData;
 var
-  i, j :integer;
-  s, sc, s1 :string;
-  c :char;
+  i, j: integer;
+  s, sc, s1: string;
+  c: char;
 begin
   for s in RAW_NAMES do
   begin
@@ -686,7 +686,7 @@ end;
 
 procedure LoadNameData;
 var
-  i :integer;
+  i: integer;
 begin
   for i := 1 to Length(STARTERS) do
     Starts.Add(STARTERS[i]);
@@ -697,11 +697,11 @@ begin
 end;
 
 //stub version: just to test
-function GenerateName :string;
+function GenerateName: string;
 var
-  s, sfind, vars :string;
-  c :char;
-  i :integer;
+  s, sfind, vars: string;
+  c: char;
+  i: integer;
 begin
   repeat
     s := Starts[Random(Starts.Count)];

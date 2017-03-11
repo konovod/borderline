@@ -34,53 +34,53 @@ uses
   ugame;
 
 var
-  Ready :boolean = False;
-  particles :zglTPEngine2D;
-  emitterFire :zglPEmitter2D;
-  emitterRain :zglPEmitter2D;
+  Ready: boolean = False;
+  particles: zglTPEngine2D;
+  emitterFire: zglPEmitter2D;
+  emitterRain: zglPEmitter2D;
 
-procedure LoadSplash(datadir :string);
-procedure LoadAll(datadir :string);
+procedure LoadSplash(datadir: string);
+procedure LoadAll(datadir: string);
 procedure DrawFrame;
 procedure DrawProgress;
 procedure ProcessTime;
-procedure MouseRight(aX, aY :integer);
-procedure MouseUp(aX, aY :integer);
-procedure MouseDown(aX, aY :integer);
-procedure MousePressed(aX, aY :integer);
-procedure MouseMoved(aX, aY :integer);
-procedure TimedUpdate(dt :double);
-function GetScreenX :integer;
-function GetScreenY :integer;
-procedure ReloadMedia(datadir :string);
-procedure ReloadSplash(datadir :string);
+procedure MouseRight(aX, aY: integer);
+procedure MouseUp(aX, aY: integer);
+procedure MouseDown(aX, aY: integer);
+procedure MousePressed(aX, aY: integer);
+procedure MouseMoved(aX, aY: integer);
+procedure TimedUpdate(dt: double);
+function GetScreenX: integer;
+function GetScreenY: integer;
+procedure ReloadMedia(datadir: string);
+procedure ReloadSplash(datadir: string);
 procedure AfterLoad;
-procedure DoKeyUp(key :byte);
-procedure DoKeyPass(key :byte);
-function ProcessQuitting :boolean;
+procedure DoKeyUp(key: byte);
+procedure DoKeyPass(key: byte);
+function ProcessQuitting: boolean;
 
-function emit(x, y, r :single) :zglPEmitter2D;
-procedure noemit(item :zglPEmitter2D); overload;
+function emit(x, y, r: single): zglPEmitter2D;
+procedure noemit(item: zglPEmitter2D); overload;
 procedure noemit; overload;
 
-procedure ScrollToCenter(x, y :single);
+procedure ScrollToCenter(x, y: single);
 
 var
-  Camera :zglTCamera2D;
+  Camera: zglTCamera2D;
 
-  InitX, InitY :single;
-  Moved, MouseScrolling :boolean;
-  savex, savey :integer;
+  InitX, InitY: single;
+  Moved, MouseScrolling: boolean;
+  savex, savey: integer;
 
   //TAnimatedSprite;
   //TSprite;
-  debug :string;
+  debug: string;
 
 implementation
 
 uses uglobal, uUI, uGameUI, ugameactions;
 
-procedure DoKeyUp(key :byte);
+procedure DoKeyUp(key: byte);
 begin
   //case key of
   //  K_ESCAPE: Quitting := true;
@@ -88,20 +88,20 @@ begin
   //end;
 end;
 
-procedure DoKeyPass(key :byte);
+procedure DoKeyPass(key: byte);
 begin
   //case key of
   //  K_W: TheMap.Player.JustGo(Up);
   //end;
 end;
 
-procedure LoadSplash(datadir :string);
+procedure LoadSplash(datadir: string);
 begin
   fntMain := font_LoadFromFile(datadir + 'font.zfi');
   scr_SetOptions(SCREENX, SCREENY, REFRESH_DEFAULT, False, True);
 end;
 
-function emit(x, y, r :single) :zglPEmitter2D;
+function emit(x, y, r: single): zglPEmitter2D;
 begin
   emitterFire.ParParams.SizeXS := 8 * r * 2;
   emitterFire.ParParams.SizeYS := 8 * r * 2;
@@ -112,7 +112,7 @@ begin
   pengine2d_AddEmitter(emitterFire, @Result, x, y);
 end;
 
-procedure noemit(item :zglPEmitter2D);
+procedure noemit(item: zglPEmitter2D);
 begin
   pengine2d_DelEmitter(item^.ID);
 end;
@@ -123,14 +123,14 @@ begin
   //  pengine2d_AddEmitter(emitterRain, nil, 0, 0);
 end;
 
-procedure ScrollToCenter(x, y :single);
+procedure ScrollToCenter(x, y: single);
 begin
   Camera.X := x - SCREENX / 2;
   Camera.Y := y - SCREENY / 2;
 end;
 
 
-procedure LoadAll(datadir :string);
+procedure LoadAll(datadir: string);
 begin
   randomize;
   log_add('Seed: ' + u_IntToStr(RandSeed));
@@ -184,7 +184,7 @@ begin
 end;
 
 
-procedure MouseUp(aX, aY :integer);
+procedure MouseUp(aX, aY: integer);
 begin
   MouseScrolling := False;
   if moved then
@@ -197,14 +197,14 @@ begin
   OnClick(ax + Camera.X, aY + Camera.Y);
 end;
 
-procedure MouseRight(aX, aY :integer);
+procedure MouseRight(aX, aY: integer);
 begin
   if moved then
     exit;
   ClickUI(ax, ay, RightUp);
 end;
 
-procedure MouseDown(aX, aY :integer);
+procedure MouseDown(aX, aY: integer);
 begin
   savex := ax;
   savey := aY;
@@ -215,13 +215,13 @@ begin
     exit;
 end;
 
-procedure MouseMoved(aX, aY :integer);
+procedure MouseMoved(aX, aY: integer);
 begin
   MouseScrolling := False;
 end;
 
 
-procedure MousePressed(aX, aY :integer);
+procedure MousePressed(aX, aY: integer);
 begin
   if ModalWindow <> nil then
     exit;
@@ -238,22 +238,22 @@ begin
   end;
 end;
 
-procedure TimedUpdate(dt :double);
+procedure TimedUpdate(dt: double);
 begin
   pengine2d_Proc(2 * dt);
 end;
 
-function GetScreenX :integer;
+function GetScreenX: integer;
 begin
   Result := SCREENX;
 end;
 
-function GetScreenY :integer;
+function GetScreenY: integer;
 begin
   Result := SCREENY;
 end;
 
-procedure ReloadMedia(datadir :string);
+procedure ReloadMedia(datadir: string);
 begin
   {$ifdef cpuarm}
   scr_SetOptions(SCREENX, SCREENY, REFRESH_DEFAULT, False, False);
@@ -266,7 +266,7 @@ begin
   {$endif}
 end;
 
-procedure ReloadSplash(datadir :string);
+procedure ReloadSplash(datadir: string);
 begin
   {$ifdef cpuarm}
   log_add('reloading init');
@@ -283,7 +283,7 @@ begin
   log_Add('after load complete');
 end;
 
-function ProcessQuitting :boolean;
+function ProcessQuitting: boolean;
 begin
   Result := True;
 end;

@@ -36,8 +36,8 @@ uses
   ubattle;
 
 var
-  DirApp :UTF8String;
-  DirHome :UTF8String;
+  DirApp: UTF8String;
+  DirHome: UTF8String;
 
   procedure Init;
   const
@@ -62,13 +62,13 @@ var
     end;
   end;
 
-  procedure Update(dt :double);
+  procedure Update(dt: double);
   begin
     if Ready then
       TimedUpdate(dt);
   end;
 
-  procedure _MouseUp(Key :byte);
+  procedure _MouseUp(Key: byte);
   begin
     if Ready then
     begin
@@ -79,24 +79,24 @@ var
     end;
   end;
 
-  procedure _MouseDown(Key :byte);
+  procedure _MouseDown(Key: byte);
   begin
     if Ready then
       MouseDown(mouse_X, mouse_Y);
   end;
 
-  function _CanQuit :boolean;
+  function _CanQuit: boolean;
   begin
     Result := ProcessQuitting;
   end;
 
-  procedure _TestKeyPress(KeyCode :byte);
+  procedure _TestKeyPress(KeyCode: byte);
   begin
     if Ready then
       DoKeyPass(KeyCode);
   end;
 
-  procedure _TestKeyUp(KeyCode :byte);
+  procedure _TestKeyUp(KeyCode: byte);
   begin
     if Ready then
       DoKeyUp(KeyCode);
@@ -137,7 +137,7 @@ begin
     wnd_ShowCursor(True);
     zgl_Init();
   except
-    on E :Exception do
+    on E: Exception do
       log_add('Exception: ' + E.ClassName + ': ' + E.Message);
 
   end;

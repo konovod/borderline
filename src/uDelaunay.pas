@@ -40,18 +40,18 @@ const
 //Points (Vertices)
 type
   dVertex = record
-    x, y :DelaunayFloat;
-    Original :integer;
+    x, y: DelaunayFloat;
+    Original: integer;
   end;
 
 //Created Triangles, vv# are the vertex pointers
 type
   dTriangle = record
-    vv0 :longint;
-    vv1 :longint;
-    vv2 :longint;
-    PreCalc :integer;
-    xc, yc, r :DelaunayFloat;
+    vv0: longint;
+    vv1: longint;
+    vv2: longint;
+    PreCalc: integer;
+    xc, yc, r: DelaunayFloat;
   end;
 
 type
@@ -59,12 +59,12 @@ type
 
   TDVertexClass = class
   private
-    fData :TDVertex;
-    procedure SetItem(Index :integer; Value :dVertex);
-    function GetItem(Index :integer) :dVertex;
+    fData: TDVertex;
+    procedure SetItem(Index: integer; Value: dVertex);
+    function GetItem(Index: integer): dVertex;
   public
-    constructor Create(Capacity :integer);
-    property Items[index :integer] :dVertex read getitem write setitem; default;
+    constructor Create(Capacity: integer);
+    property Items[index: integer]: dVertex read getitem write setitem; default;
   end;
 
 type
@@ -72,38 +72,38 @@ type
 
   TDTriangleClass = class
   private
-    fData :TDTriangle;
-    procedure SetItem(Index :integer; Value :dTriangle);
-    function GetItem(Index :integer) :dTriangle;
+    fData: TDTriangle;
+    procedure SetItem(Index: integer; Value: dTriangle);
+    function GetItem(Index: integer): dTriangle;
   public
-    constructor Create(Capacity :integer);
-    property Items[index :integer] :dTriangle read getitem write setitem; default;
+    constructor Create(Capacity: integer);
+    property Items[index: integer]: dTriangle read getitem write setitem; default;
   end;
 
   TByteArray = array of byte;
 
   TBoolArrayClass = class
   private
-    fData :TByteArray;
-    function GetItem(Index :integer) :boolean;
-    procedure SetItem(Index :integer; Value :boolean);
-    function ByteIndex(Index :integer) :integer;
-    function BitMask(Index :integer) :byte;
+    fData: TByteArray;
+    function GetItem(Index: integer): boolean;
+    procedure SetItem(Index: integer; Value: boolean);
+    function ByteIndex(Index: integer): integer;
+    function BitMask(Index: integer): byte;
   public
-    constructor Create(Capacity :integer);
-    property Items[index :integer] :boolean read GetItem write Setitem; default;
+    constructor Create(Capacity: integer);
+    property Items[index: integer]: boolean read GetItem write Setitem; default;
   end;
 
   TIntArray = array of integer;
 
   TIntArrayClass = class
   private
-    fData :TIntArray;
-    function GetItem(Index :integer) :integer;
-    procedure SetItem(Index :integer; Value :integer);
+    fData: TIntArray;
+    function GetItem(Index: integer): integer;
+    procedure SetItem(Index: integer; Value: integer);
   public
-    constructor Create(Capacity :integer);
-    property Items[index :integer] :integer read getitem write setitem; default;
+    constructor Create(Capacity: integer);
+    property Items[index: integer]: integer read getitem write setitem; default;
   end;
 
   TDEdges = array[0..2] of TIntArrayClass;
@@ -112,91 +112,91 @@ type
   TDelaunay = class
   private
     { Private declarations }
-    function InCircle(xp, yp, x1, y1, x2, y2, x3, y3 :DelaunayFloat;
-      var xc :DelaunayFloat; var yc :DelaunayFloat; var r :DelaunayFloat;
-      j :integer) :boolean;
+    function InCircle(xp, yp, x1, y1, x2, y2, x3, y3: DelaunayFloat;
+      var xc: DelaunayFloat; var yc: DelaunayFloat; var r: DelaunayFloat;
+      j: integer): boolean;
     //    Function WhichSide(xp, yp, x1, y1, x2, y2: DelaunayFloat): Integer;
-    function Triangulate(nvert :integer) :integer;
-    function FindPoint(_x, _y :DelaunayFloat; out index :integer) :boolean;
+    function Triangulate(nvert: integer): integer;
+    function FindPoint(_x, _y: DelaunayFloat; out index: integer): boolean;
   public
     { Public declarations }
-    Vertex :TDVertexClass;
-    Triangle :TDTriangleClass;
-    HowMany :integer;
-    tPoints :integer; //Variable for total number of points (vertices)
+    Vertex: TDVertexClass;
+    Triangle: TDTriangleClass;
+    HowMany: integer;
+    tPoints: integer; //Variable for total number of points (vertices)
     constructor Create;
     destructor Destroy; override;
     procedure Mesh;
-    procedure AddPoint(x, y :DelaunayFloat);
-    procedure QuickSort(Low, High :integer);
+    procedure AddPoint(x, y: DelaunayFloat);
+    procedure QuickSort(Low, High: integer);
   end;
 
 implementation
 
-constructor TDVertexClass.Create(Capacity :integer);
+constructor TDVertexClass.Create(Capacity: integer);
 begin
   inherited Create;
   SetLength(fData, Capacity);
 end;
 
-function TDVertexClass.GetItem(Index :integer) :dVertex;
+function TDVertexClass.GetItem(Index: integer): dVertex;
 begin
   if High(fData) < Index then
     SetLength(fData, Index + Vertex_Increment);
   Result := fData[Index];
 end;
 
-procedure TDVertexClass.SetItem(Index :integer; Value :dVertex);
+procedure TDVertexClass.SetItem(Index: integer; Value: dVertex);
 begin
   if High(fData) < Index then
     SetLength(fData, Index + Vertex_Increment);
   fData[Index] := Value;
 end;
 
-constructor TDTriangleClass.Create(Capacity :integer);
+constructor TDTriangleClass.Create(Capacity: integer);
 begin
   inherited Create;
   SetLength(fData, Capacity);
 end;
 
-function TDTriangleClass.GetItem(Index :integer) :dTriangle;
+function TDTriangleClass.GetItem(Index: integer): dTriangle;
 begin
   if High(fData) < Index then
     SetLength(fData, Index + Vertex_Increment * 2);
   Result := fData[index];
 end;
 
-procedure TDTriangleClass.SetItem(Index :integer; Value :dTriangle);
+procedure TDTriangleClass.SetItem(Index: integer; Value: dTriangle);
 begin
   if High(fData) < Index then
     SetLength(fData, Index + Vertex_Increment * 2);
   fData[index] := Value;
 end;
 
-constructor TBoolArrayClass.Create(Capacity :integer);
+constructor TBoolArrayClass.Create(Capacity: integer);
 begin
   inherited Create;
   SetLength(fData, Capacity shr 3);
 end;
 
-function TBoolArrayClass.ByteIndex(Index :integer) :integer;
+function TBoolArrayClass.ByteIndex(Index: integer): integer;
 begin
   Result := index shr 3;
 end;
 
-function TBoolArrayClass.BitMask(Index :integer) :byte;
+function TBoolArrayClass.BitMask(Index: integer): byte;
 begin
   Result := 1 shl (Index and $7);
 end;
 
-function TBoolArrayClass.GetItem(Index :integer) :boolean;
+function TBoolArrayClass.GetItem(Index: integer): boolean;
 begin
   Result := fData[ByteIndex(Index)] and BitMask(Index) <> 0;
 end;
 
-procedure TBoolArrayClass.SetItem(Index :integer; Value :boolean);
+procedure TBoolArrayClass.SetItem(Index: integer; Value: boolean);
 var
-  bi :integer;
+  bi: integer;
 begin
   bi := ByteIndex(Index);
   if bi > High(fData) then
@@ -207,20 +207,20 @@ begin
     fData[bi] := fData[bi] and (not BitMask(Index));
 end;
 
-constructor TIntArrayClass.Create(Capacity :integer);
+constructor TIntArrayClass.Create(Capacity: integer);
 begin
   inherited Create;
   SetLength(fData, Capacity);
 end;
 
-function TIntArrayClass.GetItem(Index :integer) :integer;
+function TIntArrayClass.GetItem(Index: integer): integer;
 begin
   if High(fData) < Index then
     SetLength(fDAta, Index + Vertex_Increment);
   Result := fData[index];
 end;
 
-procedure TIntArrayClass.SetItem(Index :integer; Value :integer);
+procedure TIntArrayClass.SetItem(Index: integer; Value: integer);
 begin
   if High(fData) < Index then
     SetLength(fData, Index + Vertex_Increment);
@@ -244,10 +244,10 @@ begin
   inherited;
 end;
 
-function TDelaunay.FindPoint(_x, _y :DelaunayFloat; out index :integer) :boolean;
+function TDelaunay.FindPoint(_x, _y: DelaunayFloat; out index: integer): boolean;
 var
-  i :integer;
-  dx, dy :DelaunayFloat;
+  i: integer;
+  dx, dy: DelaunayFloat;
 begin
   Result := False;
   for i := 1 to pred(tPoints) do
@@ -266,26 +266,26 @@ begin
     end;
 end;
 
-function TDelaunay.InCircle(xp, yp, x1, y1, x2, y2, x3, y3 :DelaunayFloat;
-  var xc :DelaunayFloat; var yc :DelaunayFloat; var r :DelaunayFloat;
-  j :integer) :boolean;
+function TDelaunay.InCircle(xp, yp, x1, y1, x2, y2, x3, y3: DelaunayFloat;
+  var xc: DelaunayFloat; var yc: DelaunayFloat; var r: DelaunayFloat;
+  j: integer): boolean;
   //Return TRUE if the point (xp,yp) lies inside the circumcircle
   //made up by points (x1,y1) (x2,y2) (x3,y3)
   //The circumcircle centre is returned in (xc,yc) and the radius r
   //NOTE: A point on the edge is inside the circumcircle
 var
-  eps :DelaunayFloat;
-  m1 :DelaunayFloat;
-  m2 :DelaunayFloat;
-  mx1 :DelaunayFloat;
-  mx2 :DelaunayFloat;
-  my1 :DelaunayFloat;
-  my2 :DelaunayFloat;
-  dx :DelaunayFloat;
-  dy :DelaunayFloat;
-  rsqr :DelaunayFloat;
-  drsqr :DelaunayFloat;
-  T :dTriangle;
+  eps: DelaunayFloat;
+  m1: DelaunayFloat;
+  m2: DelaunayFloat;
+  mx1: DelaunayFloat;
+  mx2: DelaunayFloat;
+  my1: DelaunayFloat;
+  my2: DelaunayFloat;
+  dx: DelaunayFloat;
+  dy: DelaunayFloat;
+  rsqr: DelaunayFloat;
+  drsqr: DelaunayFloat;
+  T: dTriangle;
 begin
   eps := 0.000001;
   InCircle := False;
@@ -400,40 +400,40 @@ End;
  }
 
 
-function TDelaunay.Triangulate(nvert :integer) :integer;
+function TDelaunay.Triangulate(nvert: integer): integer;
   //Takes as input NVERT vertices in arrays Vertex()
   //Returned is a list of NTRI triangular faces in the array
   //Triangle(). These triangles are arranged in clockwise order.
 var
 
   //  Complete: TDComplete;
-  Complete :TBoolArrayClass;
-  Edges :TDEdges;
-  Nedge :longint;
+  Complete: TBoolArrayClass;
+  Edges: TDEdges;
+  Nedge: longint;
 
   //For Super Triangle
-  xmin :DelaunayFloat;
-  xmax :DelaunayFloat;
-  ymin :DelaunayFloat;
-  ymax :DelaunayFloat;
-  xmid :DelaunayFloat;
-  ymid :DelaunayFloat;
-  dx :DelaunayFloat;
-  dy :DelaunayFloat;
-  dmax :DelaunayFloat;
+  xmin: DelaunayFloat;
+  xmax: DelaunayFloat;
+  ymin: DelaunayFloat;
+  ymax: DelaunayFloat;
+  xmid: DelaunayFloat;
+  ymid: DelaunayFloat;
+  dx: DelaunayFloat;
+  dy: DelaunayFloat;
+  dmax: DelaunayFloat;
 
   //General Variables
-  i :integer;
-  j :integer;
-  k :integer;
-  ntri :integer;
-  xc :DelaunayFloat;
-  yc :DelaunayFloat;
-  r :DelaunayFloat;
-  Inc :boolean;
+  i: integer;
+  j: integer;
+  k: integer;
+  ntri: integer;
+  xc: DelaunayFloat;
+  yc: DelaunayFloat;
+  r: DelaunayFloat;
+  Inc: boolean;
 
-  dv :DVertex;
-  dt :dTriangle;
+  dv: DVertex;
+  dt: dTriangle;
 begin
 
   //Allocate memory
@@ -629,10 +629,10 @@ begin
     HowMany := Triangulate(tPoints - 1); //'Returns number of triangles created.
 end;
 
-procedure TDelaunay.AddPoint(x, y :DelaunayFloat);
+procedure TDelaunay.AddPoint(x, y: DelaunayFloat);
 var
-  dv :DVertex;
-  i :integer;
+  dv: DVertex;
+  i: integer;
 begin
   if FindPoint(x, y, i) then
     exit;
@@ -643,14 +643,14 @@ begin
   Inc(tPoints);
 end;
 
-procedure TDelaunay.QuickSort(Low, High :integer);
+procedure TDelaunay.QuickSort(Low, High: integer);
 //Sort all points by x
-  procedure DoQuickSort(iLo, iHi :integer);
+  procedure DoQuickSort(iLo, iHi: integer);
   var
-    Lo, Hi :integer;
-    Mid :DelaunayFloat;
-    T :dVertex;
-    A :TDVertex;
+    Lo, Hi: integer;
+    Mid: DelaunayFloat;
+    T: dVertex;
+    A: TDVertex;
   begin
     A := Vertex.fData;
     Lo := iLo;

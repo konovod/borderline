@@ -20,37 +20,37 @@ type
   TSystem = class;
 
   TAlienArmy = record
-    State :TAlienArmyState;
-    nwaypoints :integer;
-    waypoints :array[1..100] of TSystem;
+    State: TAlienArmyState;
+    nwaypoints: integer;
+    waypoints: array[1..100] of TSystem;
   end;
 
   { TSystem }
 
   TSystem = class
-    id :integer;
-    X, Y :integer;
-    Name :string;
-    Links :array of TSystem;
-    State :TSystemState;
-    SeenPopStatus, PopStatus :TPopulationState;
-    VisitTime :TStarDate;
-    AlienId :integer;
-    AlienResearch, AlienResearchMax :TAlienResearchLevel;
-    AlienResearchNext, AlienResearchMaxNext :TAlienResearchLevel;
-    AlienFleet, AlienFleetNext :TAlienFleetData;
-    SeenHumanResearch, HumanResearch :THumanResearchLevel;
-    Ships :TFleetData;
-    Priorities :TPriorities;
-    SeenMines, Mines :TMinesData;
-    AlienArmy, AlienArmyNext :TAlienArmy;
+    id: integer;
+    X, Y: integer;
+    Name: string;
+    Links: array of TSystem;
+    State: TSystemState;
+    SeenPopStatus, PopStatus: TPopulationState;
+    VisitTime: TStarDate;
+    AlienId: integer;
+    AlienResearch, AlienResearchMax: TAlienResearchLevel;
+    AlienResearchNext, AlienResearchMaxNext: TAlienResearchLevel;
+    AlienFleet, AlienFleetNext: TAlienFleetData;
+    SeenHumanResearch, HumanResearch: THumanResearchLevel;
+    Ships: TFleetData;
+    Priorities: TPriorities;
+    SeenMines, Mines: TMinesData;
+    AlienArmy, AlienArmyNext: TAlienArmy;
     procedure InitGameStats;
     procedure DefaultPriorities;
-    procedure ShowInfo(aX, aY :single);
-    function Color :zglColor;
+    procedure ShowInfo(aX, aY: single);
+    function Color: zglColor;
     procedure Draw;
     procedure DrawLinks;
-    constructor Create(aid, ax, ay :integer; aname :string);
+    constructor Create(aid, ax, ay: integer; aname: string);
     procedure Enter;
     procedure EnterOwn;
     procedure PassTime;
@@ -58,58 +58,58 @@ type
     procedure ProcessHumanSystem;
     procedure ProcessAlienSystem;
     procedure AlienMessaging;
-    function Linked(asys :TSystem) :boolean;
-    procedure LogEvent(s :string);
+    function Linked(asys: TSystem): boolean;
+    procedure LogEvent(s: string);
     procedure Capture;
     procedure Colonize;
     procedure ClearAliens;
-    procedure ContactHuman(sit :TContactSituation; MineFromSys :TSystem = nil);
-    procedure SetResearch(res :TAlienResearch; n :integer);
-    function RandomLink(allowed :TPopulationStates =
-      [Own, Alien, Colonizable, WipedOut]) :TSystem;
+    procedure ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
+    procedure SetResearch(res: TAlienResearch; n: integer);
+    function RandomLink(allowed: TPopulationStates =
+      [Own, Alien, Colonizable, WipedOut]): TSystem;
     procedure WipeOut;
   end;
 
   { TMap }
 
   TMap = class
-    Systems :array of TSystem;
+    Systems: array of TSystem;
     constructor Create;
     procedure Generate;
     procedure Draw;
-    function FindSys(x, y :single) :TSystem;
+    function FindSys(x, y: single): TSystem;
   end;
 
 
-function ShortResearchList(res :THumanResearchLevel) :string;
-function LongResearchList(res :THumanResearchLevel) :string;
-function LongShipsList(fleet, damaged :TFleetData) :string;
-function ShortShipsList(fleet :TFleetData) :string;
-function ShortMinesList(sys :TSystem; mines :TMinesData) :string;
-function LongMinesList(sys :TSystem; mines :TMinesData) :string;
-function CalcPower(sqd :TSquadron) :single;
-function AvgLevel(sqd :TSquadron) :string;
-function MaxLevel(sqd :TSquadron) :TPowerLevel;
-function TotalCount(sqd :TSquadron) :integer;
-procedure LogEventRaw(s :string);
+function ShortResearchList(res: THumanResearchLevel): string;
+function LongResearchList(res: THumanResearchLevel): string;
+function LongShipsList(fleet, damaged: TFleetData): string;
+function ShortShipsList(fleet: TFleetData): string;
+function ShortMinesList(sys: TSystem; mines: TMinesData): string;
+function LongMinesList(sys: TSystem; mines: TMinesData): string;
+function CalcPower(sqd: TSquadron): single;
+function AvgLevel(sqd: TSquadron): string;
+function MaxLevel(sqd: TSquadron): TPowerLevel;
+function TotalCount(sqd: TSquadron): integer;
+procedure LogEventRaw(s: string);
 
 //TODO - colony sizes
-function PrioToEffect(prio :TPriorityLevel; max :integer) :integer;
-function GenResLevel(res :THumanResearchLevel;
-  First, second :THumanResearch) :TPowerLevel;
-function ShipLevel(ship :THumanShip; res :THumanResearchLevel) :TPowerLevel;
-procedure DoResearch(prio :TPriorityLevel; var res :THumanResearchLevel);
+function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
+function GenResLevel(res: THumanResearchLevel;
+  First, second: THumanResearch): TPowerLevel;
+function ShipLevel(ship: THumanShip; res: THumanResearchLevel): TPowerLevel;
+procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
 
-function FreePoints(prio :TPriorities) :TPriorityLevel;
+function FreePoints(prio: TPriorities): TPriorityLevel;
 
 implementation
 
 uses zgl_primitives_2d, zgl_text, zgl_fx, ugame, umapgen, uStaticData, uGameUI,
   uUI, ubattle, Math;
 
-function ShortResearchList(res :THumanResearchLevel) :string;
+function ShortResearchList(res: THumanResearchLevel): string;
 var
-  it :THumanResearch;
+  it: THumanResearch;
 begin
   Result := '';
   for it in THumanResearch do
@@ -117,9 +117,9 @@ begin
   SetLength(Result, Length(Result) - 1);
 end;
 
-function ShortAlienResearchList(res :TAlienResearchLevel) :string;
+function ShortAlienResearchList(res: TAlienResearchLevel): string;
 var
-  it :TAlienResearch;
+  it: TAlienResearch;
 begin
   Result := '';
   for it in TAlienResearch do
@@ -127,9 +127,9 @@ begin
   SetLength(Result, Length(Result) - 1);
 end;
 
-function LongResearchList(res :THumanResearchLevel) :string;
+function LongResearchList(res: THumanResearchLevel): string;
 var
-  it :THumanResearch;
+  it: THumanResearch;
 begin
   Result := '';
   for it in THumanResearchLevel do
@@ -137,10 +137,10 @@ begin
   SetLength(Result, Length(Result) - 1);
 end;
 
-function LongShipsList(fleet, damaged :TFleetData) :string;
+function LongShipsList(fleet, damaged: TFleetData): string;
 var
-  ship :THumanShip;
-  n :integer;
+  ship: THumanShip;
+  n: integer;
 begin
   Result := '';
   for ship in THumanShip do
@@ -157,10 +157,10 @@ begin
   SetLength(Result, Length(Result) - 1);
 end;
 
-function ShortShipsList(fleet :TFleetData) :string;
+function ShortShipsList(fleet: TFleetData): string;
 var
-  ship :THumanShip;
-  n :integer;
+  ship: THumanShip;
+  n: integer;
 begin
   Result := '';
   for ship in THumanShip do
@@ -171,9 +171,9 @@ begin
   SetLength(Result, Length(Result) - 1);
 end;
 
-function ShortMinesList(sys :TSystem; mines :TMinesData) :string;
+function ShortMinesList(sys: TSystem; mines: TMinesData): string;
 var
-  i, n :integer;
+  i, n: integer;
 begin
   n := 0;
   for i := 0 to length(mines) - 1 do
@@ -181,9 +181,9 @@ begin
   Result := 'total: ' + IntToStr(n);
 end;
 
-function LongMinesList(sys :TSystem; mines :TMinesData) :string;
+function LongMinesList(sys: TSystem; mines: TMinesData): string;
 var
-  i :integer;
+  i: integer;
 begin
   Result := '';
   for i := 0 to length(sys.Links) - 1 do
@@ -195,20 +195,20 @@ begin
   end;
 end;
 
-function CalcPower(sqd :TSquadron) :single;
+function CalcPower(sqd: TSquadron): single;
 var
-  lv :TPowerLevel;
+  lv: TPowerLevel;
 begin
   Result := 0;
   for lv in TPowerLevel do
     Result := Result + sqd[lv] * power(lv, K_LVL);
 end;
 
-function AvgLevel(sqd :TSquadron) :string;
+function AvgLevel(sqd: TSquadron): string;
 var
-  lv :TPowerLevel;
-  n :integer;
-  res :integer;
+  lv: TPowerLevel;
+  n: integer;
+  res: integer;
 begin
   Res := 0;
   for lv in TPowerLevel do
@@ -221,9 +221,9 @@ begin
   Result := IntToStr(Res div 10) + '.' + IntToStr(Res mod 10);
 end;
 
-function MaxLevel(sqd :TSquadron) :TPowerLevel;
+function MaxLevel(sqd: TSquadron): TPowerLevel;
 var
-  lv :TPowerLevel;
+  lv: TPowerLevel;
 begin
   Result := 0;
   for lv := High(TPowerLevel) downto Low(TPowerLevel) do
@@ -234,51 +234,51 @@ begin
     end;
 end;
 
-function TotalCount(sqd :TSquadron) :integer;
+function TotalCount(sqd: TSquadron): integer;
 var
-  lv :TPowerLevel;
+  lv: TPowerLevel;
 begin
   Result := 0;
   for lv in TPowerLevel do
     Inc(Result, sqd[lv]);
 end;
 
-procedure LogEventRaw(s :string);
+procedure LogEventRaw(s: string);
 begin
   SetLength(LogWindow.Lines, Length(LogWindow.Lines) + 1);
   LogWindow.Lines[Length(LogWindow.Lines) - 1] := s;
 end;
 
-function PrioToEffect(prio :TPriorityLevel; max :integer) :integer;
+function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
 begin
   Result := Trunc(prio / 100 * max);
   if random < frac(prio / 100 * max) then
     Inc(Result);
 end;
 
-function GenResLevel(res :THumanResearchLevel;
-  First, second :THumanResearch) :TPowerLevel;
+function GenResLevel(res: THumanResearchLevel;
+  First, second: THumanResearch): TPowerLevel;
 begin
   Result := EnsureRange((res[First] + res[second] + min(res[First], res[second])) div
     2, 0, MAX_POWER_LEVEL);
 end;
 
-function ShipLevel(ship :THumanShip; res :THumanResearchLevel) :TPowerLevel;
+function ShipLevel(ship: THumanShip; res: THumanResearchLevel): TPowerLevel;
 begin
   case ship of
-    Brander :Result := GenResLevel(res, Explosives, Engines);
-    Cruiser :Result := GenResLevel(res, Weapons, Armor);
-    Minesweeper :Result := GenResLevel(res, Weapons, Sensors);
-    Colonizer :Result := 1;//TODO: cryionics\STC?
-    TroopTransport :Result := GenResLevel(res, Armor, Engines);
-    Scout :Result := GenResLevel(res, Sensors, Engines);
+    Brander: Result := GenResLevel(res, Explosives, Engines);
+    Cruiser: Result := GenResLevel(res, Weapons, Armor);
+    Minesweeper: Result := GenResLevel(res, Weapons, Sensors);
+    Colonizer: Result := 1;//TODO: cryionics\STC?
+    TroopTransport: Result := GenResLevel(res, Armor, Engines);
+    Scout: Result := GenResLevel(res, Sensors, Engines);
   end;
 end;
 
-procedure DoResearch(prio :TPriorityLevel; var res :THumanResearchLevel);
+procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
 var
-  area :THumanResearch;
-  i :integer;
+  area: THumanResearch;
+  i: integer;
 begin
   for i := 1 to 10 do
   begin
@@ -295,10 +295,10 @@ begin
   end;
 end;
 
-function FreePoints(prio :TPriorities) :TPriorityLevel;
+function FreePoints(prio: TPriorities): TPriorityLevel;
 var
-  i :integer;
-  ship :THumanShip;
+  i: integer;
+  ship: THumanShip;
 begin
   Result := 100 - prio.Research;
   for ship in THumanShip do
@@ -321,7 +321,7 @@ end;
 
 procedure TMap.Draw;
 var
-  sys :TSystem;
+  sys: TSystem;
 begin
   for sys in Systems do
     sys.DrawLinks;
@@ -329,9 +329,9 @@ begin
     sys.Draw;
 end;
 
-function TMap.FindSys(x, y :single) :TSystem;
+function TMap.FindSys(x, y: single): TSystem;
 var
-  sys :TSystem;
+  sys: TSystem;
 begin
   for sys in Systems do
     if (sys.State <> Hidden) and (Distance(x, y, sys.x, sys.y) < CLICKDIST) then
@@ -346,7 +346,7 @@ end;
 
 procedure TSystem.InitGameStats;
 var
-  res :THumanResearch;
+  res: THumanResearch;
 begin
   SetLength(Mines, Length(Links));
   SetLength(SeenMines, Length(Links));
@@ -362,8 +362,8 @@ end;
 
 procedure TSystem.DefaultPriorities;
 var
-  ship :THumanShip;
-  i :integer;
+  ship: THumanShip;
+  i: integer;
 begin
   Priorities.Research := 40;
   Priorities.Ships[Brander] := 17;
@@ -376,9 +376,9 @@ begin
     Priorities.Mines[i] := 0;
 end;
 
-procedure TSystem.ShowInfo(aX, aY :single);
+procedure TSystem.ShowInfo(aX, aY: single);
 var
-  Caption, Text :string;
+  Caption, Text: string;
 begin
   DrawPanel(aX, aY, SYSTEMINFO_WIDTH * SCREENX, SYSTEMINFO_HEIGHT * SCREENY, 0.9);
   Caption := Name;
@@ -405,16 +405,16 @@ begin
     SYSTEMINFO_HEIGHT * SCREENY - 20, Caption, Text);
 end;
 
-function TSystem.Color :zglColor;
+function TSystem.Color: zglColor;
 begin
   if VisitTime = 0 then
     Result := Black
   else
     case SeenPopStatus of
-      Own :Result := Green;
-      Colonizable :Result := Blue;
-      Alien :Result := Red;
-      WipedOut :Result := Dark;
+      Own: Result := Green;
+      Colonizable: Result := Blue;
+      Alien: Result := Red;
+      WipedOut: Result := Dark;
     end;
 end;
 
@@ -438,7 +438,7 @@ end;
 
 procedure TSystem.DrawLinks;
 var
-  other :TSystem;
+  other: TSystem;
 begin
   {$IFNDEF DEBUGDRAW}
   if State <= Found then
@@ -449,7 +449,7 @@ begin
     BoldLine(X, Y, other.X, other.Y, White);
 end;
 
-constructor TSystem.Create(aid, ax, ay :integer; aname :string);
+constructor TSystem.Create(aid, ax, ay: integer; aname: string);
 begin
   id := aid;
   x := ax;
@@ -460,7 +460,7 @@ end;
 
 procedure TSystem.Enter;
 var
-  sys :TSystem;
+  sys: TSystem;
 begin
   LogEvent('Entering');
   State := Current;
@@ -472,8 +472,8 @@ begin
   if SeenPopStatus <> PopStatus then
     LogEvent('System is ' + POP_STATUS_NAMES[PopStatus] + '!');
   case PopStatus of
-    Own :EnterOwn;
-    Alien :StartBattle(False);
+    Own: EnterOwn;
+    Alien: StartBattle(False);
   end;
   SeenMines := Mines;
   SetLength(SeenMines, Length(SeenMines));
@@ -483,10 +483,10 @@ end;
 
 procedure TSystem.EnterOwn;
 var
-  ship :THumanShip;
-  n1, n2 :integer;
-  lv :TPowerLevel;
-  res :THumanResearch;
+  ship: THumanShip;
+  n1, n2: integer;
+  lv: TPowerLevel;
+  res: THumanResearch;
 begin
   //transfer ships
   n1 := 0;
@@ -529,17 +529,17 @@ end;
 procedure TSystem.PassTime;
 begin
   case PopStatus of
-    Own :ProcessHumanSystem;
-    Alien :ProcessAlienSystem;
-    Colonizable, WipedOut :;
+    Own: ProcessHumanSystem;
+    Alien: ProcessAlienSystem;
+    Colonizable, WipedOut: ;
   end;
   AlienMessaging;
 end;
 
 procedure TSystem.SecondPass;
 var
-  typ :TAlienResearch;
-  lv :TPowerLevel;
+  typ: TAlienResearch;
+  lv: TPowerLevel;
 begin
   for typ in TAlienResearch do
   begin
@@ -562,8 +562,8 @@ end;
 
 procedure TSystem.ProcessHumanSystem;
 var
-  ship :THumanShip;
-  lv, i :integer;
+  ship: THumanShip;
+  lv, i: integer;
 begin
   //1. build ships
   for ship in THumanShip do
@@ -582,8 +582,8 @@ end;
 
 procedure TSystem.ProcessAlienSystem;
 var
-  typ :TAlienResearch;
-  i :integer;
+  typ: TAlienResearch;
+  i: integer;
 begin
   //1. build ships
   repeat
@@ -612,10 +612,10 @@ end;
 
 procedure TSystem.AlienMessaging;
 var
-  typ :TAlienResearch;
-  i :integer;
-  target, rescue :TSystem;
-  lv :TPowerLevel;
+  typ: TAlienResearch;
+  i: integer;
+  target, rescue: TSystem;
+  lv: TPowerLevel;
 begin
   for i := 0 to length(Links) - 1 do
   begin
@@ -631,7 +631,7 @@ begin
   end;
   //4. armies navigation
   case AlienArmy.State of
-    None :;
+    None: ;
     Fleeing:
     begin
       target := RandomLink([Alien]);
@@ -701,7 +701,7 @@ begin
         begin
           //invasion on player position
           target.WipeOut;
-            rescue := RandomLink([Own, Colonizable, WipedOut]);
+          rescue := RandomLink([Own, Colonizable, WipedOut]);
           if rescue = nil then
             rescue := RandomLink;
           target.LogEvent('Invasion fleet passed through the minefields');
@@ -729,9 +729,9 @@ begin
   end;
 end;
 
-function TSystem.Linked(asys :TSystem) :boolean;
+function TSystem.Linked(asys: TSystem): boolean;
 var
-  sys :TSystem;
+  sys: TSystem;
 begin
   Result := True;
   for sys in Links do
@@ -740,7 +740,7 @@ begin
   Result := False;
 end;
 
-procedure TSystem.LogEvent(s :string);
+procedure TSystem.LogEvent(s: string);
 begin
   LogEventRaw(' ' + Name + ': ' + s);
 end;
@@ -776,10 +776,10 @@ begin
   //AlienArmy.State := None;
 end;
 
-procedure TSystem.ContactHuman(sit :TContactSituation; MineFromSys :TSystem = nil);
+procedure TSystem.ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
 var
-  sys :TSystem;
-  i :integer;
+  sys: TSystem;
+  i: integer;
 begin
   case sit of
     HumanMinesweepers:
@@ -811,7 +811,7 @@ begin
   end;
 end;
 
-procedure TSystem.SetResearch(res :TAlienResearch; n :integer);
+procedure TSystem.SetResearch(res: TAlienResearch; n: integer);
 begin
   Inc(n, ALIEN_OVERSEE);
   if n > MAX_RES_LEVEL then
@@ -820,11 +820,11 @@ begin
     AlienResearchMax[res] := n;
 end;
 
-function TSystem.RandomLink(allowed :TPopulationStates) :TSystem;
+function TSystem.RandomLink(allowed: TPopulationStates): TSystem;
 var
-  i :integer;
-  sys :TSystem;
-  list :array of TSystem;
+  i: integer;
+  sys: TSystem;
+  list: array of TSystem;
 begin
   SetLength(List, 0);
   for sys in Links do

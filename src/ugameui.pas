@@ -13,28 +13,28 @@ type
 
   TDateButton = class(TButton)
     procedure Draw; override;
-    procedure Click(event :TMouseEvent); override;
+    procedure Click(event: TMouseEvent); override;
   end;
 
   { TActionButton }
 
   TActionButton = class(TButton)
-    index :integer;
-    function Visible :boolean; override;
+    index: integer;
+    function Visible: boolean; override;
     procedure Draw; override;
-    procedure Click(event :TMouseEvent); override;
-    constructor Create(aX, aY, aW, aH :single; aindex :integer);
-    function MyAction :TAction;
+    procedure Click(event: TMouseEvent); override;
+    constructor Create(aX, aY, aW, aH: single; aindex: integer);
+    function MyAction: TAction;
   end;
 
   { TGameWindow }
 
   TGameWindow = class(TModalWindow)
-    function ProcessClick(x, y :integer; event :TMouseEvent) :boolean; override;
+    function ProcessClick(x, y: integer; event: TMouseEvent): boolean; override;
     procedure Draw; override;
     procedure Close; virtual;
   private
-    procedure addbutton(bt :TButton);
+    procedure addbutton(bt: TButton);
   end;
 
   TResearchWindow = class;
@@ -42,18 +42,18 @@ type
   { TSelectResearchButton }
 
   TSelectResearchButton = class(TButton)
-    owner :TResearchWindow;
-    res :THumanResearch;
+    owner: TResearchWindow;
+    res: THumanResearch;
     procedure Draw; override;
-    procedure Click(event :TMouseEvent); override;
-    constructor Create(aX, aY, aW, aH :single; aowner :TResearchWindow;
-      ares :THumanResearch);
+    procedure Click(event: TMouseEvent); override;
+    constructor Create(aX, aY, aW, aH: single; aowner: TResearchWindow;
+      ares: THumanResearch);
   end;
 
   { TResearchWindow }
 
   TResearchWindow = class(TGameWindow)
-    cursor :THumanResearch;
+    cursor: THumanResearch;
     procedure Draw; override;
     constructor Create;
   end;
@@ -65,17 +65,17 @@ type
   TPrioritiesWindow = class;
 
   TPriorityBar = class(TButton)
-    owner :TPrioritiesWindow;
-    typ :TPriorityType;
-    index :integer;
-    function Visible :boolean; override;
-    function MyText :string;
-    function MyValue :TPriorityLevel;
-    procedure ApplyValue(Value :TPriorityLevel);
+    owner: TPrioritiesWindow;
+    typ: TPriorityType;
+    index: integer;
+    function Visible: boolean; override;
+    function MyText: string;
+    function MyValue: TPriorityLevel;
+    procedure ApplyValue(Value: TPriorityLevel);
     procedure Draw; override;
-    procedure Click(event :TMouseEvent); override;
-    constructor Create(aX, aY, aW, aH :single; aowner :TPrioritiesWindow;
-      atyp :TPriorityType; aindex :integer);
+    procedure Click(event: TMouseEvent); override;
+    constructor Create(aX, aY, aW, aH: single; aowner: TPrioritiesWindow;
+      atyp: TPriorityType; aindex: integer);
   end;
 
   { TPrioritiesWindow }
@@ -89,34 +89,34 @@ type
   { TLogWindow }
 
   TLogWindow = class(TGameWindow)
-    Lines :array of string;
+    Lines: array of string;
     procedure Draw; override;
-    function ProcessClick(x, y :integer; event :TMouseEvent) :boolean; override;
+    function ProcessClick(x, y: integer; event: TMouseEvent): boolean; override;
   end;
 
   { TBattleDecisionButton }
 
   TBattleDecisionButton = class(TButton)
-    positive :boolean;
+    positive: boolean;
     procedure Draw; override;
-    function Visible :boolean; override;
-    procedure Click(event :TMouseEvent); override;
-    constructor Create(aX, aY, aW, aH :single; apositive :boolean);
+    function Visible: boolean; override;
+    procedure Click(event: TMouseEvent); override;
+    constructor Create(aX, aY, aW, aH: single; apositive: boolean);
   end;
 
   { TBattleWindow }
 
   TBattleWindow = class(TGameWindow)
-    function ProcessClick(x, y :integer; event :TMouseEvent) :boolean; override;
+    function ProcessClick(x, y: integer; event: TMouseEvent): boolean; override;
     procedure Draw; override;
     constructor Create;
   end;
 
 var
-  ResearchWindow :TResearchWindow;
-  PrioritiesWindow :TPrioritiesWindow;
-  LogWindow :TLogWindow;
-  BattleWindow :TBattleWindow;
+  ResearchWindow: TResearchWindow;
+  PrioritiesWindow: TPrioritiesWindow;
+  LogWindow: TLogWindow;
+  BattleWindow: TBattleWindow;
 
 procedure InitUI;
 
@@ -130,7 +130,7 @@ uses ugame, uStaticData, ubattle, zgl_mouse, zgl_text, zgl_math_2d, Math,
   zgl_primitives_2d;
 
 var
-  GameOver :boolean;
+  GameOver: boolean;
   JumpPending: TSystem;
 
 { TBattleDecisionButton }
@@ -153,18 +153,18 @@ begin
   end;
 end;
 
-function TBattleDecisionButton.Visible :boolean;
+function TBattleDecisionButton.Visible: boolean;
 begin
   if positive then
     Result := BattleResult in [InCombat, SpaceWon];
 end;
 
-procedure TBattleDecisionButton.Click(event :TMouseEvent);
+procedure TBattleDecisionButton.Click(event: TMouseEvent);
 begin
   Retreating := not positive;
   case BattleResult of
-    InCombat :TurnBattle;
-    SpaceWon :if positive then
+    InCombat: TurnBattle;
+    SpaceWon: if positive then
       begin
         BattleDistance := BotsClosing;
         //TurnBattle;
@@ -173,11 +173,11 @@ begin
         DoRetreat(False);
     SpaceLost:
       DoRetreat(True);
-    GroundWon, GroundLost :DoRetreat(False);
+    GroundWon, GroundLost: DoRetreat(False);
   end;
 end;
 
-constructor TBattleDecisionButton.Create(aX, aY, aW, aH :single; apositive :boolean);
+constructor TBattleDecisionButton.Create(aX, aY, aW, aH: single; apositive: boolean);
 begin
   inherited Create(aX, aY, aW, aH);
   positive := apositive;
@@ -185,45 +185,45 @@ end;
 
 { TPriorityBar }
 
-function TPriorityBar.Visible :boolean;
+function TPriorityBar.Visible: boolean;
 begin
   Result := (typ <> prMines) or (index < length(PlayerSys.Mines));
 end;
 
-function TPriorityBar.MyText :string;
+function TPriorityBar.MyText: string;
 begin
   case typ of
-    prFree :Result := 'Remaining points';
-    prResearch :Result := 'Do research';
-    prShips :Result := LowerCase(SHIP_NAMES[THumanShip(index)]) + 's';
-    prMines :Result := 'to ' + PlayerSys.Links[index].Name;
+    prFree: Result := 'Remaining points';
+    prResearch: Result := 'Do research';
+    prShips: Result := LowerCase(SHIP_NAMES[THumanShip(index)]) + 's';
+    prMines: Result := 'to ' + PlayerSys.Links[index].Name;
   end;
 end;
 
-function TPriorityBar.MyValue :TPriorityLevel;
+function TPriorityBar.MyValue: TPriorityLevel;
 begin
   case typ of
-    prFree :Result := FreePoints(PlayerSys.Priorities);
-    prResearch :Result := PlayerSys.Priorities.Research +
+    prFree: Result := FreePoints(PlayerSys.Priorities);
+    prResearch: Result := PlayerSys.Priorities.Research +
         FreePoints(PlayerSys.Priorities);
-    prShips :Result := PlayerSys.Priorities.Ships[THumanShip(index)];
-    prMines :Result := PlayerSys.Priorities.Mines[index];
+    prShips: Result := PlayerSys.Priorities.Ships[THumanShip(index)];
+    prMines: Result := PlayerSys.Priorities.Mines[index];
   end;
 end;
 
-procedure TPriorityBar.ApplyValue(Value :TPriorityLevel);
+procedure TPriorityBar.ApplyValue(Value: TPriorityLevel);
 begin
   case typ of
-    prFree :exit;
-    prResearch :exit;//PlayerSys.Priorities.Research := value;
-    prShips :PlayerSys.Priorities.Ships[THumanShip(index)] := Value;
-    prMines :PlayerSys.Priorities.Mines[index] := Value;
+    prFree: exit;
+    prResearch: exit;//PlayerSys.Priorities.Research := value;
+    prShips: PlayerSys.Priorities.Ships[THumanShip(index)] := Value;
+    prMines: PlayerSys.Priorities.Mines[index] := Value;
   end;
 end;
 
 procedure TPriorityBar.Draw;
 var
-  R :zglTRect;
+  R: zglTRect;
 begin
   //StdButton(MyText, X,Y,W,H,Normal);
   pr2d_Rect(X + W / 2, Y, W / 2, H, IntfBack, 255, PR2D_FILL or PR2D_SMOOTH);
@@ -249,10 +249,10 @@ begin
     TEXT_VALIGN_BOTTOM + TEXT_HALIGN_RIGHT);
 end;
 
-procedure TPriorityBar.Click(event :TMouseEvent);
+procedure TPriorityBar.Click(event: TMouseEvent);
 var
-  ax :single;
-  val :TPriorityLevel;
+  ax: single;
+  val: TPriorityLevel;
 begin
   ax := (mouseX - X) / W;
   if ax < 0.4 then
@@ -262,8 +262,8 @@ begin
   ApplyValue(val);
 end;
 
-constructor TPriorityBar.Create(aX, aY, aW, aH :single; aowner :TPrioritiesWindow;
-  atyp :TPriorityType; aindex :integer);
+constructor TPriorityBar.Create(aX, aY, aW, aH: single; aowner: TPrioritiesWindow;
+  atyp: TPriorityType; aindex: integer);
 begin
   inherited Create(ax, ay, aw, ah);
   owner := aowner;
@@ -275,7 +275,7 @@ end;
 
 procedure TSelectResearchButton.Draw;
 var
-  st :TInvertState;
+  st: TInvertState;
 begin
   if res = ResearchPriority then
     st := Active
@@ -286,14 +286,14 @@ begin
   StdButton(RESEARCH_NAMES[res], X, Y, W, H, st);
 end;
 
-procedure TSelectResearchButton.Click(event :TMouseEvent);
+procedure TSelectResearchButton.Click(event: TMouseEvent);
 begin
   owner.cursor := res;
   ResearchPriority := res;
 end;
 
-constructor TSelectResearchButton.Create(aX, aY, aW, aH :single;
-  aowner :TResearchWindow; ares :THumanResearch);
+constructor TSelectResearchButton.Create(aX, aY, aW, aH: single;
+  aowner: TResearchWindow; ares: THumanResearch);
 begin
   inherited Create(ax, ay, aw, ah);
   owner := aowner;
@@ -302,7 +302,7 @@ end;
 
 { TBattleWindow }
 
-function TBattleWindow.ProcessClick(x, y :integer; event :TMouseEvent) :boolean;
+function TBattleWindow.ProcessClick(x, y: integer; event: TMouseEvent): boolean;
 begin
   Result := True;
 end;
@@ -310,11 +310,11 @@ end;
 procedure TBattleWindow.Draw;
 
 
-  procedure DrawShip(ship :THumanShip; ax, ay :single);
+  procedure DrawShip(ship: THumanShip; ax, ay: single);
   var
-    dmg :single;
-    basex, basey, scy, scx :single;
-    n :integer;
+    dmg: single;
+    basex, basey, scy, scx: single;
+    n: integer;
   begin
     basex := SCREENX * (0.5 - MODAL_WIDTH / 2 + ax * MODAL_WIDTH);
     basey := SCREENY * (0.5 - MODAL_HEIGHT / 2 + ay * MODAL_HEIGHT);
@@ -337,11 +337,11 @@ procedure TBattleWindow.Draw;
       Format('%d%% damaged', [Trunc(dmg * 100)]), 255, Black);
   end;
 
-  procedure DrawAlienShip(ship :TAlienShip; ax, ay :single);
+  procedure DrawAlienShip(ship: TAlienShip; ax, ay: single);
   var
-    basex, basey, scy :single;
-    flt :TAlienFleetData;
-    n :integer;
+    basex, basey, scy: single;
+    flt: TAlienFleetData;
+    n: integer;
   begin
     flt := PlayerSys.AlienFleet;
     n := TotalCount(flt[ship]);
@@ -394,8 +394,8 @@ end;
 
 procedure TLogWindow.Draw;
 var
-  s :string;
-  i :integer;
+  s: string;
+  i: integer;
 begin
   inherited Draw;
   s := '';
@@ -407,7 +407,7 @@ begin
     0.7, 'Logbook records:', s);
 end;
 
-function TLogWindow.ProcessClick(x, y :integer; event :TMouseEvent) :boolean;
+function TLogWindow.ProcessClick(x, y: integer; event: TMouseEvent): boolean;
 begin
   if GameOver then
   begin
@@ -439,9 +439,9 @@ end;
 
 procedure TPrioritiesWindow.Draw;
 
-  procedure draw_label(x, y :single; Text :string);
+  procedure draw_label(x, y: single; Text: string);
   var
-    BASE_X, BASE_Y :single;
+    BASE_X, BASE_Y: single;
   begin
     BASE_X := (0.5 - MODAL_WIDTH / 2) * SCREENX;
     BASE_Y := (0.5 - MODAL_HEIGHT / 2) * SCREENY;
@@ -458,9 +458,9 @@ end;
 
 constructor TPrioritiesWindow.Create;
 var
-  i :integer;
-  ship :THumanShip;
-  cx, cy, hg, wd :single;
+  i: integer;
+  ship: THumanShip;
+  cx, cy, hg, wd: single;
 begin
   cy := 0.5 - MODAL_HEIGHT / 2 + 0.01;
   cx := 0.5 - MODAL_WIDTH / 2 + 0.02;
@@ -489,7 +489,7 @@ end;
 
 procedure TPrioritiesWindow.Close;
 var
-  pt :TPriorityLevel;
+  pt: TPriorityLevel;
   ship: THumanShip;
 begin
   pt := freepoints(PlayerSys.Priorities);
@@ -503,8 +503,8 @@ end;
 
 procedure TResearchWindow.Draw;
 var
-  bt :TButton;
-  descx, descy, wd, hg :single;
+  bt: TButton;
+  descx, descy, wd, hg: single;
 begin
   inherited Draw;
   for bt in Buttons do
@@ -522,8 +522,8 @@ end;
 
 constructor TResearchWindow.Create;
 var
-  res :THumanResearch;
-  cx, cy, hg, wd :single;
+  res: THumanResearch;
+  cx, cy, hg, wd: single;
 begin
   cy := 0.5 - MODAL_HEIGHT / 2 + 0.02;
   cx := 0.5 - MODAL_WIDTH / 2 + 0.02;
@@ -538,9 +538,9 @@ end;
 
 { TGameWindow }
 
-function TGameWindow.ProcessClick(x, y :integer; event :TMouseEvent) :boolean;
+function TGameWindow.ProcessClick(x, y: integer; event: TMouseEvent): boolean;
 var
-  inner, closebt :boolean;
+  inner, closebt: boolean;
 begin
   inner := InRect(x / SCREENX, y / SCREENY, 0.5 - MODAL_WIDTH / 2,
     0.5 - MODAL_HEIGHT / 2, MODAL_WIDTH, MODAL_HEIGHT);
@@ -572,7 +572,7 @@ begin
 
 end;
 
-procedure TGameWindow.addbutton(bt :TButton);
+procedure TGameWindow.addbutton(bt: TButton);
 begin
   SetLength(Buttons, Length(Buttons) + 1);
   Buttons[High(Buttons)] := bt;
@@ -580,7 +580,7 @@ end;
 
 { TActionButton }
 
-function TActionButton.Visible :boolean;
+function TActionButton.Visible: boolean;
 begin
   Result := index < Length(ActiveActions);
 end;
@@ -598,19 +598,19 @@ begin
     StdButton(MyAction.Text, X, Y, W, H, Inactive);
 end;
 
-procedure TActionButton.Click(event :TMouseEvent);
+procedure TActionButton.Click(event: TMouseEvent);
 begin
   if MyAction.Allowed then
     MyAction.Execute;
 end;
 
-constructor TActionButton.Create(aX, aY, aW, aH :single; aindex :integer);
+constructor TActionButton.Create(aX, aY, aW, aH: single; aindex: integer);
 begin
   inherited Create(ax, ay, aw, ah);
   index := aindex;
 end;
 
-function TActionButton.MyAction :TAction;
+function TActionButton.MyAction: TAction;
 begin
   Result := ActiveActions[index];
 end;
@@ -622,22 +622,22 @@ begin
   StdButton(MyDateToStr(StarDate), X, Y, W, H, Inactive);
 end;
 
-procedure TDateButton.Click(event :TMouseEvent);
+procedure TDateButton.Click(event: TMouseEvent);
 begin
 
 end;
 
 procedure InitUI;
 
-  procedure add(bt :TButton);
+  procedure add(bt: TButton);
   begin
     SetLength(IngameButtons, Length(IngameButtons) + 1);
     IngameButtons[High(IngameButtons)] := bt;
   end;
 
 var
-  i :integer;
-  cx, cy :single;
+  i: integer;
+  cx, cy: single;
 begin
   //game buttons: date and actions
   add(TDateButton.Create(0.40, 0.01, 0.2, 0.06));
