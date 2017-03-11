@@ -264,6 +264,7 @@ begin
     PlayerSys.LogEvent('All planets of system wasturned into sort of grey goo.');
     LogEventRaw('   perhaps it was the nanoreplicating weapon.');
     FirstBurned := False;
+    ModalWindow := LogWindow;
   end;
   ScrollToCenter(PlayerSys.X, PlayerSys.Y);
 end;

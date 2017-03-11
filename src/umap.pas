@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, uglobal, uGameTypes;
 
-{.$DEFINE DEBUGDRAW}
+{$DEFINE DEBUGDRAW}
 
 type
 
@@ -666,10 +666,16 @@ begin
         target := RandomLink
       else
       begin
-        target := AlienArmy.waypoints[AlienArmy.nwaypoints];
-        Dec(AlienArmy.nwaypoints);
         if AlienArmy.nwaypoints = 0 then
+        begin
           AlienArmy.State := Walking;
+          target := RandomLink
+        end
+        else
+        begin
+          target := AlienArmy.waypoints[AlienArmy.nwaypoints];
+          Dec(AlienArmy.nwaypoints);
+        end;
       end;
       LogEventRaw('Returning from ' + Name + ' to ' + target.Name);
       if target.AlienArmyNext.State < AlienArmy.State then
