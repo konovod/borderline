@@ -596,7 +596,6 @@ var
   typ: TAlienResearch;
   i: integer;
   target: TSystem;
-  army: TAlienFleetData;
   lv: TPowerLevel;
 begin
   for i := 0 to length(Links)-1 do
@@ -651,26 +650,37 @@ begin
           if AlienArmy.nwaypoints = 0 then AlienArmy.State := Walking;
         end;
         LogEventRaw('Returning from '+Name+' to '+target.Name);
-        FillChar(army, SizeOf(army), 0);
+        if target.AlienArmyNext.State < AlienArmy.State then
+          target.AlienArmyNext := AlienArmy;
+        AlienArmy.State := None;
         for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
-        begin
-          Move(AlienFleet[typ], army[typ], sizeof(TSquadron));
-          FillChar(AlienFleet[typ], SizeOf(TSquadron), 0);
-        end;
+          for lv in TPowerLevel do
+          begin
+            target.AlienFleetNext[typ][lv] := target.AlienFleetNext[typ][lv] + AlienFleet[typ][lv];
+            AlienFleet[typ][lv] := 0;
+          end;
         if target.PopStatus = Own then
         begin
-          //TODO: invasion
-          LogEventRaw('TEST');
-        end
-        else
-        begin
-          if target.AlienArmyNext.State < AlienArmy.State then
-            target.AlienArmyNext := AlienArmy;
-          AlienArmy.State := None;
+          //move from next
+          target.AlienArmyNext.State := None;
           for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
             for lv in TPowerLevel do
-              target.AlienFleetNext[typ][lv] := target.AlienFleetNext[typ][lv] + army[typ][lv];
-        end;
+            begin
+              target.AlienFleet[typ][lv] := target.AlienFleetNext[typ][lv];
+              target.AlienFleetNext[typ][lv] := 0;
+            end;
+          //true means all ships was destroyed
+          if TriggerMines(False, Self, target) then exit;
+          if target = PlayerSys then
+          begin
+            //TODO: visible invasion
+            LogEventRaw('TEST');
+          end
+          else
+          begin
+            AutoInvasionBattle;
+          end;
+        end
       end;
   end;
 end;

@@ -30,6 +30,7 @@ procedure BattleLog(s: string);
 function BattleJournal: string;
 
 procedure DoRetreat(total: boolean);
+procedure AutoInvasionBattle(sys: TSystem);
 
 implementation
 
@@ -276,16 +277,18 @@ end;
 function TriggerMines(Human: boolean; FromSys, ToSys: TSystem): Boolean;
 var
   countered, dmg, applied: single;
-  i, n: integer;
+  i, n, index: integer;
   lv: TPowerLevel;
 begin
   Result := False;
   if human and (ToSys.PopStatus <> Alien) then exit;
+  if not human and (ToSys.PopStatus <> Own) then exit;
   dmg := 0;
   for i := 0 to Length(ToSys.Links)-1 do
     if ToSys.Links[i] = FromSys then
     begin
       dmg := CalcPower(ToSys.Mines[i]);
+      index := i;
       break;
     end;
   if dmg <= 0 then exit;
@@ -306,11 +309,44 @@ begin
         LogEventRaw('    GAME OVER');
         GameIsOver;
         exit
-      end;
+      end
     end;
+    for lv in TPowerLevel do
+      ToSys.Mines[i][lv] := 0;
+  end
+  else
+  begin
+    //here result is true only if army is destroyed
+    countered := CalcPower(ToSys.AlienFleet[AlienMinesweeper]);
+    dmg := dmg - countered;
+    if dmg > 0 then
+    begin
+      applied := DamageHuman(dmg, ALL_HUMAN_SHIPS, false, True);
+      if applied < dmg-0.001 then
+      begin
+        //army was cleaned by mines
+        Result := True;
+        //now remove random mines
+        while applied > 0.001 do
+        begin
+          lv := random(MAX_POWER_LEVEL)+1;
+          if ToSys.Mines[index][lv] > 0 then
+          begin
+            applied := applied - power(lv, K_LVL);
+            dec(ToSys.Mines[index][lv]);
+          end
+        end;
+        exit;
+      end
+      else
+      begin
+        //army surpassed mines
+        Result := False;
+      end
+    end;
+    for lv in TPowerLevel do
+      ToSys.Mines[i][lv] := 0;
   end;
-  for lv in TPowerLevel do
-    ToSys.Mines[i][lv] := 0;
 end;
 
 procedure StartBattle(ground: boolean);
@@ -479,6 +515,13 @@ begin
   SetLength(s, Length(s)-1);
   Result := s
 end;
+
+
+procedure AutoInvasionBattle(sys: TSystem);
+begin
+  Do
+end;
+
 
 end.
 
