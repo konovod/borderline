@@ -65,6 +65,7 @@ type
     procedure ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
     procedure SetResearch(res: TAlienResearch; n: integer);
     function RandomLink(allowed: TPopulationStates = [Own, Alien, Colonizable, WipedOut]): TSystem;
+    procedure WipeOut;
   end;
 
   { TMap }
@@ -662,7 +663,6 @@ begin
         if target.PopStatus = Own then
         begin
           //move from next
-          target.AlienArmyNext.State := None;
           for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
             for lv in TPowerLevel do
             begin
@@ -670,7 +670,11 @@ begin
               target.AlienFleetNext[typ][lv] := 0;
             end;
           //true means all ships was destroyed
-          if TriggerMines(False, Self, target) then exit;
+          if TriggerMines(False, Self, target) then
+          begin
+            target.AlienArmyNext.State := None;
+            exit;
+          end;
           if target = PlayerSys then
           begin
             //TODO: visible invasion
@@ -678,7 +682,16 @@ begin
           end
           else
           begin
-            AutoInvasionBattle;
+            if AutoInvasionBattle(target) then
+            begin
+              //human won
+              target.AlienArmyNext.State := None;
+            end
+            else
+            begin
+              //human lost
+              target.WipeOut;
+            end;
           end;
         end
       end;
@@ -787,6 +800,15 @@ begin
     Result := nil
   else
     Result := list[random(Length(list))];
+end;
+
+procedure TSystem.WipeOut;
+begin
+  PopStatus := WipedOut;
+  SetLength(Mines, 0);
+  SetLength(Mines, Length(Links));
+  FillChar(HumanResearch, SizeOf(HumanResearch), 0);
+  FillChar(Ships, SizeOf(Ships), 0);
 end;
 
 

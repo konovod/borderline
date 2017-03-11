@@ -15,6 +15,8 @@ type
 
   TBattleResult = (InCombat, SpaceWon, SpaceLost, GroundWon, GroundLost);
 
+  TLogMode = (lBattle, lGlobal, lSilent);
+
 var
   BattleDistance: TBattleDistance;
   Retreating: Boolean;
@@ -30,7 +32,7 @@ procedure BattleLog(s: string);
 function BattleJournal: string;
 
 procedure DoRetreat(total: boolean);
-procedure AutoInvasionBattle(sys: TSystem);
+function AutoInvasionBattle(sys: TSystem): Boolean;
 
 implementation
 
@@ -85,7 +87,7 @@ type
     size: Single;
   end;
 
-function DamageHuman(applyvalue: single; typs: THumanShips; always_fatal: boolean;log_total: boolean = false): single;
+function DamageHuman(applyvalue: single; typs: THumanShips; always_fatal: boolean;log_mode: TLogMode = lBattle): single;
 var
   groups: array of TDamageGroup;
   grp: TDamageGroup;
@@ -183,23 +185,25 @@ begin
     if -logdamaged[ship]-lognormal[ship] > 0 then
     begin
       s := Format('    %d %ss destroyed', [-logdamaged[ship]-lognormal[ship], SHIP_NAMES[ship]]);
-      if log_total then
-        LogEventRaw(s)
-      else
-        BattleLog(s);
+      case log_mode of
+        lGlobal:LogEventRaw(s);
+        lBattle: BattleLog(s);
+        else ;
+      end;
     end;
     if logdamaged[ship] > 0 then
     begin
       s := Format('    %d %ss damaged', [logdamaged[ship], SHIP_NAMES[ship]]);
-      if log_total then
-        LogEventRaw(s)
-      else
-        BattleLog(s);
+      case log_mode of
+        lGlobal:LogEventRaw(s);
+        lBattle: BattleLog(s);
+        else ;
+      end;
     end;
   end;
 end;
 
-function DamageAlien(applyvalue: single; typs: TAlienShips): single;
+function DamageAlien(applyvalue: single; typs: TAlienShips; var fleet: TAlienFleetData): single;
 var
   groups: array of TDamageGroup;
   grp: TDamageGroup;
@@ -302,7 +306,7 @@ begin
     dmg := dmg - countered;
     if dmg > 0 then
     begin
-      applied := DamageHuman(dmg, ALL_HUMAN_SHIPS, false, True);
+      applied := DamageHuman(dmg, ALL_HUMAN_SHIPS, false, lGlobal);
       if applied < dmg-0.001 then
       begin
         LogEventRaw('    Commander ship was destroyed');
@@ -321,7 +325,7 @@ begin
     dmg := dmg - countered;
     if dmg > 0 then
     begin
-      applied := DamageHuman(dmg, ALL_HUMAN_SHIPS, false, True);
+      applied := DamageAlien(dmg, ALL_ALIEN_SHIPS, ToSys.AlienFleet);
       if applied < dmg-0.001 then
       begin
         //army was cleaned by mines
@@ -387,7 +391,7 @@ begin
   dmg := random*(CalcPower(PlayerFleet[who]) - CalcPower(PlayerDamaged[who])) * HUMAN_DAMAGE_K;
   if dmg <= 0 then exit;
   BattleLog(SHIP_NAMES[who]+'s opens fire');
-  dmg := DamageAlien(dmg, targets);
+  dmg := DamageAlien(dmg, targets, PlayerSys.AlienFleet);
   if who = Brander then
     DamageHuman(dmg, [Brander], true);
 end;
@@ -517,9 +521,11 @@ begin
 end;
 
 
-procedure AutoInvasionBattle(sys: TSystem);
+function AutoInvasionBattle(sys: TSystem): Boolean;
+var
+  powera, powerh: single;
 begin
-  Do
+  Result := False;
 end;
 
 
