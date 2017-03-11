@@ -19,8 +19,9 @@ type
 
   TSystem = class;
   TAlienArmy = record
-    State, StateNext: TAlienArmyState;
-    waypoints: array of TSystem;
+    State: TAlienArmyState;
+    nwaypoints: integer;
+    waypoints: array[1..100] of TSystem;
   end;
 
   { TSystem }
@@ -41,7 +42,7 @@ type
     Ships: TFleetData;
     Priorities: TPriorities;
     SeenMines, Mines: TMinesData;
-    AlienArmy: TAlienArmy;
+    AlienArmy, AlienArmyNext: TAlienArmy;
     procedure InitGameStats;
     procedure DefaultPriorities;
     procedure ShowInfo(aX, aY: single);
@@ -535,10 +536,10 @@ begin
       AlienFleetNext[typ][lv] := 0;
     end;
   end;
-  if AlienArmy.StateNext <> None then
+  if AlienArmyNext.State > AlienArmy.State then
   begin
-    AlienArmy.State := AlienArmy.StateNext;
-    AlienArmy.StateNext := None;
+    AlienArmy := AlienArmyNext;
+    AlienArmyNext.State := None;
   end;
 end;
 
@@ -612,16 +613,44 @@ begin
   //4. armies navigation
   case AlienArmy.State of
     None:;
+    Fleeing:
+    begin
+      target := RandomLink([Alien]);
+      if target = nil then
+        target := RandomLink([Alien, Colonizable, WipedOut]);
+      if (target = nil) or (target = PlayerSys) then
+      begin
+        AlienArmy.State := Returning;
+        LogEventRaw('Returning from '+Name);
+        exit;
+      end;
+      LogEventRaw('Fleeing to '+target.Name);
+      inc(AlienArmy.nwaypoints);
+      AlienArmy.waypoints[AlienArmy.nwaypoints] := Self;
+      if (random < 0.05) or (AlienArmy.nwaypoints > 20) then
+        AlienArmy.State := Returning;
+      //now jump to target
+      if target.AlienArmyNext.State < AlienArmy.State then
+        target.AlienArmyNext := AlienArmy;
+      AlienArmy.State := None;
+      for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
+        for lv in TPowerLevel do
+        begin
+          target.AlienFleetNext[typ][lv] := target.AlienFleetNext[typ][lv] + AlienFleet[typ][lv];
+          AlienFleet[typ][lv] := 0;
+        end;
+    end;
     Walking, Returning:
       begin
         if AlienArmy.State = Walking then
           target := RandomLink
         else
         begin
-          target := AlienArmy.waypoints[Length(AlienArmy.waypoints)-1];
-          SetLength(AlienArmy.waypoints, Length(AlienArmy.waypoints)-1);
-          if Length(AlienArmy.waypoints) = 0 then AlienArmy.State := Walking;
+          target := AlienArmy.waypoints[AlienArmy.nwaypoints];
+          Dec(AlienArmy.nwaypoints);
+          if AlienArmy.nwaypoints = 0 then AlienArmy.State := Walking;
         end;
+        LogEventRaw('Returning from '+Name+' to '+target.Name);
         FillChar(army, SizeOf(army), 0);
         for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
         begin
@@ -629,11 +658,14 @@ begin
           FillChar(AlienFleet[typ], SizeOf(TSquadron), 0);
         end;
         if target.PopStatus = Own then
+        begin
           //TODO: invasion
+          LogEventRaw('TEST');
+        end
         else
         begin
-          if target.AlienArmy.StateNext < AlienArmy.State then
-            target.AlienArmy.StateNext := AlienArmy.State;
+          if target.AlienArmyNext.State < AlienArmy.State then
+            target.AlienArmyNext := AlienArmy;
           AlienArmy.State := None;
           for typ in [AlienCruiser, AlienBattleship, AlienMinesweeper] do
             for lv in TPowerLevel do
@@ -663,6 +695,8 @@ begin
   ContactHuman(HumanMarine);
   ClearAliens;
   LogEvent('System was captured by ground forces, alien population wiped out, system can be colonized');
+  AlienArmy.nwaypoints := 0;
+  AlienArmy.State := Fleeing;
   PopStatus := Colonizable;
   SeenPopStatus := Colonizable;
 end;
@@ -684,7 +718,7 @@ begin
   FillChar(AlienFleet, SizeOf(AlienFleet), 0);
   SetLength(Mines, 0);
   SetLength(Mines, length(Links));
-  AlienArmy.State := None;
+  //AlienArmy.State := None;
 end;
 
 procedure TSystem.ContactHuman(sit: TContactSituation; MineFromSys: TSystem = nil);
