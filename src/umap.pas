@@ -95,8 +95,18 @@ var
   it: THumanResearch;
 begin
   Result := '';
-  for it in THumanResearchLevel do
+  for it in THumanResearch do
     Result := Result+RESEARCH_NAMES[it][1]+IntToStr(res[it])+',';
+  SetLength(Result, Length(Result)-1);
+end;
+
+function ShortAlienResearchList(res: TAlienResearchLevel): string;
+var
+  it: TAlienResearch;
+begin
+  Result := '';
+  for it in TAlienResearch do
+    Result := Result+ALIEN_SHIP_NAMES[it][1]+IntToStr(res[it])+',';
   SetLength(Result, Length(Result)-1);
 end;
 
@@ -198,7 +208,7 @@ var
   lv: TPowerLevel;
 begin
   Result := 0;
-  for lv := High(TPowerLevel) to Low(TPowerLevel) do
+  for lv := High(TPowerLevel) downto Low(TPowerLevel) do
     if sqd[lv] > 0 then
     begin
       Result := lv;
@@ -360,6 +370,11 @@ begin
       text := text+#10+'Research: '+ShortResearchList(SeenHumanResearch);
       text := text+#10+'Minefields power:'#10+LongMinesList(Self, SeenMines);
     end;
+
+    //debug
+    text := text+#10+'Alien:'+ShortAlienResearchList(AlienResearch);
+    text := text+#10+'Alien max:'+ShortAlienResearchList(AlienResearchMax);
+
   end;
   DrawFormattedText(aX+10, aY+10, SYSTEMINFO_WIDTH*SCREENX-20,SYSTEMINFO_HEIGHT*SCREENY-20, caption, text);
 end;
@@ -579,6 +594,7 @@ end;
 
 procedure TSystem.Capture;
 begin
+  ContactHuman(HumanMarine);
   ClearAliens;
   LogEvent('System was captured by ground forces, alien population wiped out, system can be colonized');
   PopStatus := Colonizable;
@@ -636,6 +652,7 @@ end;
 
 procedure TSystem.SetResearch(res: TAlienResearch; n: integer);
 begin
+  inc(n, ALIEN_OVERSEE);
   if n > MAX_RES_LEVEL then
     n := MAX_RES_LEVEL;
   if AlienResearchMax[res] < n then
