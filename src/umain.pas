@@ -19,7 +19,6 @@ uses
   zgl_ini,
   zgl_main,
   zgl_keyboard,
-  zgl_sprite_2d,
   zgl_primitives_2d,
   zgl_particles_2d,
   zgl_resources,
@@ -79,7 +78,7 @@ var
 
 implementation
 
-uses uglobal, uUI, uGameUI, ugameactions, math;
+uses uglobal, uUI, uGameUI, ugameactions;
 
 procedure DoKeyUp(key: Byte);
 begin
@@ -132,8 +131,6 @@ end;
 
 
 procedure LoadAll(datadir: string);
-var
-  i: integer;
 begin
   randomize;
   log_add('Seed: '+u_IntToStr(RandSeed));

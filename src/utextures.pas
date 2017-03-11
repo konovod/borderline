@@ -39,7 +39,7 @@ type
 var
   TextureDataDir: string;
 implementation
-uses zgl_sprite_2d, uglobal, math;
+uses zgl_sprite_2d;
 
 var
   AllTextures: array of TAbstractTexture;
@@ -98,8 +98,10 @@ begin
 end;
 
 procedure ReloadAllTextures(DataDir: string);
+{$ifdef cpuarm}
 var
   tex: TAbstractTexture;
+{$endif}
 begin
   {$ifdef cpuarm}
   for tex in AllTextures do

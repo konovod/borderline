@@ -2,7 +2,7 @@ unit uUI;
 
 interface
 
-uses SysUtils, Math, zgl_primitives_2d, zgl_text, zgl_math_2d, zgl_sprite_2d;
+uses SysUtils, zgl_primitives_2d, zgl_text, zgl_math_2d;
 
 
 procedure DrawUI;
@@ -47,7 +47,7 @@ procedure StdButton(Text: string; X,Y,W,H: Single; State: TInvertState = Normal)
 procedure ColoredButton(Text: string; X,Y,W,H: Single; BGColor, TextColor: LongWord);
 implementation
 
-uses umain, uglobal, ugame, uGameUI;
+uses uglobal;
 
 
 function Buttons: TButtonsArray;

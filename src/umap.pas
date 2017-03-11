@@ -153,7 +153,7 @@ end;
 
 function LongMinesList(sys: TSystem; mines: TMinesData): string;
 var
-  i, n: integer;
+  i: integer;
 begin
   Result := '';
   for i := 0 to length(sys.Links)-1 do
@@ -167,7 +167,6 @@ end;
 function CalcPower(sqd: TSquadron): Single;
 var
   lv: TPowerLevel;
-  n: integer;
 begin
   Result := 0;
   for lv in TPowerLevel do
@@ -207,8 +206,6 @@ begin
 end;
 
 function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
-var
-  fract: single;
 begin
   Result := Trunc(prio/100*max);
   if random < frac(prio/100*max) then
@@ -427,7 +424,6 @@ end;
 
 procedure TSystem.EnterOwn;
 var
-  sys: TSystem;
   ship: THumanShip;
   n1, n2: integer;
   lv: TPowerLevel;

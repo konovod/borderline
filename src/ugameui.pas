@@ -321,8 +321,7 @@ end;
 
 procedure DrawAlienShip(ship: TAlienShip; ax, ay: single);
 var
-  dmg: single;
-  basex, basey, scy, scx: single;
+  basex, basey, scy: single;
   flt: TAlienFleetData;
   n: integer;
 begin
@@ -331,7 +330,6 @@ begin
   if n = 0 then exit;
   basex := SCREENX*(0.5-MODAL_WIDTH/2 + ax*MODAL_WIDTH);
   basey := SCREENY*(0.5-MODAL_HEIGHT/2 + ay*MODAL_HEIGHT);
-  scx := SCREENX*MODAL_WIDTH;
   scy := SCREENY*MODAL_HEIGHT;
   text_DrawEx(fntMain, basex, basey,1,0,
     ALIEN_SHIP_NAMES[ship]+'s '+IntToStr(n), 255, Red);

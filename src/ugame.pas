@@ -5,8 +5,7 @@ unit ugame;
 interface
 
 uses
-  Classes, SysUtils, uglobal, uTextures, uMap, zgl_tiles_2d, zgl_primitives_2d,
-  zgl_sprite_2d, zgl_textures, zgl_fx, zgl_particles_2d, uGameTypes;
+  Classes, SysUtils, uglobal, uTextures, uMap, zgl_textures, zgl_fx, zgl_particles_2d, uGameTypes;
 
 
 procedure NewGame;
@@ -29,7 +28,7 @@ var
 procedure NextTurn;
 implementation
 
-uses Math, uMain, uNameGen, zgl_text, zgl_mouse;
+uses uMain, uNameGen, zgl_text, zgl_mouse;
 
 procedure NewGame;
 begin
@@ -84,7 +83,6 @@ end;
 
 procedure InitPlayer;
 var
-  ship: THumanShip;
   res: THumanResearch;
 begin
   PlayerFleet[Cruiser][1] := 5;

@@ -253,7 +253,7 @@ end;
 
 procedure Generate(Map: TMap);
 var
-  i, j,t, n: integer;
+  i, j, n: integer;
   n1, n2, n3: Integer;
   TRI: TDelaunay;
 
