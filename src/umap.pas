@@ -14,6 +14,14 @@ type
   TSystemState = (Hidden, Found, Visited, Current);
   TPopulationState = (Own, Colonizable, Alien, WipedOut);
 
+  TAlienArmyState = (None, Walking, Fleeing, Returning);
+
+  TSystem = class;
+  TAlienArmy = record
+    State: TAlienArmyState;
+    waypoints: array of TSystem;
+  end;
+
   { TSystem }
 
   TSystem = class
@@ -32,6 +40,7 @@ type
     Ships: TFleetData;
     Priorities: TPriorities;
     SeenMines, Mines: TMinesData;
+    AlienArmy: TAlienArmy;
     procedure InitGameStats;
     procedure DefaultPriorities;
     procedure ShowInfo(aX, aY: single);
@@ -335,10 +344,9 @@ begin
   for res in THumanResearch do
     HumanResearch[res] := 1;
   AlienResearch[AlienBattleship] := 1;
+  AlienResearch[AlienCruiser] := 1;
   AlienResearch[AlienMines] := 1;
-  //AlienResearch[AlienCruiser] := 1;
-  //AlienResearch[AlienCruiser] := 1;
-  //AlienResearch[AlienOrbital] := 10;
+  AlienResearch[AlienOrbital] := 1;
   DefaultPriorities;
 end;
 
@@ -554,6 +562,13 @@ begin
       break;
     end;
   //4. armies navigation
+  case AlienArmy.State of
+    None:;
+    Walking:
+      begin
+
+      end;
+  end;
   //TODO
 end;
 

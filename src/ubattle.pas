@@ -421,12 +421,15 @@ begin
     if BattleDistance = BotsLanding  then
     begin
       //ground combat
-      BattleLog('Troops continue invasion');
       if random < 0.3 then
       begin
+        BattleLog('Troops conquered the planet');
+        BattleLog('Xenociding population');
         //battle won
         PlayerSys.Capture;
       end
+      else
+        BattleLog('Troops continue invasion');
     end
     else if (BattleDistance = BrandersMelee) and AlienExists([AlienBattleship, AlienCruiser]) then
     begin
