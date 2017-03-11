@@ -123,7 +123,7 @@ end;
 
 function TAssaultAction.Text: String;
 begin
-  Result := 'Attack'
+  Result := 'Capture'
 end;
 
 { TColonizeAction }

@@ -135,7 +135,9 @@ begin
     begin
       x := random(n);
       for i := 0 to Length(groups)-1 do
-        if x < groups[i].size then
+        if x >= groups[i].size then
+          dec(x, groups[i].size)
+        else
         begin
           grp := groups[i];
           applyvalue := applyvalue - grp.lvl;
@@ -337,7 +339,10 @@ begin
     end;
     BrandersMelee:
     begin
-      DoAlienFireStep(AlienCruiser, [Brander]);
+      if HumanExists([Brander]) then
+        DoAlienFireStep(AlienCruiser, [Brander])
+      else
+        DoAlienFireStep(AlienCruiser, [Brander, Cruiser]);
       DoAlienFireStep(AlienBattleship, [Cruiser]);
       DoHumanFireStep(Cruiser, [AlienCruiser, AlienBattleship]);
       DoHumanFireStep(Brander, [AlienCruiser, AlienBattleship]);

@@ -334,8 +334,10 @@ begin
   SetLength(Priorities.Mines, Length(Links));
   for res in THumanResearch do
     HumanResearch[res] := 1;
-  AlienResearch[AlienBattleship] := 5;
-  AlienResearch[AlienCruiser] := 5;
+  //AlienResearch[AlienBattleship] := 5;
+  //AlienResearch[AlienCruiser] := 5;
+  AlienResearch[AlienCruiser] := 1;
+  AlienResearch[AlienOrbital] := 10;
   DefaultPriorities;
 end;
 
