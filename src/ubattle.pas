@@ -231,7 +231,9 @@ begin
     begin
       x := random(n);
       for i := 0 to Length(groups)-1 do
-        if x < groups[i].size then
+        if x >= groups[i].size then
+          dec(x, groups[i].size)
+        else
         begin
           grp := groups[i];
           applyvalue := applyvalue - grp.size;
