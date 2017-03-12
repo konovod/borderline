@@ -867,7 +867,7 @@ begin
     repeat
       inc(tries);
       StoryProphecySystem := Map.Systems[random(Length(Map.Systems))];
-    until (StoryProphecySystem.State = Found) and ((tries < 10000) or not Linked(StoryProphecySystem));
+    until (StoryProphecySystem.State = Found) and ((tries > 100000) or not Linked(StoryProphecySystem));
     LogEventRaw('YOUR WAR WILL END AT '+StoryProphecySystem.Name);
     LogEventRaw('-----------------------------------------------------');
     StoryStage := Succ(StoryStage);
