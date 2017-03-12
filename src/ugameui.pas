@@ -683,12 +683,12 @@ begin
   for i := 1 to 15 do
   begin
     add(TActionButton.Create(TOPPANEL_LEFT + cx, cy, ACTIONBTN_WIDTH -
-      0.02, 0.05, i - 1));
+      0.02, ACTIONBTN_HEIGHT, i - 1));
     cx := cx + ACTIONBTN_WIDTH;
     if cx > TOPPANEL_WIDTH - ACTIONBTN_WIDTH then
     begin
       cx := 0;
-      cy := cy + 0.07;
+      cy := cy + ACTIONBTN_HEIGHT+0.02;
     end;
   end;
   //modal windows:

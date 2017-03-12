@@ -27,11 +27,11 @@ begin
   file_OpenArchive( PAnsiChar( zgl_Get( DIRECTORY_APPLICATION ) ) );
   LoadSplash('assets/');
   file_CloseArchive();
-  res_BeginQueue(0);
+  //res_BeginQueue(0);
   file_OpenArchive( PAnsiChar( zgl_Get( DIRECTORY_APPLICATION ) ) );
   LoadAll('assets/');
   file_CloseArchive();
-  res_EndQueue;
+  //res_EndQueue;
   GameState := ThreadedLoading;
 end;
 

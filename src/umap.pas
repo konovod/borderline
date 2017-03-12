@@ -723,7 +723,7 @@ begin
             target.AlienFleetNext[typ][lv] := 0;
           end;
         //true means all ships was destroyed
-        if TriggerMines(False, Self, target) then
+        if TriggerMines(False, Self, target) or not AutoInvasionBattle(target) then
         begin
           target.AlienArmyNext.State := None;
           exit;
@@ -743,16 +743,8 @@ begin
         end
         else
         begin
-          if AutoInvasionBattle(target) then
-          begin
-            //human won
-            target.AlienArmyNext.State := None;
-          end
-          else
-          begin
             //human lost
             target.WipeOut;
-          end;
         end;
       end;
     end;

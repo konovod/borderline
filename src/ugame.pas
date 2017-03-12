@@ -59,7 +59,7 @@ end;
 
 procedure DrawGameUI;
 begin
-  DrawPanelUI(TOPPANEL_LEFT - 0.005, 0, TOPPANEL_WIDTH + 0.01, 0.26);
+  DrawPanelUI(TOPPANEL_LEFT - 0.005, 0, TOPPANEL_WIDTH + 0.01, TOPPANEL_HEIGHT);
   DrawPanelUI(1 - PLAYERINFO_WIDTH, PLAYERINFO_TOP, PLAYERINFO_WIDTH, PLAYERINFO_HEIGHT);
   DrawFormattedText(SCREENX * (1 - PLAYERINFO_WIDTH) + 10, SCREENY * PLAYERINFO_TOP + 10,
     SCREENX * PLAYERINFO_WIDTH, SCREENY * PLAYERINFO_HEIGHT,
@@ -72,7 +72,7 @@ var
   sys: TSystem;
 begin
   if InRect(mouse_x / SCREENX, mouse_y / SCREENY, TOPPANEL_LEFT -
-    0.005, 0, TOPPANEL_WIDTH + 0.01, 0.26) then
+    0.005, 0, TOPPANEL_WIDTH + 0.01, TOPPANEL_HEIGHT) then
     exit;
 
   sys := Map.FindSys(ax, ay);

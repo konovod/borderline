@@ -541,7 +541,7 @@ function AutoInvasionBattle(sys: TSystem): boolean;
 var
   powera, powerh: single;
 begin
-  Result := False;
+  Result := CalcPower(sys.AlienFleet[AlienCruiser])+CalcPower(sys.AlienFleet[AlienBattleship]) > 0;
 end;
 
 
