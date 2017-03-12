@@ -707,9 +707,9 @@ begin
         begin
           //invasion on player position
           target.WipeOut;
-          rescue := RandomLink([Own, Colonizable, WipedOut]);
+          rescue := target.RandomLink([Own, Colonizable, WipedOut]);
           if rescue = nil then
-            rescue := RandomLink;
+            rescue := target.RandomLink;
           target.LogEvent('Invasion fleet passed through the minefields');
           LogEventRaw('    they are spreading nanoreplicators');
           LogEventRaw('    you have nothing to stop them');
