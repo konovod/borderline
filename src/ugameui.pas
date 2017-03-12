@@ -33,6 +33,7 @@ type
     function ProcessClick(x, y: integer; event: TMouseEvent): boolean; override;
     procedure Draw; override;
     procedure Close; virtual;
+    procedure Process; virtual;
   private
     procedure addbutton(bt: TButton);
   end;
@@ -73,6 +74,7 @@ type
     function MyValue: TPriorityLevel;
     procedure ApplyValue(Value: TPriorityLevel);
     procedure Draw; override;
+    procedure Process;
     procedure Click(event: TMouseEvent); override;
     constructor Create(aX, aY, aW, aH: single; aowner: TPrioritiesWindow;
       atyp: TPriorityType; aindex: integer);
@@ -83,6 +85,7 @@ type
   TPrioritiesWindow = class(TGameWindow)
     procedure Draw; override;
     constructor Create;
+    procedure Process; override;
     procedure Close; override;
   end;
 
@@ -156,7 +159,9 @@ end;
 function TBattleDecisionButton.Visible: boolean;
 begin
   if positive then
-    Result := BattleResult in [InCombat, SpaceWon];
+    Result := BattleResult in [InCombat, SpaceWon]
+  else
+    Result := True;
 end;
 
 procedure TBattleDecisionButton.Click(event: TMouseEvent);
@@ -237,16 +242,24 @@ begin
   text_DrawInRectEx(fntMain, R, 1, 0, IntToStr(MyValue) + '%', 255,
     IntfText, TEXT_VALIGN_BOTTOM + TEXT_HALIGN_LEFT);
 
-  if mouse_Down(M_BLEFT) and InRect(mouseX, mouseY, R.X, R.Y, R.W, R.H) then
-    Click(LeftDown);
-
-
   R.X := X;
   R.Y := Y;
   R.W := W / 2;
   R.H := H;
   text_DrawInRectEx(fntMain, R, 0.8, 0, MyText + ': ', 255, IntfText,
     TEXT_VALIGN_BOTTOM + TEXT_HALIGN_RIGHT);
+end;
+
+procedure TPriorityBar.Process;
+var
+  R: zglTRect;
+begin
+  R.X := X + W / 2;
+  R.Y := Y;
+  R.W := W / 2;
+  R.H := H;
+  if mouse_Down(M_BLEFT) and InRect(mouseX, mouseY, R.X, R.Y, R.W, R.H) then
+    Click(LeftDown);
 end;
 
 procedure TPriorityBar.Click(event: TMouseEvent);
@@ -487,6 +500,16 @@ begin
   end;
 end;
 
+procedure TPrioritiesWindow.Process;
+var
+  btn: TButton;
+begin
+  inherited Process;
+  for btn in Buttons do
+    if btn is TPriorityBar then
+      TPriorityBar(btn).Process;
+end;
+
 procedure TPrioritiesWindow.Close;
 var
   pt: TPriorityLevel;
@@ -568,6 +591,11 @@ begin
 end;
 
 procedure TGameWindow.Close;
+begin
+
+end;
+
+procedure TGameWindow.Process;
 begin
 
 end;

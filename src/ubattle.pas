@@ -500,9 +500,9 @@ end;
 
 function BattleResult: TBattleResult;
 begin
-  if PlayerSys.PopStatus <> Alien then
+  {if PlayerSys.PopStatus <> Alien then
     Result := GroundWon
-  else if AlienExists([AlienBattleship, AlienCruiser]) and not
+  else} if AlienExists([AlienBattleship, AlienCruiser]) and not
     HumanExists([Cruiser, Brander]) then
     Result := SpaceLost
   else if AlienExists([AlienBattleship, AlienCruiser]) and

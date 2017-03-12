@@ -181,6 +181,8 @@ end;
 procedure ProcessTime;
 begin
   //show_None: TheMap.Update;
+  if ModalWindow <> nil then
+    TGameWindow(ModalWindow).Process;
 end;
 
 

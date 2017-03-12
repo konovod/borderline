@@ -84,6 +84,7 @@
       <Unit11>
         <Filename Value="ugameui.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="uGameUI"/>
       </Unit11>
       <Unit12>
         <Filename Value="umap.pas"/>

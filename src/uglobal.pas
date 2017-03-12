@@ -25,6 +25,8 @@ const
   SCREENX = 1280;
   SCREENY = 720;
 {$ELSE}
+//SCREENX = 1280;
+//SCREENY = 720;
   SCREENX = 1024;
   SCREENY = 700;
   //  SCREENY = 768;

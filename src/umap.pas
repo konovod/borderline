@@ -354,9 +354,9 @@ begin
   for res in THumanResearch do
     HumanResearch[res] := 1;
   AlienResearch[AlienBattleship] := 1;
-  AlienResearch[AlienCruiser] := 1;
-  AlienResearch[AlienMines] := 1;
-  AlienResearch[AlienOrbital] := 1;
+  //AlienResearch[AlienCruiser] := 1;
+  //AlienResearch[AlienMines] := 1;
+  //AlienResearch[AlienOrbital] := 1;
   DefaultPriorities;
 end;
 
