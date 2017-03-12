@@ -264,7 +264,7 @@ begin
   end;
   if (PlayerSys.PopStatus = WipedOut) and FirstBurned then
   begin
-    PlayerSys.LogEvent('All planets of system wasturned into sort of grey goo.');
+    PlayerSys.LogEvent('All planets of system was turned into sort of grey goo.');
     LogEventRaw('   perhaps it was the nanoreplicating weapon.');
     FirstBurned := False;
     ModalWindow := LogWindow;

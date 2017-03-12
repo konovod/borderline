@@ -731,7 +731,6 @@ begin
         if target = JumpTarget then
         begin
           //invasion on player position
-          target.WipeOut;
           rescue := target.RandomLink([Own, Colonizable, WipedOut]);
           if rescue = nil then
             rescue := target.RandomLink;
