@@ -116,7 +116,9 @@ begin
      (Map.CountByType(Own) = 0)then
   begin
     GameIsOver(LostByElimination);
-  end;
+  end
+  else if Map.CountByType(Alien) = 0 then
+    GameIsOver(WonByElimination);
 end;
 
 
