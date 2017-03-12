@@ -253,6 +253,7 @@ begin
   //earth
   map.Systems[0].AlienId := 0;
   map.Systems[0].PopStatus := Own;
+  map.Systems[0].VisitCounter := 1000;
   for sys in Map.Systems do
     sys.InitGameStats;
 end;

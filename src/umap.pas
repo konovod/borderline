@@ -44,6 +44,7 @@ type
     Priorities: TPriorities;
     SeenMines, Mines: TMinesData;
     AlienArmy, AlienArmyNext: TAlienArmy;
+    VisitCounter: Integer;
     procedure InitGameStats;
     procedure DefaultPriorities;
     procedure ShowInfo(aX, aY: single);
@@ -432,7 +433,9 @@ end;
 
 function TSystem.Color: zglColor;
 begin
-  if VisitTime = 0 then
+  if StoryProphecySystem = Self then
+    Result := Violet
+  else if VisitTime = 0 then
     Result := Black
   else
     case SeenPopStatus of
@@ -504,6 +507,53 @@ begin
   SetLength(SeenMines, Length(SeenMines));
   SeenHumanResearch := HumanResearch;
   SeenPopStatus := PopStatus;
+
+  if (StoryStage = BeforeLove) and (PopStatus = Own) and (VisitCounter = 3) then
+  begin
+    StoryLoveName := MONTH_NAMES[random(12)+1];
+    StoryLoveAge := StarDate;
+    StoryLoveSystem := Self;
+    LogEventRaw('-----------------------------------------------------');
+    LogEventRaw('Visiting the '+Name+' you have met the love of all your life.');
+    LogEventRaw('Her name is '+StoryLoveName);
+    LogEventRaw('He promised to wait you until the war is over');
+    LogEventRaw('-----------------------------------------------------');
+    StoryStage := Succ(StoryStage);
+    ModalWindow := LogWindow;
+  end
+  else
+    if (self = StoryLoveSystem) then
+    begin
+      LogEventRaw('-----------------------------------------------------');
+      if PopStatus <> Own then
+      begin
+        LogEventRaw(StoryLoveName+' is dead. The single spot of light in your life is gone.');
+        StoryLoveSystem := nil;
+        ModalWindow := LogWindow;
+      end
+      else if StarDate > StoryLoveAge + 40 then
+      begin
+        LogEventRaw(StoryLoveName+' waited your all her life.');
+        LogEventRaw('Local colonists shows you the grave where she is burried.');
+        LogEventRaw('The single spot of light in your life is gone.');
+        StoryLoveSystem := nil;
+        ModalWindow := LogWindow;
+      end
+      else if StoryStage = AfterProphecy then
+      begin
+        LogEventRaw('Happiness fills your heart when you meet '+StoryLoveName+' again.');
+        LogEventRaw('You told her about prophecy and she insisted that she will ');
+        LogEventRaw('go to the '+StoryProphecySystem.Name+' with you.');
+        LogEventRaw('Whatever waits you there, her fate will be same as your.');
+        StoryStage := LoveTaken;
+        StoryLoveSystem := nil;
+        ModalWindow := LogWindow;
+      end
+      else
+        LogEventRaw('Happiness fills your heart when you meet '+StoryLoveName+' again.');
+      LogEventRaw('-----------------------------------------------------');
+    end;
+
 end;
 
 procedure TSystem.EnterOwn;
@@ -768,6 +818,8 @@ begin
 end;
 
 procedure TSystem.Capture;
+var
+  tries: integer;
 begin
   inc(n_xenocided);
   ContactHuman(HumanMarine);
@@ -778,6 +830,34 @@ begin
   AlienArmy.State := Fleeing;
   PopStatus := Colonizable;
   SeenPopStatus := Colonizable;
+
+  if (StoryStage = BeforePortal) and (Distance(X,Y,Map.Systems[0].X, Map.Systems[0].Y) > GALAXY_SIZE/2)then
+  begin
+    LogEventRaw('-----------------------------------------------------');
+    LogEventRaw('You have discovered strange portal on the planet.');
+    LogEventRaw('Soldiers sent there never returned.');
+    LogEventRaw('There are gossips that portal leads directly to hell.');
+    LogEventRaw('-----------------------------------------------------');
+    StoryStage := Succ(StoryStage);
+    ModalWindow := LogWindow;
+  end;
+  if (StoryStage = BeforeProphecy) then
+  begin
+    LogEventRaw('-----------------------------------------------------');
+    LogEventRaw('You have discovered twisted human body on a planet.');
+    LogEventRaw('It is covered with luminescent fungus.');
+    LogEventRaw('When you enter the containment, it opened the eyes');
+    LogEventRaw('and told you: ');
+    tries := 0;
+    repeat
+      inc(tries);
+      StoryProphecySystem := Map.Systems[random(Length(Map.Systems))];
+    until (StoryProphecySystem.State = Found) and ((tries < 10000) or not Linked(StoryProphecySystem));
+    LogEventRaw('YOUR WAR WILL END AT '+StoryProphecySystem.Name);
+    LogEventRaw('-----------------------------------------------------');
+    StoryStage := Succ(StoryStage);
+    ModalWindow := LogWindow;
+  end;
 end;
 
 procedure TSystem.Colonize;

@@ -26,7 +26,7 @@ const
     'Research fields and material that can withstand alien weapons. Allows to build better cruisers and dropships',
     'Long-range weapon technologies - from missiles to gravitational disruptors and beyound. Allows to build better cruisers and orbital defenses');
 
-//  ELIM_WIN: array[1..5] of string = ('All alien civilizations of the Network was eliminated. This is an end of war, at least it was the last war where humanity fought as a single race.')
+  MONTH_NAMES: array[1..12] of string = ('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 
 implementation
 

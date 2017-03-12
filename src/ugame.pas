@@ -26,6 +26,11 @@ var
   PlayerKnowledge: THumanResearchLevel;
   ShowCursor: boolean;
 
+  StoryStage: TStoryStage;
+  StoryLoveName: string;
+  StoryLoveAge: integer;
+  StoryLoveSystem, StoryProphecySystem: TSystem;
+
 procedure NextTurn;
 
 implementation

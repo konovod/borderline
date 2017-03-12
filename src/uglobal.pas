@@ -14,6 +14,7 @@ const
   Green = $00FF00;
   Blue = $0000FF;
   Black = $000000;
+  Violet = $FF00FF;
   Dark = $101010;
   IntfText = $80FF00;
   IntfDark = $408000;

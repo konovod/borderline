@@ -250,6 +250,8 @@ begin
       PlayerSys.State := Visited;
     PrevSystem := PlayerSys;
     PlayerSys := Cursor;
+    if (PlayerSys.PopStatus = Own)then
+      inc(PlayerSys.VisitCounter);
     TriggerMines(True, PrevSystem, PlayerSys);
   end;
   f := FirstColony and (PlayerSys.VisitTime = 0) and

@@ -64,6 +64,8 @@ type
     TotalWon
   );
 
+  TStoryStage = (BeforePortal, BeforeLove, BeforeProphecy, AfterProphecy, LoveTaken);
+
 const
   ALL_HUMAN_SHIPS: THumanShips = [Low(THumanShip)..High(THumanShip)];
   ALL_ALIEN_SHIPS: TAlienShips = [Low(TAlienShip)..High(TAlienShip)];
