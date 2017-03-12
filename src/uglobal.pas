@@ -52,7 +52,7 @@ const
   MODAL_HEIGHT = 0.8;
   CLOSE_WIDTH = 0.05;
 
-  N_LOG_LINES = 19;
+  N_LOG_LINES = 25;
 
   BTL_LOG_WIDTH = 0.38;
   BTL_LOG_TOP = 0.2;
@@ -75,6 +75,7 @@ procedure DrawPanelUI(X, Y, W, H: single; alpha: single = 1);
 procedure DrawPanel(X, Y, W, H: single; alpha: single = 1);
 procedure DrawFormattedText(X, Y, W, H: single; Caption, Text: string);
 procedure DrawSomeText(X, Y, W, H, scale: single; Caption, Text: string);
+procedure DrawLogText(X, Y, W, H, scale: single; Caption, Text: string);
 
 function MyDateToStr(adate: TStarDate): string;
 
@@ -141,7 +142,6 @@ begin
     TEXT_HALIGN_LEFT + TEXT_VALIGN_TOP);
   text_DrawInRectEx(fntMain, R, 0.5, 0, Text, 255, IntfText,
     {TEXT_CLIP_RECT+}TEXT_HALIGN_JUSTIFY + TEXT_VALIGN_TOP);
-  //ExtractSubstr();
 end;
 
 procedure DrawSomeText(X, Y, W, H, scale: single; Caption, Text: string);
@@ -160,6 +160,24 @@ begin
   R.H := H;
   text_DrawInRectEx(fntMain, R, scale, 0, Text, 255, IntfText,
     TEXT_CLIP_RECT + TEXT_HALIGN_JUSTIFY + TEXT_VALIGN_TOP);
+end;
+
+procedure DrawLogText(X, Y, W, H, scale: single; Caption, Text: string);
+var
+  R: zglTRect;
+begin
+  R.X := X;
+  R.Y := Y + 10;
+  R.W := W;
+  R.H := 25;
+  text_DrawInRectEx(fntMain, R, scale, 0, Caption, 255, White,
+    TEXT_HALIGN_CENTER + TEXT_VALIGN_CENTER);
+  R.X := X;
+  R.Y := Y + 35;
+  R.W := W;
+  R.H := H;
+  text_DrawInRectEx(fntMain, R, scale, 0, Text, 255, IntfText,
+    TEXT_HALIGN_LEFT + TEXT_VALIGN_TOP);
 end;
 
 procedure DrawPanelUI(X, Y, W, H: single; alpha: single = 1);

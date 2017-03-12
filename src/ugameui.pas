@@ -412,10 +412,10 @@ var
 begin
   inherited Draw;
   s := '';
-  for i := max(0, Length(Lines) - N_LOG_LINES) to Length(Lines) - 1 do
+  for i := 0 to Length(Lines) - 1 do
     s := s + Lines[i] + #10;
   SetLength(s, Length(s) - 1);
-  DrawSomeText(SCREENX * (0.5 - MODAL_WIDTH / 2), SCREENY * (0.5 - MODAL_HEIGHT / 2),
+  DrawLogText(SCREENX * (0.5 - MODAL_WIDTH / 2), SCREENY * (0.5 - MODAL_HEIGHT / 2),
     SCREENX * MODAL_WIDTH, SCREENY * MODAL_HEIGHT,
     0.7, 'Logbook records:', s);
 end;

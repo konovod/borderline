@@ -244,9 +244,20 @@ begin
 end;
 
 procedure LogEventRaw(s: string);
+var
+  i: integer;
 begin
-  SetLength(LogWindow.Lines, Length(LogWindow.Lines) + 1);
-  LogWindow.Lines[Length(LogWindow.Lines) - 1] := s;
+  if length(LogWindow.Lines) < N_LOG_LINES then
+  begin
+    SetLength(LogWindow.Lines, Length(LogWindow.Lines) + 1);
+    LogWindow.Lines[Length(LogWindow.Lines) - 1] := s;
+  end
+  else
+  begin
+    for i := 1 to N_LOG_LINES-1 do
+      LogWindow.Lines[i-1] := LogWindow.Lines[i];
+    LogWindow.Lines[N_LOG_LINES-1] := s
+  end;
 end;
 
 function PrioToEffect(prio: TPriorityLevel; max: integer): integer;
@@ -755,7 +766,8 @@ procedure TSystem.Capture;
 begin
   ContactHuman(HumanMarine);
   ClearAliens;
-  LogEvent('System was captured by ground forces, alien population wiped out, system can be colonized');
+  LogEvent('System was captured by ground forces, alien population wiped out');
+  LogEventRaw('    system can be colonized');
   AlienArmy.nwaypoints := 0;
   AlienArmy.State := Fleeing;
   PopStatus := Colonizable;

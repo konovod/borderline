@@ -52,7 +52,6 @@
           </CodeGeneration>
           <Linking>
             <Debugging>
-              <TrashVariables Value="True"/>
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
