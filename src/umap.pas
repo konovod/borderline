@@ -653,13 +653,20 @@ begin
   begin
     Inc(Ships[ship][ShipLevel(ship, HumanResearch)],
       PrioToEffect(Priorities.Ships[ship], HUMAN_BUILD_SHIPS));
+    if Map.CountByType(Own) < 6 then
+      Inc(Ships[ship][ShipLevel(ship, HumanResearch)],
+        PrioToEffect(Priorities.Ships[ship], HUMAN_BUILD_SHIPS));
   end;
   //2. do research
   DoResearch(Priorities.Research, HumanResearch);
   //3. build mines
   lv := HumanResearch[Explosives];
   for i := 0 to length(Mines) - 1 do
+  begin
     Inc(Mines[i][lv], PrioToEffect(Priorities.Mines[i], HUMAN_BUILD_MINES));
+    if Map.CountByType(Own) < 6 then
+      Inc(Mines[i][lv], PrioToEffect(Priorities.Mines[i], HUMAN_BUILD_MINES));
+  end;
   //4. TODO: drift priorities
 end;
 
@@ -676,7 +683,7 @@ begin
     AlienMines:
     begin
       i := Random(Length(Links));
-      Inc(Mines[i][AlienResearch[typ]], MINE_MULTIPLIER);
+      Inc(Mines[i][AlienResearch[typ]], BUILD_ALIEN_MINES);
     end;
     AlienOrbital:
       Inc(AlienFleet[typ][AlienResearch[typ]], BUILD_ALIEN_ORBITAL);
