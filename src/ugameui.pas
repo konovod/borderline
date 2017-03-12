@@ -123,7 +123,7 @@ var
 
 procedure InitUI;
 
-procedure GameIsOver;
+procedure GameIsOver(final: TGameFinal);
 
 procedure LogAndRetreat(sys: TSystem);
 
@@ -177,7 +177,15 @@ begin
       else
         DoRetreat(False);
     SpaceLost:
+    begin
+      Inc(NRetreats);
+      if NRetreats > 5 then
+      begin
+        GameIsOver(LostByDeadLoop);
+        exit;
+      end;
       DoRetreat(True);
+    end;
     GroundWon, GroundLost: DoRetreat(False);
   end;
 end;
@@ -436,6 +444,7 @@ begin
     //lol TODO - ugly hack
     with TJumpAction.Create do
     begin
+      is_retreat := True;
       Execute;
       Free;
     end;
@@ -689,8 +698,57 @@ begin
   PrioritiesWindow := TPrioritiesWindow.Create;
 end;
 
-procedure GameIsOver;
+procedure GameIsOver(final: TGameFinal);
+var
+  nalien, nown, ndead: boolean;
 begin
+  LogEventRaw('************');
+case final of
+  LostByMines:
+  begin
+    LogEventRaw('    Commander ship was destroyed by mines');
+    LogEventRaw('    GAME OVER (Final 1 of 6)');
+  end;
+  LostByDeadLoop:
+  begin
+    LogEventRaw('    You have entered a deadloop - no armed ship and enemies at both sides');
+    LogEventRaw('    of warp point. You can only jump there and back till the end of times');
+    LogEventRaw('    GAME OVER (Final 2 of 6)');
+  end;
+  LostByElimination:
+  begin
+    LogEventRaw('    Last human colony was destroyed');
+    LogEventRaw('    And you have no colonizers left');
+    LogEventRaw('    So you are one of the last humans in galaxy');
+    LogEventRaw('    GAME OVER (Final 3 of 6)');
+  end;
+  WonByElimination:
+  begin
+    LogEventRaw('    Last alien colony was destroyed');
+    LogEventRaw('    Humans are now the only inhabitants of the Network.');
+    LogEventRaw('    You will be your only judge.');
+    LogEventRaw('    THIS IS THE END OF WAR (Final 4 of 6)');
+  end;
+  WonBySacrifice:
+  begin
+    //TBD
+    LogEventRaw('    THIS IS THE END OF WAR (Final 5 of 6)');
+  end;
+  TotalWon:
+  begin
+    //TBD
+    LogEventRaw('    THIS IS THE END OF WAR (Final 6 of 6)');
+  end;
+end;
+LogEventRaw('************');
+  LogEventRaw('             game stats:');
+  LogEventRaw('     years (of hell): '+IntToStr(StarDate));
+
+  LogEventRaw(' systems burned down: '+IntToStr(Map.CountByType(WipedOut)));
+  LogEventRaw('   systems xenocided: '+IntToStr(n_xenocided));
+  LogEventRaw(' human colonies left: '+IntToStr(Map.CountByType(Own)));
+  LogEventRaw(' alien colonies left: '+IntToStr(Map.CountByType(Alien)));
+  LogEventRaw('************');
   GameOver := True;
   ModalWindow := LogWindow;
 end;

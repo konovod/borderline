@@ -20,6 +20,7 @@ type
 var
   BattleDistance: TBattleDistance;
   Retreating: boolean;
+  NRetreats: Integer;
 
 
 function TriggerMines(Human: boolean; FromSys, ToSys: TSystem): boolean;
@@ -318,9 +319,7 @@ begin
       applied := DamageHuman(dmg, ALL_HUMAN_SHIPS, False, lGlobal);
       if applied < dmg - 0.001 then
       begin
-        LogEventRaw('    Commander ship was destroyed');
-        LogEventRaw('    GAME OVER');
-        GameIsOver;
+        GameIsOver(LostByMines);
         exit;
       end;
     end;

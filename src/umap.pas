@@ -78,6 +78,7 @@ type
     procedure Generate;
     procedure Draw;
     function FindSys(x, y: single): TSystem;
+    function CountByType(pop: TPopulationState): integer;
   end;
 
 
@@ -101,6 +102,9 @@ function ShipLevel(ship: THumanShip; res: THumanResearchLevel): TPowerLevel;
 procedure DoResearch(prio: TPriorityLevel; var res: THumanResearchLevel);
 
 function FreePoints(prio: TPriorities): TPriorityLevel;
+
+var
+  n_xenocided, n_colonized: integer;
 
 implementation
 
@@ -351,6 +355,16 @@ begin
       exit;
     end;
   Result := nil;
+end;
+
+function TMap.CountByType(pop: TPopulationState): integer;
+var
+  sys: TSystem;
+begin
+  Result := 0;
+  for sys in Systems do
+    if sys.PopStatus = pop then
+      inc(Result);
 end;
 
 { TSystem }
@@ -609,7 +623,7 @@ begin
     AlienOrbital:
       Inc(AlienFleet[typ][AlienResearch[typ]], BUILD_ALIEN_ORBITAL);
     else
-      Inc(AlienFleet[typ][AlienResearch[typ]])
+      Inc(AlienFleet[typ][AlienResearch[typ]], BUILD_ALIEN_SHIPS)
   end;
   //2. do research
   for typ in TAlienResearch do
@@ -764,6 +778,7 @@ end;
 
 procedure TSystem.Capture;
 begin
+  inc(n_xenocided);
   ContactHuman(HumanMarine);
   ClearAliens;
   LogEvent('System was captured by ground forces, alien population wiped out');
@@ -776,6 +791,7 @@ end;
 
 procedure TSystem.Colonize;
 begin
+  inc(n_colonized);
   ClearAliens;
   LogEvent('System was colonized');
   PopStatus := Own;

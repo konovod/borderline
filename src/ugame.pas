@@ -30,7 +30,7 @@ procedure NextTurn;
 
 implementation
 
-uses uMain, uNameGen, zgl_text, zgl_mouse;
+uses uMain, uNameGen, uGameUI, zgl_text, zgl_mouse;
 
 procedure NewGame;
 begin
@@ -103,6 +103,7 @@ end;
 procedure NextTurn;
 var
   sys: TSystem;
+  anycolony: boolean;
 begin
   Inc(Turn);
   for sys in Map.Systems do
@@ -110,6 +111,12 @@ begin
   for sys in Map.Systems do
     sys.SecondPass;
   StarDate := StarDate + 1;
+
+  if (TotalCount(PlayerFleet[Colonizer]) <= TotalCount(PlayerDamaged[Colonizer])) and
+     (Map.CountByType(Own) = 0)then
+  begin
+    GameIsOver(LostByElimination);
+  end;
 end;
 
 

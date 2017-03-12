@@ -17,7 +17,8 @@ const
   HUMAN_DAMAGE_K = 1;
   ALIEN_DAMAGE_K = 1;
   ALIEN_OVERSEE = 2;
-  BUILD_ALIEN_ORBITAL = 5;
+  BUILD_ALIEN_ORBITAL = 7;
+  BUILD_ALIEN_SHIPS = 2;
 
 type
 
@@ -53,6 +54,15 @@ type
   end;
 
   TContactSituation = (HumanMinesweepers, HumanSpace, HumanMarine, HumanMines);
+
+  TGameFinal = (
+    LostByMines,
+    LostByDeadLoop,
+    LostByElimination,
+    WonByElimination,
+    WonBySacrifice,
+    TotalWon
+  );
 
 const
   ALL_HUMAN_SHIPS: THumanShips = [Low(THumanShip)..High(THumanShip)];

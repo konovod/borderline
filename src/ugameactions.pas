@@ -18,6 +18,7 @@ type
 
   { TJumpAction }
   TJumpAction = class(TAction)
+    is_retreat: boolean;
     procedure Execute; override;
     function Allowed: boolean; override;
     function Visible: boolean; override;
@@ -236,6 +237,8 @@ procedure TJumpAction.Execute;
 var
   f: boolean;
 begin
+  if not is_retreat then
+    NRetreats := 0;
   if (Cursor <> PlayerSys) and (Cursor <> nil) then
     JumpTarget := Cursor
   else
