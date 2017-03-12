@@ -380,8 +380,8 @@ begin
   for res in THumanResearch do
     HumanResearch[res] := 1;
   AlienResearch[AlienBattleship] := 1;
-  //AlienResearch[AlienCruiser] := 1;
-  //AlienResearch[AlienMines] := 1;
+  AlienResearch[AlienCruiser] := 1;
+  AlienResearch[AlienMines] := 1;
   //AlienResearch[AlienOrbital] := 1;
   DefaultPriorities;
 end;
@@ -730,10 +730,10 @@ begin
       if (target = nil) or (target = PlayerSys) then
       begin
         AlienArmy.State := Returning;
-        LogEventRaw('Returning from ' + Name);
+        //LogEventRaw('Returning from ' + Name);
         exit;
       end;
-      LogEventRaw('Fleeing to ' + target.Name);
+      //LogEventRaw('Fleeing to ' + target.Name);
       Inc(AlienArmy.nwaypoints);
       AlienArmy.waypoints[AlienArmy.nwaypoints] := Self;
       if (random < 0.05) or (AlienArmy.nwaypoints > 20) then
@@ -767,7 +767,7 @@ begin
           Dec(AlienArmy.nwaypoints);
         end;
       end;
-      LogEventRaw('Returning from ' + Name + ' to ' + target.Name);
+      //LogEventRaw('Returning from ' + Name + ' to ' + target.Name);
       if target.AlienArmyNext.State < AlienArmy.State then
         target.AlienArmyNext := AlienArmy;
       AlienArmy.State := None;
@@ -846,7 +846,7 @@ begin
   PopStatus := Colonizable;
   SeenPopStatus := Colonizable;
 
-  if (StoryStage = BeforePortal) and (Distance(X,Y,Map.Systems[0].X, Map.Systems[0].Y) > GALAXY_SIZE/3)then
+  if (StoryStage = BeforePortal) and (Distance(X,Y,Map.Systems[0].X, Map.Systems[0].Y) > GALAXY_SIZE/2)then
   begin
     LogEventRaw('-----------------------------------------------------');
     LogEventRaw('You have discovered strange portal on the planet.');
@@ -911,6 +911,7 @@ begin
         if Links[i] = MineFromSys then
         begin
           MineFromSys.SetResearch(AlienMinesweeper, MaxLevel(Mines[i]));
+          MineFromSys.SetResearch(AlienMines, MaxLevel(Mines[i]));
           break;
         end;
     end;
