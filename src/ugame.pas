@@ -129,7 +129,7 @@ begin
   begin
     sys := Map.Systems[random(Length(Map.Systems))];
     if (sys.PopStatus = Alien) and (sys.AlienArmy.State = None) then
-      sys.AlienArmy.State = Walking;
+      sys.AlienArmy.State := Walking;
   end;
 end;
 
