@@ -179,7 +179,7 @@ begin
     SpaceLost:
     begin
       Inc(NRetreats);
-      if NRetreats > 5 then
+      if NRetreats > 2 then
       begin
         GameIsOver(LostByDeadLoop);
         exit;
