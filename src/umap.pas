@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, uglobal, uGameTypes;
 
-{$DEFINE DEBUGDRAW}
+{.$DEFINE DEBUGDRAW}
 
 type
 
@@ -846,7 +846,7 @@ begin
   PopStatus := Colonizable;
   SeenPopStatus := Colonizable;
 
-  if (StoryStage = BeforePortal) and (Distance(X,Y,Map.Systems[0].X, Map.Systems[0].Y) > GALAXY_SIZE/2)then
+  if (StoryStage = BeforePortal) and (Distance(X,Y,Map.Systems[0].X, Map.Systems[0].Y) > GALAXY_SIZE/3)then
   begin
     LogEventRaw('-----------------------------------------------------');
     LogEventRaw('You have discovered strange portal on the planet.');

@@ -124,6 +124,13 @@ begin
   end
   else if Map.CountByType(Alien) = 0 then
     GameIsOver(WonByElimination);
+
+  if random < 0.05 then
+  begin
+    sys := Map.Systems[random(Length(Map.Systems))];
+    if (sys.PopStatus = Alien) and (sys.AlienArmy.State = None) then
+      sys.AlienArmy.State = Walking;
+  end;
 end;
 
 
