@@ -731,12 +731,26 @@ case final of
   end;
   WonBySacrifice:
   begin
-    //TBD
+    LogEventRaw('    Upon entering the system you see a huge alien fleet.');
+    LogEventRaw('    It is surely much more than you can ever surpass.');
+    LogEventRaw('    The holographic projection appears on the bridge');
+    LogEventRaw('    and says that they''ve managed to decipher our language.');
+    LogEventRaw('    All human systems already received a letter of peace.');
+    LogEventRaw('    Now you are the only borderstepper that continue the war');
+    LogEventRaw('    Failing to beleive it, you send ships to the final battle.');
     LogEventRaw('    THIS IS THE END OF WAR (Final 5 of 6)');
   end;
   TotalWon:
   begin
-    //TBD
+    LogEventRaw('    Upon entering the system you see a huge alien fleet.');
+    LogEventRaw('    It is surely much more than you can ever surpass.');
+    LogEventRaw('    The holographic projection appears on the bridge');
+    LogEventRaw('    and says that they''ve managed to decipher our language.');
+    LogEventRaw('    All other systems already received a letter of peace.');
+    LogEventRaw('    You agree to go into exile with '+StoryLoveName);
+    LogEventRaw('    So the other human race will join the Network');
+    LogEventRaw('    and live in peace for ages.');
+    LogEventRaw('    CONGRATULATIONS!');
     LogEventRaw('    THIS IS THE END OF WAR (Final 6 of 6)');
   end;
 end;

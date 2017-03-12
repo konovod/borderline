@@ -490,6 +490,14 @@ procedure TSystem.Enter;
 var
   sys: TSystem;
 begin
+  if Self = StoryProphecySystem then
+  begin
+    if StoryStage = AfterProphecy then
+      GameIsOver(WonBySacrifice)
+    else
+      GameIsOver(TotalWon);
+    exit;
+  end;
   LogEvent('Entering');
   State := Current;
   for sys in Links do
@@ -644,14 +652,14 @@ begin
   for ship in THumanShip do
   begin
     Inc(Ships[ship][ShipLevel(ship, HumanResearch)],
-      PrioToEffect(Priorities.Ships[ship], 10));
+      PrioToEffect(Priorities.Ships[ship], HUMAN_BUILD_SHIPS));
   end;
   //2. do research
   DoResearch(Priorities.Research, HumanResearch);
   //3. build mines
   lv := HumanResearch[Explosives];
   for i := 0 to length(Mines) - 1 do
-    Inc(Mines[i][lv], PrioToEffect(Priorities.Mines[i], 10 * MINE_MULTIPLIER));
+    Inc(Mines[i][lv], PrioToEffect(Priorities.Mines[i], HUMAN_BUILD_MINES));
   //4. TODO: drift priorities
 end;
 
